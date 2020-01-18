@@ -204,13 +204,14 @@ WIP
 \end{equation}
 
 We can show
-\begin{equation}
+\begin{align}
     D_{w_\alpha}(\mu_t | \mu_{t+1}) = \eta^2
     \dotp{\alpha}{1 - \exp(\frac{f_t - \hat f_{t+1}}{\epsilon})},
-    \quad \hat f_{t+1}(\cdot) 
+    = \eta^2 (1 - \dotp{\alpha}{\nabla_\mu \Ff(\mu_t, \nu_t)})
+    \\ \hat f_{t+1}(\cdot) 
     = - \varepsilon \log \int_y \exp(\frac{g_t(y) - C(\cdot, y)}{\varepsilon}) \mathrm d \beta(y).
-\end{equation}
-Avec Sinkhorn sans bruit $f_t - \hat f_{t+1}$ tend vers 0 (Perron-Frobenius) donc c'est bon. + quantifier le bruit
+\end{align}
+Avec Sinkhorn sans bruit $f_t - \hat f_{t+1}$ va rester tranquille.
 
 \printbibliography
 
