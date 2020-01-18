@@ -120,6 +120,22 @@ simple update rules for $p$ and $q$:
     p_{t,t, i} = \eta b_{t,j} \exp(f_{t-1}(x_{t, j}),
     \qquad \foralls s < t,\quad p_{t,s, i} = (1- \eta) p_{t-1,s, i}
 \end{equation}
+
+
+\section{Analysis}
+
+Bregman divergence associated to $\phi$ (désolé j'ai changé de notation).
+\begin{equation}
+    d_{\phi}(f_2|f_1) = \dotp{\alpha}{\exp(\frac{f_2-f_1}{\varepsilon})
+     - 1 - \exp(\frac{f_2-f_1}{\varepsilon}}
+      \geq \dotp{\alpha}{\big(\frac{f_2-f_1}{\varepsilon}\big)^2}
+\end{equation}
+
+For convergence of MD on $\min f(x)$ with mirror map $\phi$, we need to show, according to Gabriel, Jalal and Kelvin
+\begin{equation}
+    \mu d_\phi(x_2|x_1 )\leq d_f(x_2|x_1) \leq L d_\phi(x_2|x_1).
+\end{equation}
+Can we use that here ? Beware that we are in an alternated setting
 \printbibliography
 
 \end{document}
