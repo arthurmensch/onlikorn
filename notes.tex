@@ -1,0 +1,125 @@
+\documentclass[a4paper, 10pt]{article}
+\input{preamble.tex}
+
+\addbibresource{biblio.bib}
+
+\begin{document}
+
+\section{Online Sinkhorn}
+
+The Sinkhorn objective rewrites
+\begin{equation}
+    \max_{f, g \in \Cc(\Xx)} \dotp{g}{\alpha} + \dotp{g}{\beta}
+     - \epsilon \dotp{\alpha \otimes \beta}{\exp(-\frac{f \oplus g - C}{\epsilon})
+     }
+\end{equation}
+We perform the following change of variable $\mu = \alpha e^{f / \varepsilon}$,
+$\nu = \beta e^{g / \epsilon}$, to obtain the equivalent problem, in $\Mm^+(\Xx)$
+\begin{equation}
+    \min_{\mu,\nu \in \Mm^+(\Xx)} \KL(\alpha|\mu) + \KL(\beta|\mu) + 
+    \epsilon \dotp{\mu \otimes \nu}{\exp(-\frac{C}{\epsilon})} \triangleq f(\mu, \nu).
+\end{equation}
+
+The problem is not jointly convex, but convex in $\mu$ and $\nu$.
+We may approach this problem from a game point of view of finding
+ a local Nash equilibrium $(\mu^\star,\nu^\star)$ such that
+\begin{align}\label{eq:Nash}
+    \mu^\star &= \argmin_{\mu \in V(\mu^\star)} f(\mu, \nu^\star) \\
+    \nu^\star &= \argmin_{\nu \in V(\nu^\star)} f(\mu^\star, \nu),
+\end{align}
+where $V$ are open sets. Such a formalism is useful as results on mirror descent
+convergence in multi-agent setting exist for this problem. To solve
+\eqref{eq:Nash}, we need to define distance generating functions to move back
+and forth from $\mu$ and $\nu$ and their dual form. We define
+\begin{align}
+    \omega_\alpha(\mu) &\triangleq \KL(\alpha | \mu) \\
+    \omega_\beta(\nu) &\triangleq \KL(\beta | \nu) \\
+\end{align},
+associated the the mirror maps
+\begin{align}
+    \nabla_\mu \omega_\alpha(\mu) &= 
+    - \frac{\d\alpha}{\d\mu} \qquad \big( = - \exp(-f / \epsilon) \big), \\
+    \nabla_\nu \omega_\beta(\nu) &= 
+    - \frac{\d\beta}{\d\nu} \qquad \big( = - \exp(-g / \epsilon) \big),
+\end{align}
+with inverse
+\begin{align}
+    \nabla_\mu \omega^\star_\alpha(p) &= - \frac{\alpha}{p}, \\
+    \nabla_\nu \omega^\star_\beta(q) &= - \frac{\beta}{q}.
+\end{align}
+\paragraph{Algorithm.} Let us consider the simple simultaneous mirror descent setting, where we build
+the sequence of iterate $(\mu_t, \nu_t)_t$. It is easy to shows that if we start
+from $\mu_0 \gg \alpha$ and $\nu_0 \gg \beta$, the iterates will remain
+absolutely continuous with respect to $\alpha$ and $\beta$. We will therefore
+write $\mu_t = \alpha e^{f_t / \varepsilon}$, $\nu_t = \beta e^{g_t /
+\epsilon}$. The mirror descent iterations rewrite (for $\mu$)
+\begin{equation}
+    \mu_{t+1} = \frac{\alpha}{e^{-f_t / \epsilon} + \eta \nabla_\mu f(\mu_t, \nu_t)},
+\end{equation}
+with $\nabla_\mu f(\mu_t, \nu_t) = - \exp(-\frac{f_t}{\epsilon})+ \epsilon
+\int_y \exp(\frac{g(y)-C(\cdot, y)}{\epsilon})\d\beta(y)$. We therefore have the
+following update rules
+\begin{align}
+    \exp(-\frac{f_{t+1}}{\epsilon}) &=
+     (1 - \eta) \exp(-\frac{f_{t}}{\epsilon}) 
+     + \eta \EE_\beta[\epsilon \exp( \frac{g_t(y)-C(\cdot, y)}{\epsilon})], \\
+     \exp(-\frac{g_{t+1}}{\epsilon}) &=
+     (1 - \eta) \exp(-\frac{g_{t}}{\epsilon}) 
+     + \eta \EE_\alpha[\epsilon \exp( \frac{f_t(x)-C(x, \cdot)}{\epsilon})].
+\end{align}
+Assuming we sample $\hat \beta_t = \sum_{i=1}^n b_{i,t} \delta_{y_{i,t}}$ and
+$\hat \alpha_t = \sum_{i=1}^n a_{i,t} \delta_{x_{i,t}}$, we can approximate the
+expectations above, and expect, with decreasing step-sizes to achieve
+convergence.
+
+Some variants (more likely to converge better) may be considered. The alternated variant writes
+\begin{align}
+    \exp(-\frac{f_{t+1}}{\epsilon}) &=
+     (1 - \eta) \exp(-\frac{f_{t}}{\epsilon}) 
+     + \eta \EE_\beta[\epsilon \exp( \frac{g_t(y)-C(\cdot, y)}{\epsilon})], \\
+     \exp(-\frac{g_{t+1}}{\epsilon}) &=
+     (1 - \eta) \exp(-\frac{g_{t}}{\epsilon}) 
+     + \eta \EE_\alpha[\epsilon \exp( \frac{f_{t+1}(x)-C(x, \cdot)}{\epsilon})],
+\end{align}
+and the extrapolated version
+\begin{align}
+    \exp(-\frac{f_{t+1/2}}{\epsilon}) &=
+     (1 - \eta) \exp(-\frac{f_{t}}{\epsilon}) 
+     + \eta \EE_\beta[\epsilon \exp( \frac{g_t(y)-C(\cdot, y)}{\epsilon})], \\
+     \exp(-\frac{g_{t+1/2}}{\epsilon}) &=
+     (1 - \eta) \exp(-\frac{g_{t}}{\epsilon}) 
+     + \eta \EE_\alpha[\epsilon \exp( \frac{f_t(x)-C(x, \cdot)}{\epsilon})], \\
+     \exp(-\frac{f_{t+1}}{\epsilon}) &=
+     \exp(-\frac{f_{t}}{\epsilon}) - \eta \exp(-\frac{g_{t + 1 / 2}}{\epsilon})
+     + \eta \EE_\beta[\epsilon \exp( \frac{g_{t+1/2}(y)-C(\cdot, y)}{\epsilon})], \\
+     \exp(-\frac{g_{t+1}}{\epsilon}) &=
+     \exp(-\frac{g_{t}}{\epsilon}) - \eta \exp(-\frac{g_{t + 1 / 2}}{\epsilon})
+     + \eta \EE_\alpha[\epsilon \exp( \frac{f_{t+1/2}(x)-C(x, \cdot)}{\epsilon})].
+\end{align}
+\paragraph{Computations.} In the simple simultaneous case, we can track $f_t$ in memory by the following representation
+\begin{align}
+    f_t(\cdot) &= - \epsilon \log \sum_{s=0}^t w_{t,s} \sum_{j=1}^n b_{s, j} 
+    \exp\Big(g_{s-1}(y_{s,j}) - \frac{C(\cdot, y_{s, j})}{\epsilon}\Big) \\
+    g_t(\cdot) &= - \epsilon \log \sum_{s=0}^t w_{t,s} \sum_{i=1}^n a_{s, i} 
+    \exp\Big(f_{s-1}(x_{s, i}) - \frac{C(x_{s,i}, \cdot)}{\epsilon}\Big),
+\end{align}
+with $w_{t,s} = \eta (1-\eta)^{t-s}$ for $1 \leq s \leq t$, $w_{t,0} =
+(1-\eta)^{t}$, and we set $g_{-1} = f_{-1} = 0$. The weights are a bit more
+complex is $\eta$ depends on time.
+
+The alternated version sets
+\begin{equation}
+    g_t(\cdot) = - \epsilon \log \sum_{s=0}^t w_{t,s} \sum_{i=1}^n a_{s, i} 
+    \exp\Big(f_{s}(x_{s, i}) - \frac{C(x_{s,i}, \cdot)}{\epsilon}\Big),
+\end{equation}
+
+Setting $q_{t,s,i} = w_{t,s} b_{s, j} \exp(g_{s-1}(y_{s,
+j}))$ and $p_{t,s,i} = w_{t,s} b_{s, j} \exp(f_{s-1}(x_{s, j})/ \epsilon)$, we can derive
+simple update rules for $p$ and $q$:
+\begin{equation}
+    p_{t,t, i} = \eta b_{t,j} \exp(f_{t-1}(x_{t, j}),
+    \qquad \foralls s < t,\quad p_{t,s, i} = (1- \eta) p_{t-1,s, i}
+\end{equation}
+\printbibliography
+
+\end{document}
