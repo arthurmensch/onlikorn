@@ -9,7 +9,7 @@
 
 The Sinkhorn objective rewrites
 \begin{equation}
-    \max_{f, g \in \Cc(\Xx)} \dotp{g}{\alpha} + \dotp{g}{\beta}
+    \max_{f, g \in \Cc(\Xx)} \dotp{f}{\alpha} + \dotp{g}{\beta}
      - \epsilon \dotp{\alpha \otimes \beta}{\exp(-\frac{f \oplus g - C}{\epsilon})
      }
 \end{equation}
@@ -24,8 +24,8 @@ The problem is not jointly convex, but convex in $\mu$ and $\nu$.
 We may approach this problem from a game point of view of finding
  a local Nash equilibrium $(\mu^\star,\nu^\star)$ such that
 \begin{align}\label{eq:Nash}
-    \mu^\star &= \argmin_{\mu \in V(\mu^\star)} f(\mu, \nu^\star) \\
-    \nu^\star &= \argmin_{\nu \in V(\nu^\star)} f(\mu^\star, \nu),
+    \mu^\star &= \argmin_{\mu \in V(\mu^\star)} \Ff(\mu, \nu^\star) \\
+    \nu^\star &= \argmin_{\nu \in V(\nu^\star)} \Ff(\mu^\star, \nu),
 \end{align}
 where $V$ are open sets. Such a formalism is useful as results on mirror descent
 convergence in multi-agent setting exist for this problem. To solve
@@ -54,9 +54,9 @@ absolutely continuous with respect to $\alpha$ and $\beta$. We will therefore
 write $\mu_t = \alpha e^{f_t / \varepsilon}$, $\nu_t = \beta e^{g_t /
 \epsilon}$. The mirror descent iterations rewrite (for $\mu$)
 \begin{equation}
-    \mu_{t+1} = \frac{\alpha}{e^{-f_t / \epsilon} + \eta \nabla_\mu f(\mu_t, \nu_t)},
+    \mu_{t+1} = \frac{\alpha}{e^{-f_t / \epsilon} + \eta \nabla_\mu \Ff(\mu_t, \nu_t)},
 \end{equation}
-with $\nabla_\mu f(\mu_t, \nu_t) = - \exp(-\frac{f_t}{\epsilon})+ \epsilon
+with $\nabla_\mu \Ff(\mu_t, \nu_t) = - \exp(-\frac{f_t}{\epsilon})+ \epsilon
 \int_y \exp(\frac{g(y)-C(\cdot, y)}{\epsilon})\d\beta(y)$. We therefore have the
 following update rules
 \begin{align}
@@ -136,6 +136,70 @@ For convergence of MD on $\min f(x)$ with mirror map $\phi$, we need to show, ac
     \mu d_\phi(x_2|x_1 )\leq d_f(x_2|x_1) \leq L d_\phi(x_2|x_1).
 \end{equation}
 Can we use that here ? Beware that we are in an alternated setting
+
+
+\subsection{Sketch of proof}
+
+See proof of Th2 in Ya Ping's paper.
+
+\subsubsection{General proof}
+
+By using the dual iteration and the three point property (normally holds by def of $D_{\alpha}$ and $D_{\beta}$):
+\begin{align*}
+\ps{\mu_t-\mu}{-\nabla_{\mu} \Ff(\mu_t,\nu_t)}&=\frac{1}{\eta}\ps{\mu_t-\mu}{\nabla_{\mu}w_{\alpha}(\mu_{t+1})-\nabla_{\mu}w_{\alpha}(\mu_t)}\\
+&=\frac{1}{\eta}[D_{w_{\alpha}}(\mu,\mu_{t})-D_{w_{\alpha}}(\mu,\mu_{t+1})+D_{w_{\alpha}}(\mu_t,\mu_{t+1})]
+\end{align*}
+Suppose we can show (TO DO): 
+\begin{align}\label{eq:bound_gradient}
+D_{w_{\alpha}}(\mu_t,\mu_{t+1})\le \eta^2 M^2
+\end{align}
+Then we have:
+\begin{align*}
+\frac{1}{T}\sum_{t=1}^T \ps{\mu_t-\mu}{-\nabla_{\mu} \Ff(\mu_t,\nu_t)}&= \sum_{t=1}^T \frac{1}{\eta}[D_{w_{\alpha}}(\mu,\mu_{t})-D_{w_{\alpha}}(\mu,\mu_{t+1})+D_{w_{\alpha}}(\mu_t,\mu_{t+1})]\\
+\le \frac{D_{w_{\alpha}}(\mu,\mu_1)}{\eta}+\eta^2 M^2 T
+\end{align*}
+Similarly:
+\begin{align*}
+\frac{1}{T}\sum_{t=1}^T \ps{\nu_t-\nu}{-\nabla_{\nu} \Ff(\mu_t,\nu_t)}&
+\le \frac{D_{w_{\beta}}(\mu,\mu_1)}{\eta}+\eta^2 M^2 T
+\end{align*}
+Summing up the two previous equations and replacing $(\mu,\nu)$ by $(\mu*,\nu*)$, we get:
+\begin{equation}
+\frac{1}{T}\sum_{t=1}^T \ps{\mu_t-\mu*}{-\nabla_{\mu} \Ff(\mu_t,\nu_t)} + \ps{\nu_t-\nu*}{-\nabla_{\nu} \Ff(\mu_t,\nu_t)}\le \frac{D_0}{\eta}+2\eta^2 M^2 T
+\end{equation}
+where $D_0=D_{w_{\alpha}}(\mu^*,\mu_1)+D_{w_{\beta}}(\nu^*,\nu_1)$.\\
+
+\noindent Then, by optimality of $\mu^*$ and convexity of $\Ff$:
+\begin{multline*}
+\Ff(\mu_t,\nu_t)-\Ff(\mu^*,\nu^*)\le \Ff(\mu_t,\nu_t)-\Ff(\mu^*,\nu_t)
+\le \ps{\mu^*-\mu_t}{\nabla_{\mu}\Ff(\mu_t,\nu_t)}= \ps{\mu_t-\mu^*}{-\nabla_{\mu}\Ff(\mu_t,\nu_t)}
+\end{multline*}
+Hence:
+\begin{equation}
+\frac{1}{T}\sum_{t=1}^T  
+\Ff(\mu_t,\nu_t)-\Ff(\mu^*,\nu^*) \le \frac{D_0}{\eta}+2\eta^2 M^2 T
+\end{equation}
+
+\subsubsection{Tricky part}
+Now let's try to prove Equation \ref{eq:bound_gradient}. 
+What we need is 
+\begin{itemize}
+	\item $D_{w_{\alpha}}(\mu,\nu)=D_{w_{\alpha}^*}(\nabla_{\mu}w_{\alpha}(\mu), \nabla_{\mu}w_{\alpha}(\nu))$ (eq A.13 in Ya Ping's paper)
+	\item  \textit{relative smoothness of $w_{\alpha}^*$ wrt $\|.\|_{\infty}$} (eq A.11 and A.12 in Ya Ping's paper)
+\end{itemize}
+ If it's true:
+\begin{align*}
+D_{w_{\alpha}}(\mu_t,\mu_{t+1}) = D_{w_{\alpha}^*}(\nabla_{\mu}w_{\alpha}(\mu_t), \nabla_{\mu}w_{\alpha}(\mu_{t+1}))\le \| \nabla_{\mu}w_{\alpha}(\mu)- \nabla_{\mu}w_{\alpha}(\nu)\|^2_{\infty}\\
+=\| \exp(-\frac{f_{t+1}}{\epsilon})- \exp(-\frac{f_t}{\epsilon})\|^2_{\infty} = \eta^2 \| \nabla \Ff_{\mu}(\mu_t,\nu_t)\|^2_{\infty}
+\end{align*}
+and 
+\begin{align*}
+\|\nabla \Ff_{\mu}(\mu_t,\nu_t)\|^2_{\infty}\le ?
+\end{align*}
+
+
+
+
 \printbibliography
 
 \end{document}
