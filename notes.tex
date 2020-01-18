@@ -128,7 +128,7 @@ Bregman divergence associated to $\phi$ (désolé j'ai changé de notation).
 \begin{equation}
     d_{\phi}(f_2|f_1) = \dotp{\alpha}{\exp(\frac{f_2-f_1}{\varepsilon})
      - 1 - \frac{f_2-f_1}{\varepsilon}}
-      \geq \dotp{\alpha}{\big(\frac{f_2-f_1}{\varepsilon}\big)^2}
+      \geq \dotp{\alpha}{\big(\frac{f_2-f_1}{2 \varepsilon}\big)^2}
 \end{equation}
 
 For convergence of MD on $\min f(x)$ with mirror map $\phi$, we need to show, according to Gabriel, Jalal and Kelvin
@@ -199,11 +199,18 @@ and
 
 WIP
 \begin{equation}
-    D_{w_{\alpha}}(\mu_t,\mu_{t+1}) =
-    \Vert \log \frac{d \mu_{t+1}}{d \mu_{t}} \Vert_\alpha^2
+    D_{w_{\alpha}}(\mu_t,\mu_{t+1}) \geq
+    \Vert \log \frac{\mathrm d \mu_{t+1}}{\mathrm d \mu_{t}} \Vert_\alpha^2
 \end{equation}
 
-
+We can show
+\begin{equation}
+    D_{w_\alpha}(\mu_t | \mu_{t+1}) = \eta^2
+    \dotp{\alpha}{1 - \exp(\frac{f_t - \hat f_{t+1}}{\epsilon})},
+    \quad \hat f_{t+1}(\cdot) 
+    = - \varepsilon \log \int_y \exp(\frac{g_t(y) - C(\cdot, y)}{\varepsilon}) \mathrm d \beta(y).
+\end{equation}
+Avec Sinkhorn sans bruit $f_t - \hat f_{t+1}$ tend vers 0 (Perron-Frobenius) donc c'est bon. + quantifier le bruit
 
 \printbibliography
 
