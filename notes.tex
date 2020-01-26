@@ -292,9 +292,9 @@ Contractance $F(\mu_{k+1}, \nu^\star) - F^\star$.
 I want to show the contractance of the soft c-tranform for the following metric
 \begin{equation}
     \phi(f, g) = \min_{f^\star, g^\star \in \Ss} 
-    D_{\omega_\alpha}(f, g^\star)
+    D_{\omega_\alpha}(f, f^\star)
     +
-    D_{\omega_\beta}(f^\star, g).
+    D_{\omega_\beta}(g, g^\star).
 \end{equation}
 Namely, if 
 \begin{equation}
@@ -304,10 +304,17 @@ Namely, if
 It is then easy to show (convexity argument) that
 \begin{equation}
     \phi(f_{t+1}, g_{t+1}) \leq
-    (1-\epsilon) 
+    (1-\eta) 
     \phi(f_t, g_t)
-    + \epsilon \phi(T(f_t,\alpha), T(g_t,\beta))
-    \leq \phi(f_t, g_t)
+    + \eta \phi(T(f_t,\alpha), T(g_t,\beta))
+\end{equation}
+What can be shown is unfortunately
+\begin{equation}
+    D_{\omega_\alpha}(T(g,\beta), f^\star) +
+    D_{\omega_\beta}(T(f,\alpha), g^\star). \leq
+    D_{\omega_\alpha}(f^\star, f)
+    +
+    D_{\omega_\beta}(g^\star, g).
 \end{equation}
 \printbibliography
 
