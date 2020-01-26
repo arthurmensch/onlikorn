@@ -243,7 +243,7 @@ Combining both, we obtain
     \dotp{\nabla F(\mu_y, \nu)}{\mu_x - \mu_z} 
     &\geq F(\mu_x, \nu) - F(\mu_z, \nu) - L D_{\omega_\alpha}(\mu_x, \mu_y).
 \end{align}
-We know use the three point propery:
+We now use the three point propery:
 \begin{equation}
     D_{\omega_\alpha}(\mu_z, \mu_y) - D_{\omega_\alpha}(\mu_z, \mu_x) 
     - D_{\omega_\alpha}(\mu_x, \mu_y) 
@@ -254,35 +254,38 @@ replacing $\mu_y = \mu_{k}, \mu_x = \mu_{k+1}$, to obtain
     D_{\omega_\alpha}(\mu_z, \mu_k) - D_{\omega_\alpha}(\mu_z, \mu_{k+1}) 
     - D_{\omega_\alpha}(\mu_{k+1}, \mu_k) &=
      \eta_k \dotp{\nabla_\mu F(\mu_k, \nu)}{\mu_{k+1} - \mu_z} \\
-    &\geq \eta_k (F(\mu_{k+1}, \nu) - F(\mu_z, \nu)))
+    &\geq \eta_k (F(\mu_{k+1}, \nu) - F(\mu_z, \nu_k)))
      - L \eta_k D_{\omega_\alpha}(\mu_{k+1},\mu_k).
 \end{align}
-Hence, mimicking the derivation for $\nu$,
+Hence, mimicking the derivation for $\nu$, using the gradient update step
 \begin{align}
-    \eta_k (F(\mu_{k+1},\nu) - F(\mu_z, \nu))) &\leq 
-    D_{\omega_\alpha}(\mu_z, \mu_k) - D_{\omega_\alpha}(\mu_z, \mu_{k+1}) 
-    - (1 - \eta_k L) D_{\omega_\alpha}(\mu_{k+1}, \mu_k) \\
-    \eta_k (F(\mu,\nu_{k+1}) - F(\mu, \nu_z))) &\leq 
+    \eta_k (F(\mu_{k+1},\nu_{k+1}) - F(\mu_{k+1}, \nu_z)) &\leq 
     D_{\omega_\beta}(\nu_z, \nu_k) - D_{\omega_\beta}(\nu_z, \nu_{k+1}) 
-    - (1 - \eta_k L) D_{\omega_\beta}(\nu_{k+1}, \nu_k).
+    - (1 - \eta_k L) D_{\omega_\beta}(\nu_{k+1}, \nu_k). \\
+    \eta_k (F(\mu_{k+1},\nu_k) - F(\mu_z, \nu_k)) &\leq 
+    D_{\omega_\alpha}(\mu_z, \mu_k) - D_{\omega_\alpha}(\mu_z, \mu_{k+1}) 
+    - (1 - \eta_k L) D_{\omega_\alpha}(\mu_{k+1}, \mu_k)
 \end{align}
-Set $\nu = \nu_k$, $\mu_z = \mu_{k}$ $\mu = \mu_{k+1}$, $\nu_z = \nu_k$, we obtain a descent lemma
+Setting $\mu_z = \mu_{k}$, $\nu_z = \nu_k$, we obtain a descent lemma.
 \begin{equation}
-    F(\mu_{k+1}, \nu_{k+1}) \leq F(\mu_{k+1}, \nu_k) \leq F(\mu_k, \nu_k).
+    F(\mu_{k+1}, \nu_{k+1}) \leq F(\mu_{k+1}, \nu_{k}) \leq F(\mu_{k}, \nu_{k}).
 \end{equation}
-Choosing an optimal couple $\mu^\star, \nu^\star$, setting $\nu = \nu^\star$, $\mu = \mu^\star$, and summing both equations over $k$, we obtain
-\begin{equation}
-    F(\mu_{K+1}, \nu^\star) + 
-    F(\mu^\star, \nu_{K+1}) - 2 F^\star \leq\frac{1}{\sum_{k=1}^K \eta_k} \sum_{k=1}^K \eta_k 
-    \big( F(\mu_{k+1}, \nu^\star)
-     + F(\mu^\star, \nu_{k+1})  - 2 F^\star \big)
-     \leq \frac{D_{\omega_\alpha}(\mu^\star, \mu_1)
-     + D_{\omega_\beta}(\nu^\star, \nu_1)}{\sum_{k=1}^K \eta_k}
-\end{equation}
-Hence
-\begin{equation}
-    F(\mu_{K+1}, \nu^\star) + F(\mu^\star, \nu_{K+1}) \to 2 F^\star
-\end{equation}
+Therefore $(F())
+% Choosing a stationary point $(\mu^\star, \nu^\star)$, setting $\nu_z = \nu^\star$,
+% $\mu_z = \mu^\star$, and summing both equations over $k$, we obtain, using the
+% fact that decreasing
+% \begin{equation}
+%     F(\mu_{K+1}, \nu_{K+1}) + 
+%     F(\mu^\star, \nu_{K+1}) - 2 F^\star \leq\frac{1}{\sum_{k=1}^K \eta_k} \sum_{k=1}^K \eta_k 
+%     \big( F(\mu_{k+1}, \nu^\star)
+%      + F(\mu^\star, \nu_{k+1})  - 2 F^\star \big)
+%      \leq \frac{D_{\omega_\alpha}(\mu^\star, \mu_1)
+%      + D_{\omega_\beta}(\nu^\star, \nu_1)}{\sum_{k=1}^K \eta_k}
+% \end{equation}
+% Hence
+% \begin{equation}
+%     F(\mu_{K+1}, \nu^\star) + F(\mu^\star, \nu_{K+1}) \to 2 F^\star.
+% \end{equation}
 
 \printbibliography
 
