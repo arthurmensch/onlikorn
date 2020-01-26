@@ -249,7 +249,7 @@ We now use the three point propery:
     - D_{\omega_\alpha}(\mu_x, \mu_y) 
     = \dotp{\nabla \omega_\alpha(\mu_x) - \nabla \omega_\alpha(\mu_y)}{\mu_z - \mu_x},
 \end{equation}
-replacing $\mu_y = \mu_{k}, \mu_x = \mu_{k+1}$, to obtain
+replacing $\mu_y = \mu_{k}, \mu_x = \mu_{k+1}, \nu = \nu_k$, we obtain
 \begin{align}
     D_{\omega_\alpha}(\mu_z, \mu_k) - D_{\omega_\alpha}(\mu_z, \mu_{k+1}) 
     - D_{\omega_\alpha}(\mu_{k+1}, \mu_k) &=
@@ -257,7 +257,7 @@ replacing $\mu_y = \mu_{k}, \mu_x = \mu_{k+1}$, to obtain
     &\geq \eta_k (F(\mu_{k+1}, \nu) - F(\mu_z, \nu_k)))
      - L \eta_k D_{\omega_\alpha}(\mu_{k+1},\mu_k).
 \end{align}
-Hence, mimicking the derivation for $\nu$, using the gradient update step
+Hence, mimicking the derivation for $\nu$
 \begin{align}
     \eta_k (F(\mu_{k+1},\nu_{k+1}) - F(\mu_{k+1}, \nu_z)) &\leq 
     D_{\omega_\beta}(\nu_z, \nu_k) - D_{\omega_\beta}(\nu_z, \nu_{k+1}) 
@@ -268,25 +268,24 @@ Hence, mimicking the derivation for $\nu$, using the gradient update step
 \end{align}
 Setting $\mu_z = \mu_{k}$, $\nu_z = \nu_k$, we obtain a descent lemma.
 \begin{equation}
-    F(\mu_{k+1}, \nu_{k+1}) \leq F(\mu_{k+1}, \nu_{k}) \leq F(\mu_{k}, \nu_{k}).
+    F(\mu_{k+1}, \nu_{k+1}) \leq F(\mu_{k+1}, \nu_{k}) \leq F(\mu_{k}, \nu_{k}),
 \end{equation}
-Therefore $(F())
-% Choosing a stationary point $(\mu^\star, \nu^\star)$, setting $\nu_z = \nu^\star$,
-% $\mu_z = \mu^\star$, and summing both equations over $k$, we obtain, using the
-% fact that decreasing
-% \begin{equation}
-%     F(\mu_{K+1}, \nu_{K+1}) + 
-%     F(\mu^\star, \nu_{K+1}) - 2 F^\star \leq\frac{1}{\sum_{k=1}^K \eta_k} \sum_{k=1}^K \eta_k 
-%     \big( F(\mu_{k+1}, \nu^\star)
-%      + F(\mu^\star, \nu_{k+1})  - 2 F^\star \big)
-%      \leq \frac{D_{\omega_\alpha}(\mu^\star, \mu_1)
-%      + D_{\omega_\beta}(\nu^\star, \nu_1)}{\sum_{k=1}^K \eta_k}
-% \end{equation}
-% Hence
-% \begin{equation}
-%     F(\mu_{K+1}, \nu^\star) + F(\mu^\star, \nu_{K+1}) \to 2 F^\star.
-% \end{equation}
+which ensures almost sure convergence of $F(\mu_k, \nu_k)$ to $F^\star$ using constant step-sizes (gradient is zero for $k \to \infty$).
 
+We further have, replacing $\mu_z = \mu^\star, \nu_z = \nu^\star$
+%
+\begin{equation}
+    F(\mu_{k+1}, \nu_{k+1}) 
+    - \frac{
+        \sum_{k=1}^k \eta_k (F(\mu_{k+1}, \nu^\star)
+    +F(\mu^\star, \nu_k)))
+    }
+    {\sum_{k=1}^k \eta_k}
+    \leq \frac{
+    D_{\omega_\alpha}(\mu^\star, \mu_1)
+    + D_{\omega_\beta}(\nu^\star, \nu_1)
+    }{\sum_{k=1}^K \eta_k}
+\end{equation}
 \printbibliography
 
 \end{document}
