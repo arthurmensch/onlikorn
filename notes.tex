@@ -284,10 +284,31 @@ We further have, replacing $\mu_z = \mu^\star, \nu_z = \nu^\star$
     \leq \frac{
     D_{\omega_\alpha}(\mu^\star, \mu_1)
     + D_{\omega_\beta}(\nu^\star, \nu_1)
-    }{\sum_{k=1}^K \eta_k}
+    }{2 \sum_{k=1}^K \eta_k}
 \end{equation}
 
 Contractance $F(\mu_{k+1}, \nu^\star) - F^\star$.
+
+I want to show the contractance of the soft c-tranform for the following metric
+\begin{equation}
+    \phi(f, g) = \min_{f^\star, g^\star \in \Ss} 
+    D_{\omega_\alpha}(f, g^\star)
+    +
+    D_{\omega_\beta}(f^\star, g).
+\end{equation}
+Namely, if 
+\begin{equation}
+    \phi(T(f,\alpha), T(g,\beta))
+    \leq \phi(f, g).
+\end{equation}
+It is then easy to show (convexity argument) that
+\begin{equation}
+    \phi(f_{t+1}, g_{t+1}) \leq
+    (1-\epsilon) 
+    \phi(f_t, g_t)
+    + \epsilon \phi(T(f_t,\alpha), T(g_t,\beta))
+    \leq \phi(f_t, g_t)
+\end{equation}
 \printbibliography
 
 \end{document}
