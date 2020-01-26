@@ -156,16 +156,16 @@ D_{w_{\alpha}}(\mu_t,\mu_{t+1})\le \eta^2 M^2
 Then we have:
 \begin{align*}
 \frac{1}{T}\sum_{t=1}^T \ps{\mu_t-\mu}{-\nabla_{\mu} \Ff(\mu_t,\nu_t)}&= \sum_{t=1}^T \frac{1}{\eta}[D_{w_{\alpha}}(\mu,\mu_{t})-D_{w_{\alpha}}(\mu,\mu_{t+1})+D_{w_{\alpha}}(\mu_t,\mu_{t+1})]\\
-\le \frac{D_{w_{\alpha}}(\mu,\mu_1)}{\eta}+\eta^2 M^2 T
+\le \frac{D_{w_{\alpha}}(\mu,\mu_1)}{\eta}+\eta M^2 T
 \end{align*}
 Similarly:
 \begin{align*}
 \frac{1}{T}\sum_{t=1}^T \ps{\nu_t-\nu}{-\nabla_{\nu} \Ff(\mu_t,\nu_t)}&
-\le \frac{D_{w_{\beta}}(\mu,\mu_1)}{\eta}+\eta^2 M^2 T
+\le \frac{D_{w_{\beta}}(\mu,\mu_1)}{\eta}+\eta M^2 T
 \end{align*}
 Summing up the two previous equations and replacing $(\mu,\nu)$ by $(\mu*,\nu*)$, we get:
 \begin{equation}
-\frac{1}{T}\sum_{t=1}^T \ps{\mu_t-\mu*}{-\nabla_{\mu} \Ff(\mu_t,\nu_t)} + \ps{\nu_t-\nu*}{-\nabla_{\nu} \Ff(\mu_t,\nu_t)}\le \frac{D_0}{\eta}+2\eta^2 M^2 T
+\frac{1}{T}\sum_{t=1}^T \ps{\mu_t-\mu*}{-\nabla_{\mu} \Ff(\mu_t,\nu_t)} + \ps{\nu_t-\nu*}{-\nabla_{\nu} \Ff(\mu_t,\nu_t)}\le \frac{D_0}{\eta}+2\eta M^2 T
 \end{equation}
 where $D_0=D_{w_{\alpha}}(\mu^*,\mu_1)+D_{w_{\beta}}(\nu^*,\nu_1)$.\\
 
@@ -253,9 +253,9 @@ replacing $\mu_y = \mu_{k}, \mu_x = \mu_{k+1}, \nu = \nu_k$, we obtain
 \begin{align}
     D_{\omega_\alpha}(\mu_z, \mu_k) - D_{\omega_\alpha}(\mu_z, \mu_{k+1}) 
     - D_{\omega_\alpha}(\mu_{k+1}, \mu_k) &=
-     \eta_k \dotp{\nabla_\mu F(\mu_k, \nu)}{\mu_{k+1} - \mu_z} \\
-    &\geq \eta_k (F(\mu_{k+1}, \nu) - F(\mu_z, \nu_k)))
-     - L \eta_k D_{\omega_\alpha}(\mu_{k+1},\mu_k).
+     \eta_k \dotp{\nabla_\mu F(\mu_k, \nu_k)}{\mu_{k+1} - \mu_z} \\
+    &\geq \eta_k (F(\mu_{k+1}, \nu_k) - F(\mu_z, \nu_k)))
+     - L \eta_k D_{\omega_\alpha}   (\mu_{k+1},\mu_k).
 \end{align}
 Hence, mimicking the derivation for $\nu$
 \begin{align}
@@ -275,17 +275,19 @@ which ensures almost sure convergence of $F(\mu_k, \nu_k)$ to $F^\star$ using co
 We further have, replacing $\mu_z = \mu^\star, \nu_z = \nu^\star$
 %
 \begin{equation}
-    F(\mu_{k+1}, \nu_{k+1}) 
+    F(\mu_{k+1}, \nu_{k+1}) - F^\star
     - \frac{
         \sum_{k=1}^k \eta_k (F(\mu_{k+1}, \nu^\star)
-    +F(\mu^\star, \nu_k)))
+    +F(\mu^\star, \nu_k) - 2 F^\star))
     }
-    {\sum_{k=1}^k \eta_k}
+    {2 \sum_{k=1}^k \eta_k}
     \leq \frac{
     D_{\omega_\alpha}(\mu^\star, \mu_1)
     + D_{\omega_\beta}(\nu^\star, \nu_1)
     }{\sum_{k=1}^K \eta_k}
 \end{equation}
+
+Contractance $F(\mu_{k+1}, \nu^\star) - F^\star$.
 \printbibliography
 
 \end{document}
