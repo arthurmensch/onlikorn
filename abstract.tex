@@ -1,11 +1,11 @@
-We introduce a stochastic method to estimate optimal transport distances between
-two continuous probability distributions. Our algorithm handles streams of
-points sampled from these distributions, that it uses to iteratively enrich a
+This paper introduces a new online estimator of optimal transport distances
+between two continuous probability distributions. Our algorithm handles sample
+streams from two distributions, that it uses to iteratively enrich a
 non-parametric representation of the transportation plan. This plan is naturally
-represented as a mixture of simple (e.g. Gaussian) functions, of increasing
+represented using a mixture of simple (e.g. Gaussian) functions, of increasing
 memory complexity. Compared to the classic Sinkhorn algorithm, our method
 handles new samples at each iteration, which permits a consistent estimation of
 the true regularized OT distance. We show how our algorithm can be casted as a
 block-convex mirror descent in the space of positive distributions; from this
 point of view, we analyse its convergence. We illustrate the performance of our
-estimation method compared to concurrent approaches.
+method compared to concurrent approaches.
