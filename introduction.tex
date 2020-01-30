@@ -3,15 +3,45 @@
 Optimal transport (OT) distances are fundamental in statistical learning, both
 as a tool for analyzing the convergence of various algorithms, and as a
 data-dependant term for estimating data density, e.g. using generative models.
-OT lifts a given distance over data points into a distance between distributions
-over the data space; as such, it allows to compare distributions with disjoint
-support. To alleviate the computational burden of optimal transport, that is
-cubic in the number of points, it is common to regularize the linear problem
-that defines it, using an entropic barrier term. This approach, that has been
-rediscovered many times in the previous thirty years, allows to approximate OT
-distances using a matrix balancing algorithm, amenable to GPU computations.
+OT lifts a given distance over data points living in space $\Xx$ into a distance
+between probability distributions over the data space $\Xx$ $\Pp(\Xx)$; as such,
+it allows to compare distributions with disjoint support. To alleviate the
+computational burden of optimal transport, that is cubic in the number of
+points, it is common to regularize the linear problem that defines it, using an
+entropic barrier term. This approach, that has been rediscovered many times in
+the previous thirty years, allows to approximate OT distances using a matrix
+balancing algorithm, amenable to GPU computations.
 
-The Sinkhorn algorithm was introduced in the discrete setting, i.e. when both
+The Sinkhorn algorithm was introduced in a discrete setting, i.e. when both
 distributions to compare are a set of realizations. The so-called Sinkhorn
 distances between empirical distributions indeed form an estimate of the OT
-distance between the true distributions from which the samples are drawn.
+distance between the true distributions from which the samples are drawn. This
+approach estimates the OT distance in two distinct phases: we draw samples and
+evaluate a pairwise distance matrix in the first phase; we balance this distance
+matrix using Sinkhorn-Knopp iterations in the second phase, thereby obtaining a
+transportation plan and distance.
+
+In this paper, we show how mingling together these two phases can be beneficial
+to obtain fast estimation.  Our approach relies on three observations. First,
+Sinkhorn iterations can be rewritten as a block convex mirror descent on the
+space of positive distributions. This formulation is valid in the discrete and
+continuous setting. Second, we can modify these iterations to rely on
+realizations $\hat \alpha_t$, $\hat \beta_t$ of the two distributions $\alpha$
+and $\beta$, renewed at each iteration $t$. Finally, we can represent the
+iterates produced by such approximations in a space of mixtures of simple
+functions. Those iterates are a simple transformation of the potentials in the
+Sinkhorn optimization problem.
+
+\paragraph{Contribution.}We propose the following material.
+\begin{itemize}
+    \item We introduce a new \textit{online Sinkhorn} algorithm. It produces a sequence of
+    estimates $(\hat w_t)_t \in \RR$ and of transportation plans $\hat \pi_t \in
+    \Pp(\Xx \times \Xx)$, using two stream of renewed samples $\hat \alpha_t =
+    \sum_{i=1}^n \delta_{x^t_i}$, $\hat \beta_t = \sum_{i=1}^n \delta_{y^t_i}$,
+    where $x^t_i$ and $y^t_i$ are sampled from $\alpha$ and $\beta$.
+    \item We show that those estimations are consistent, in the sense that $\hat
+    w_t \to \Ww_{C,\varepsilon}(\alpha, \beta)$, and $\hat \pi_t \to \pi^\star$.
+    \item We empirically demonstrate that our algorithm permits a faster
+    estimation of optimal transportation distances for discrete distributions,
+    and a convincing estimation of OT distances between \textit{continous} distributions.
+\end{itemize}
