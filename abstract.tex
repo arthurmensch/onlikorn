@@ -1,11 +1,15 @@
-This paper introduces a new online estimator of optimal transport distances
-between two continuous probability distributions. Our algorithm handles sample
-streams from two distributions, that it uses to iteratively enrich a
-non-parametric representation of the transportation plan. This plan is naturally
-represented using a mixture of simple (e.g. Gaussian) functions, of increasing
-memory complexity. Compared to the classic Sinkhorn algorithm, our method
-handles new samples at each iteration, which permits a consistent estimation of
-the true regularized OT distance. We show how our algorithm can be casted as a
-block-convex mirror descent in the space of positive distributions; from this
-point of view, we analyse its convergence. We illustrate the performance of our
-method compared to concurrent approaches.
+Optimal Transport (OT) distances are now routinely used as loss functions in ML tasks. Dealing with such losses between arbitrary (i.e. not necessarily discrete) probability distributions is however still mostly an open problem.
+%
+This paper introduces a new online estimator of optimal transport (OT) distances between two such arbitrary distributions. 
+%
+Our algorithm solves an entropic regularization of the OT problem and only uses samples streams from the distributions as inputs. 
+%
+This stream is used to iteratively enrich a non-parametric representation of the transportation plan. 
+%
+This plan is naturally represented using a mixture of simple kernel functions and has an increasing memory complexity. 
+%
+Compared to the classic Sinkhorn algorithm, our method leverages new samples at each iteration, which enables a consistent estimation of the true regularized OT distance. 
+%
+We show that our algorithm can be casted as a block-convex mirror descent in the space of positive distributions, which in turns enables a theoretical analysis of its convergence. 
+%
+We illustrate numerically the performance of our method in comparison with concurrent approaches.
