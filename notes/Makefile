@@ -6,17 +6,15 @@ LATEXMK=latexmk
 LATEXMKOPT=-pdf -view=none
 CONTINUOUS=-pvc
 
-MAIN=article
+MAIN=notes
 
-FIGURES := $(shell find figures -type f)
-TEX := $(shell find . -name "*.tex")
 BIB=biblio.bib
 
-SOURCES=$(FIGURES) $(BIB) $(TEX)
+SOURCES=$(MAIN).tex commands.tex $(BIB)
 
-all: article.pdf
+all: $(MAIN).pdf
 
-$(MAIN).pdf $(MAIN).bcf: $(MAIN).tex $(SOURCES) figures
+$(MAIN).pdf $(MAIN).bcf: $(MAIN).tex $(SOURCES)
 	$(LATEXMK) $(LATEXMKOPT) -pdflatex="$(LATEX) $(LATEXOPT) %O %S" $(MAIN)
 
 $(MAIN)_embed.pdf: $(MAIN).pdf
@@ -32,12 +30,6 @@ clean:
 	rm -f $(MAIN)-blx.bib
 	rm -f $(MAIN)_embed.pdf
 	rm -rf hal hal.zip
-	rm -rf *.ptc
-	rm -rf supp.zip
-	rm -rf paper.pdf
-	rm -rf supp/supp.pdf
-	rm -rf paper_.pdf
-	rm -rf code.zip
 
 extracted.bib: $(MAIN).pdf
 	biber -g tools/biber.conf --output-format=bibtex $(MAIN).bcf -O $@
@@ -45,22 +37,14 @@ extracted.bib: $(MAIN).pdf
 hal.zip:
 	bash tools/make_hal.sh
 
-# paper.pdf supp/supp.pdf: $(MAIN).pdf
-# 	pdftk $(MAIN).pdf cat 1-10 output paper_.pdf
-# 	pdftk paper_.pdf update_info paper.info output paper.pdf
-# 	rm paper_.pdf
-# 	pdftk $(MAIN).pdf cat 11-end output supp/supp.pdf
+$(MAIN)_main.pdf $(MAIN)_supp.pdf: $(MAIN)_embed.pdf
+	pdftk $(MAIN)_embed.pdf cat 1-10 output $(MAIN)_main.pdf
+	pdftk $(MAIN)_embed.pdf cat 11-end output $(MAIN)_supp.pdf
 
 watch: $(MAIN).tex $(SOURCES)
 	$(LATEXMK) $(LATEXMKOPT) -pdflatex="$(LATEX) $(LATEXOPT) %O %S" $(MAIN)
 
-split: paper.pdf supp/supp.pdf
-
-supp.zip: supp/supp.pdf
-	cd supp && zip -r -D ../supp.zip *
-
-
 count: 
 	texcount $(MAIN).tex
 
-.PHONY: all clean watch count split
+.PHONY: all clean watch count

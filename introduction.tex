@@ -1,0 +1,17 @@
+\section{Introduction}
+
+Optimal transport (OT) distances are fundamental in statistical learning, both
+as a tool for analyzing the convergence of various algorithms, and as a
+data-dependant term for estimating data density, e.g. using generative models.
+OT lifts a given distance over data points into a distance between distributions
+over the data space; as such, it allows to compare distributions with disjoint
+support. To alleviate the computational burden of optimal transport, that is
+cubic in the number of points, it is common to regularize the linear problem
+that defines it, using an entropic barrier term. This approach, that has been
+rediscovered many times in the previous thirty years, allows to approximate OT
+distances using a matrix balancing algorithm, amenable to GPU computations.
+
+The Sinkhorn algorithm was introduced in the discrete setting, i.e. when both
+distributions to compare are a set of realizations. The so-called Sinkhorn
+distances between empirical distributions indeed form an estimate of the OT
+distance between the true distributions from which the samples are drawn.

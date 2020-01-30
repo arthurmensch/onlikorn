@@ -1,22 +1,23 @@
-%!TEX root = article.tex
+%!TEX root = notes.tex
 %%%%%%%%%%%%%%%%%%%%%% INCLUDES %%%%%%%%%%%%%%%%
 % Copyright (c) 2007 Gabriel Peyre
 % Modfied 2018 Arthur Mensch
+
+\usepackage{fullpage}
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-
- 
-
+\usepackage[OT1]{fontenc}
+\usepackage{lmodern}
 % Bold math
 \usepackage{bm}
 \usepackage{dsfont}
 \usepackage{csquotes}
+% spacings
+\renewcommand{\baselinestretch}{1}
 
 % Micro-typing
 \usepackage{xspace}
 \usepackage{nicefrac}
 \usepackage[super]{nth}
-\usepackage{microtype}
 
 \usepackage[english]{babel}
 
@@ -25,14 +26,14 @@
 
 % Tables
 \usepackage{booktabs}
-\usepackage{makecell}
-
 
 \usepackage{graphicx}
-\usepackage{subcaption}
 
 % For colors
 \usepackage{xcolor}
+
+% Compact itemize
+\usepackage{enumitem}
 
 % Algorithm
 \usepackage{algorithm}
@@ -42,15 +43,23 @@
 \algnewcommand\algorithmicinput{\textbf{Input: }}
 \algnewcommand\Input{\State \algorithmicinput}
 
-% Hyper reference
-\usepackage[colorlinks=true,bookmarks=true,linkcolor=blue,
-urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
 
-\usepackage{url}
+% Hyper reference
+\usepackage{hyperref}
+\newcommand\myshade{50}
+\colorlet{mylinkcolor}{blue}
+\colorlet{mycitecolor}{green}
+\colorlet{myurlcolor}{red}
+\hypersetup{
+  linkcolor  = mylinkcolor!\myshade!black,
+  citecolor  = mycitecolor!\myshade!black,
+  urlcolor   = myurlcolor!\myshade!black,
+  colorlinks = true,
+}
 
 \makeatletter
 \addto\extrasenglish{%
-\renewcommand{\appendixautorefname}{App.}%
+\renewcommand{\appendixautorefname}{Appendix}%
 \renewcommand{\figureautorefname}{Fig.}%
 \renewcommand{\tableautorefname}{Table}%
 \renewcommand{\sectionautorefname}{\S\@gobble}%
@@ -59,37 +68,15 @@ urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
 }
 \makeatother
 
-% \makeatletter
-% \renewbibmacro*{textcite}{%
-%   \iffieldequals{namehash}{\cbx@lasthash}
-%     {\usebibmacro{cite:comp}}
-%     {\usebibmacro{cite:dump}%
-%      \iffirstcitekey
-%        {}
-%        {\textcitedelim}%
-%      \usebibmacro{cite:init}%
-%      \ifnameundef{labelname}
-%        {\printfield[citetitle]{labeltitle}}
-%        {\printnames{labelname}}%
-%      \mkbibsuperscript{%
-%      \usebibmacro{cite:comp}}%
-%      \stepcounter{textcitecount}%
-%      \savefield{namehash}{\cbx@lasthash}}}
+% Bibliography
+\usepackage[backend=biber,
+    style=authoryear-icomp,%
+    natbib=true,%
+    url=false,isbn=false,doi=false,%
+    date=year,
+    maxcitenames=2,
+    maxbibnames=10]{biblatex}
 
-% \DeclareCiteCommand{\textcite}
-%   {\let\cbx@tempa=\empty
-%    \undef\cbx@lasthash
-%    \iffieldundef{prenote}
-%      {}
-%      {\BibliographyWarning{Ignoring prenote argument}}%
-%    \iffieldundef{postnote}
-%      {}
-%      {\BibliographyWarning{Ignoring postnote argument}}}
-%   {\usebibmacro{citeindex}%
-%    \usebibmacro{textcite}}
-%   {}
-%   {}
-% \makeatother
 
 % Float parameters, for more full pages.
 % From Gaël Varoquaux
@@ -124,18 +111,10 @@ urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
 \usepackage{mathtools} % for psmallmatrix
 \mathtoolsset{showonlyrefs}
 
-% Algorithm
-%\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
-%\algrenewcommand{\algorithmiccomment}[1]{$\vartriangleright$ #1}
-%\algrenewcommand{\algorithmicreturn}{\textbf{Return: }}
-%\algnewcommand\algorithmicinput{\textbf{Input: }}
-%\algnewcommand\Input{\State \algorithmicinput}
-
-\usepackage{footnote} % for footnotes
-\makesavenoteenv{algorithm}
-
 \usepackage{amsthm}
+\newcommand{\definitionautorefname}{Def.}%
+\newcommand{\propositionautorefname}{Prop.}%
+\newcommand{\corollaryautorefname}{Corr.}%
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
@@ -146,20 +125,29 @@ urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
 \newtheorem{example}{Example}
 \newtheorem{assumption}{Assumption}
 
-\newtheorem{subassumptioninner}{Assumption}
-\newenvironment{subassumption}[1]{%
-  \renewcommand\thesubassumptioninner{#1}%
-  \subassumptioninner
-}{\endsubassumptioninner}
+% Title
+\makeatletter
+\providecommand{\@maketitle}{}
+\renewcommand{\@maketitle}{%
+  \vbox{%
+    \hsize\textwidth
+    \linewidth\hsize
+    \vskip 0.1in
+    \centering
+    {\LARGE\bf \@title\par}
+      \def\And{%
+        \end{tabular}\hfil\linebreak[0]\hfil%
+        \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\ignorespaces%
+      }
+      \def\AND{%
+        \end{tabular}\hfil\linebreak[4]\hfil%
+        \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\ignorespaces%
+      }
+      \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\@author\end{tabular}%
+    \vskip 0.3in \@minus 0.1in
+  }
+}
 
-\newcommand{\definitionautorefname}{Def.}%
-\newcommand{\propositionautorefname}{Prop.}%
-\newcommand{\corollaryautorefname}{Corollary}%
-\newcommand{\assumptionautorefname}{Ass.}%
-\newcommand{\subassumptioninnerautorefname}{Ass.}%
-\newcommand{\algorithmautorefname}{Alg.}%
-\newcommand{\lemmaautorefname}{Lemma}
-\newcommand{\remarkautorefname}{Rmk.}
-
+\makeatother
 
 \input{commands.tex}

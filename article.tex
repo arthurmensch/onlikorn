@@ -1,0 +1,75 @@
+\documentclass{article}
+
+\input{preamble.tex}
+
+% \renewcommand*{\bibfont}{\small}
+\graphicspath{{./figures/}}
+
+\usepackage{icml2020}
+
+% If accepted, instead use the following line for the camera-ready submission:
+%\usepackage[accepted]{icml2020}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Onlikorn: optimal transportation distances through recurrent sampling}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{Onlikorn: optimal transportation distances through recurrent sampling}
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2020
+% package.
+
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Arthur Mensch}{ens}
+\icmlauthor{Gabriel Peyré}{ens}
+\end{icmlauthorlist}
+
+\icmlaffiliation{ens}{ENS, DMA, Paris, France}
+
+\icmlcorrespondingauthor{Arthur Mensch}{arthur.mensch@m4x.org}
+
+% You may provide any keywords that you
+% find helpful for describing your paper; these are used to populate
+% the "keywords" metadata in the PDF but will not be shown in the document
+\icmlkeywords{Non-convex optimisation, game theory, GANs}
+
+\vskip 0.3in
+]
+
+\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+% \printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
+
+\begin{abstract}
+  \input{abstract.tex}
+\end{abstract}
+
+\input{introduction.tex}
+
+% \section{Acknowledgements}
+% This work was supported by the European Research Council (ERC project NORIA).
+
+\pagebreak
+
+\bibliography{biblio}
+\bibliographystyle{icml2020}
+
+\onecolumn
+
+\appendix
+
+\end{document}

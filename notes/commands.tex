@@ -1,3 +1,4 @@
+%!TEX root = notes.tex
 %% Symboles avec double lignes
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\CC}{\mathbb{C}}
@@ -43,15 +44,17 @@
 \newcommand{\Xx}{\mathcal{X}}
 \newcommand{\Yy}{\mathcal{Y}}
 \newcommand{\Zz}{\mathcal{Z}}
+\newcommand{\var}{\text{var}}
+\newcommand{\KL}{\text{KL}}
 
 % matrices
 \newcommand{\A}{\bm{A}}
 \newcommand{\B}{\bm{B}}
-% \newcommand{\C}{\bm{C}}
+\newcommand{\C}{\bm{C}}
 \newcommand{\D}{\bm{D}}
-%\newcommand{\E}{\bm{E}}
+\newcommand{\E}{\bm{E}}
 \newcommand{\F}{\bm{F}}
-% \newcommand{\G}{\bm{G}}
+\newcommand{\G}{\bm{G}}
 \newcommand{\Hz}{\bm{H}}
 \newcommand{\I}{\bm{I}}
 \newcommand{\J}{\bm{J}}
@@ -65,7 +68,7 @@
 \newcommand{\R}{\bm{R}}
 \newcommand{\Sz}{\bm{S}}
 \newcommand{\T}{\bm{T}}
-% \newcommand{\U}{\bm{U}}
+\newcommand{\U}{\bm{U}}
 \newcommand{\V}{\bm{V}}
 \newcommand{\W}{\bm{W}}
 \newcommand{\X}{\bm{X}}
@@ -76,9 +79,9 @@
 \renewcommand{\a}{\bm{a}}
 \renewcommand{\b}{\bm{b}}
 \renewcommand{\c}{\bm{c}}
-\renewcommand{\d}{\bm{d}}
+\renewcommand{\d}{\textrm{d}}
 \newcommand{\e}{\bm{e}}
-% \newcommand{\f}{\bm{f}}
+\newcommand{\f}{\bm{f}}
 \newcommand{\g}{\bm{g}}
 \newcommand{\h}{\bm{h}}
 \renewcommand{\i}{\bm{i}}
@@ -99,12 +102,6 @@
 \newcommand{\x}{\bm{x}}
 \newcommand{\y}{\bm{y}}
 \newcommand{\z}{\bm{z}}
-
-%commands added by Carles
-\newcommand{\xx}{\mathbf{x}}
-\newcommand{\yy}{\mathbf{y}}
-\newcommand{\zz}{\mathbf{z}}
-\newcommand{\hmu}{\hat{\mu}}
 
 % greek
 \newcommand{\al}{\alpha}
@@ -134,13 +131,7 @@
 \newcommand{\tga}{\tilde \ga}
 \newcommand{\tf}{\wt{f}}
 
-\newcommand{\Simplex}{\triangle}
-\newcommand{\errnash}{\textrm{Err}_N}
 
-% full, alternate, random
-\newcommand{\full}{\textnormal{full}}
-\newcommand{\cyc}{\textnormal{cyc}}
-\newcommand{\rdm}{\textnormal{rand}}
 
 %%%%%%%%%%%%%%% MATHS OPERATORS %%%%%%%%%%%%%%%%%
 \newcommand{\ins}[1]{\mathrm{#1}}
@@ -156,8 +147,6 @@
 \DeclareMathOperator{\Sign}{Sign}
 \let\Im\relax
 \DeclareMathOperator{\Im}{Im}
-% \let\span\relax
-%\DeclareMathOperator{\span}{span}
 \DeclareMathOperator{\Corr}{Corr}
 \DeclareMathOperator{\sign}{sign}
 \DeclareMathOperator{\supp}{supp}
@@ -174,7 +163,6 @@
 \DeclareMathOperator{\interop}{int}
 
 \newcommand{\ps}[2]{\langle #1,#2\rangle}
-\newcommand{\E}[1]{\mathbb{E}\left[#1\right] }
 
 % regularity
 \newcommand{\Calpha}{\mathrm{C}^\al}
@@ -256,15 +244,7 @@
 
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
-\DeclareMathOperator*{\interi}{int}
 % \DeclareMathOperator*{\sup}{sup}
-
-\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
-\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
-\newcommand*\red{\color{red}}
-\newcommand{\vardbtilde}[1]{\tilde{\raisebox{0pt}[0.85\height]{$\tilde{#1}$}}}
-\usepackage{accents}
-\newcommand{\dbtilde}[1]{\accentset{\approx}{#1}}
 
 %% parenthesis
 \newcommand{\pa}[1]{\left( #1 \right)}
@@ -300,10 +280,6 @@
 \newcommand{\qobjq}[1]{\quad \text{#1} \quad}
 \newcommand{\qqobjqq}[1]{\quad \text{#1} \quad}
 
-\newcommand{\carles}[1]{{\color{orange}[CD: #1]}}
-\newcommand{\arthur}[1]{{\color{blue}[AM: #1]}}
-\newcommand{\joan}[1]{{\color{green}[JB: #1]}}
-\newcommand{\samy}[1]{{\color{red}[SJ: #1]}}
 
 
 % Restrictions
