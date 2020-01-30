@@ -293,10 +293,7 @@ Now note that
      D_{\omega_\alpha}(T(g_k, \beta), f^\star)
      + D_{\omega_\beta}(T(f_{k+1}, \alpha), g^\star)
 \end{equation}
-
-Contractance $F(\mu_{k+1}, \nu^\star) - F^\star$.
-
-I want to show the contractance of the soft c-tranform for the following metric
+We may show the contractance of the soft c-tranform for the following metric
 \begin{equation}
     \phi(f, g) = \min_{f^\star, g^\star \in \Ss} 
     D_{\omega_\alpha}(f, f^\star)
@@ -323,6 +320,155 @@ What can be shown is unfortunately
     +
     D_{\omega_\beta}(g^\star, g).
 \end{equation}
+
+
+
+\paragraph{Simultaneous gradient descent.} We have
+
+\begin{align}
+    \eta_k (F(\mu_k,\nu_{k+1}) - F(\mu_k, \nu_z)) &\leq 
+    D_{\omega_\beta}(\nu_z, \nu_k) - D_{\omega_\beta}(\nu_z, \nu_{k+1}) 
+    - (1 - \eta_k L) D_{\omega_\beta}(\nu_{k+1}, \nu_k). \\
+    \eta_k (F(\mu_{k+1},\nu_k) - F(\mu_z, \nu_k)) &\leq 
+    D_{\omega_\alpha}(\mu_z, \mu_k) - D_{\omega_\alpha}(\mu_z, \mu_{k+1}) 
+    - (1 - \eta_k L) D_{\omega_\alpha}(\mu_{k+1}, \mu_k)
+\end{align}
+Therefore
+\begin{align}
+    \eta_k \big(F(\mu_k,\nu_{k+1}) + F(\mu_{k+1},\nu_k) - 2 F(\mu_z, \nu_z) \\
+     - ( F(\mu_k, \nu_z) + F(\mu_z, \nu_k) - 2 F(\mu_z, \nu_z)\big)
+      &\leq 
+    D_{\omega_\beta}(\nu_z, \nu_k) + D_{\omega_\alpha}(\mu_z, \mu_k) \\
+    &\phantom{=}- \big(D_{\omega_\alpha}(\mu_z, \mu_{k+1})
+     + D_{\omega_\beta}(\nu_z, \nu_{k+1})\big) \\
+     &\phantom{=}
+    - (1 - \eta_k) 
+    \big(D_{\omega_\beta}(\nu_{k+1}, \nu_k) + D_{\omega_\alpha}(\mu_{k+1}, \mu_k)\big)
+\end{align}
+Now we note that, for all $(\mu^\star, \nu^\star) \in \Ss$, $(\mu,\nu)$
+\begin{align}
+    D_{\omega_\beta}
+    (\nu^\star, \nu) + D_{\omega_\alpha}(\mu^\star, \mu)
+    &= \KL(\alpha|\mu) + \KL(\beta|\nu) 
+    + \big(\dotp{\mu \otimes\nu^\star}{\exp(-C)}
+     +\dotp{\mu^\star \otimes\nu}{\exp(-C)} - 2\big) - F(\mu^\star, \nu^\star) \\
+     &= F(\mu, \nu^\star) + F(\mu^\star, \nu) - 2 F(\mu^\star, \nu^\star)
+\end{align}
+We take $(\mu_z,\nu_z) = (\mu^\star,\nu^\star)$, that optimizes
+\begin{align}
+    G(\mu_k, \nu_k) &\triangleq \min_{\mu^\star, \nu^\star} D_{\omega_\beta}
+    (\nu^\star, \nu_k) + D_{\omega_\alpha}(\mu^\star, \mu_k) \\
+    &= \KL(\alpha|\mu) + \KL(\beta|\nu) 
+    + 2 \big( \sqrt{\dotp{\mu^\star \otimes \nu}{\exp(-C)} 
+    \dotp{\mu \otimes \nu^\star}{\exp(-C)}} - 1) - 
+    F^\star
+\end{align}
+Then
+\begin{align}
+    \eta_k \big(F(\mu_k,\nu_{k+1}) + F(\mu_{k+1},\nu_k) - 2 F^\star)
+     &\leq 
+    (1 + \eta_k) G(\mu_k, \nu_k) - G(\mu_{k+1}, \nu_{k+1}) \\
+    &\phantom{=}
+    - (1 - \eta_k) 
+    \big(D_{\omega_\beta}(\nu_{k+1}, \nu_k) + D_{\omega_\alpha}(\mu_{k+1}, \mu_k)\big)    
+\end{align}
+Note that, using $\sqrt{ab} \geq \frac{a + b}{2}$ 
+\begin{align}
+    F(\mu_k,\nu_{k+1}) + F(\mu_{k+1},\nu_k) - G(\mu_k, \nu_k) - 2 F^\star
+    &\geq \KL(\alpha|\mu_{k+1}) + \KL(\beta|\nu_{k+1}) - F^\star
+        + 2 u_k,
+\end{align}
+where 
+\begin{align}
+    u_k &\triangleq
+    \frac{
+        \dotp{\mu_k \otimes (\nu_{k+1} - \nu^\star)}{\exp(-C)}
+        + \dotp{(\mu_{k+1} - \mu^\star)\otimes \nu_k}{\exp(-C)}
+        }{2} \\
+\end{align}
+% Now let's observe that the harmonic mean is always smaller than the arithmetic mean:
+% \begin{equation}
+%     \frac{\d \mu_{k+1}}{\d \alpha}
+%      = \frac{1}{(1- \eta_k) \frac{1}{\frac{\d \mu_{k}}{\d \alpha}}
+%      + \eta_k \frac{1}{\frac{\d \alpha \exp(T(g_k, \beta))}{\d \alpha}}}
+%      \leq (1-\eta_k) \frac{\d \mu_{k}}{\d \alpha}
+%      + \eta_k \frac{\d \alpha \exp(T(g_k, \beta))}{\d \alpha},
+% \end{equation}
+% hence
+% \begin{align}
+%     \mu_{k+1} &\leq (1 -\eta_k) \mu_k + \eta_k T(\nu_k, \beta) \\
+%     \nu_{k+1} &\leq (1 -\eta_k) \nu_k + \eta_k T(\mu_k, \beta)
+% \end{align}
+% Therefore, from the definition of the $c$-transform
+% \begin{align}
+%     u_{k+1} \leq (1 - \eta_k) u_k
+% \end{align}
+% Finally
+% \begin{equation}
+%     \eta_k (\KL(\alpha|\mu_{k+1}) + \KL(\beta|\nu_{k+1}) - F^\star) \leq 
+%     G(\mu_k, \nu_k) - G(\mu_{k+1},\nu_{k+1}) - 2 \eta_k \mu_k,
+% \end{equation}
+% hence convergence !
+% % Similarly,
+% % \begin{align}
+% %     (v_{k+1} + 1)^2 &\leq  (1-\eta_k) v_k + \eta_k^2 
+% %     \sqrt{
+% %             \dotp{\mu^\star \otimes T(\mu_k,\alpha)}{\exp(-C)}
+% %             \dotp{T(\nu_k,\beta) \otimes \nu^\star}{\exp(-C)}
+% %             } \\
+% %         &+ \eta_k (1-\eta_k) \big(
+% %             \sqrt{
+% %         \dotp{T(\nu^\star,\beta) \otimes T(\mu_k,\beta)}{\exp(-C)}
+% %         \dotp{\mu_k \otimes \nu^\star}{\exp(-C)} 
+% %             }\\ 
+% %         &+ \sqrt{
+% %             \dotp{\mu^\star \otimes \nu_k}{\exp(-C)}
+% %             \dotp{T(\nu_k,\beta) \otimes T(\mu^\star, \alpha)}{\exp(-C)}
+% %         } - 1
+% %         ) \\
+% %         &= (1 - \eta_k(1 - \sqrt{\rho})) (v_k + 1)^2,
+% % \end{align}
+% % as we know that 
+% % \begin{equation}
+% %     \dotp{\alpha \otimes \beta}{\exp(T(f,\alpha) \oplus T(g,\beta) - C)} \leq
+% %     \rho 
+% %     \dotp{\alpha \otimes \beta}{f \oplus g - C)}
+% \end{equation}
+
+\section{A simple proof in the non-noisy case}
+
+Set $\epsilon = 1$, alternated version
+\begin{equation}
+    f_{k+1} =  - \log (\exp(-f_k) (1 - \eta_k) + \eta_k \exp(-T(g_k, \beta))) \\ 
+    g_{k+1} =  - \log (\exp(-g_k) (1 - \eta_k) + \eta_k \exp(-T(f_{k+1}, \alpha)))
+\end{equation}
+Let $(f, g)$ be a set of solution. There exists $x \in \Xx$ such that $\Vert
+f_{k+1} - f^\star \Vert_{\var} = | f_{k+1}(x) - f^\star(x) |$. For this~$x$,
+using the convexity of $- \log(x)$ (the mirror map...)
+\begin{align}
+    \Vert f_{k+1} - f^\star \Vert_{\var}
+    &=
+    - | \log((1 - \eta_k) \exp(-f_k(x)) + \eta_k \exp(-T(g_k, \beta)(x)) - f^\star(x)) | \\
+    &\leq (1 - \eta_k) | f_k(x) - f^\star(x)| + \eta_k | T(g_k,\beta)(x) - f^\star(x)| \\
+    &\leq (1 - \eta_k) \Vert f_k - f^\star \Vert_{\var} + \eta_k
+    \Vert T(g_k,\beta) - T(g^\star, \beta) \Vert_{\var} \\
+    &\leq (1 - \eta_k) \Vert f_k - f^\star \Vert_{\var}
+     + \eta_k \kappa \Vert g_k - g^\star \Vert_{\var}
+\end{align}
+Similarly
+\begin{align}
+    \Vert g_{k+1} - f^\star \Vert_{\var} \leq
+    (1 - \eta_k) \Vert g_k - g^\star \Vert_{\var} +
+     \eta_k \kappa \Vert f_k - f^\star \Vert_{\var}
+\end{align}
+Therefore
+\begin{align}
+    \Vert g_{k+1} - f^\star \Vert_{\var} + \Vert f_{k+1} - f^\star \Vert_{\var} \leq
+    (1 - \eta_k ( 1 - \kappa)) ( \Vert f_k - f^\star \Vert_{\var} 
+     + \Vert g_k - g^\star \Vert_{\var} ),
+\end{align}
+and we still have convergence as long as $\sum \eta_k = \infty$. With noise
+
 \printbibliography
 
 \end{document}
