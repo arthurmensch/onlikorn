@@ -1,3 +1,4 @@
+%!TEX root = article.tex
 \section{Introduction}
 
 Optimal transport (OT) distances are fundamental in statistical learning, both
@@ -20,6 +21,13 @@ approach estimates the OT distance in two distinct phases: we draw samples and
 evaluate a pairwise distance matrix in the first phase; we balance this distance
 matrix using Sinkhorn-Knopp iterations in the second phase, thereby obtaining a
 transportation plan and distance.
+
+% Sinkhorn scales in $\Oo(n^2)$, therefore it is appealing to compute
+% estimations with small sample sizes potentially repeated. Unfortunately, there
+% is a bias. We show how to adress this bias. We then propose an algorithm that
+% computes a OT estimator online.
+
+
 
 In this paper, we show how mingling together these two phases can be beneficial
 to quickly estimate OT distances.  Our approach relies on three observations. First,
@@ -46,3 +54,5 @@ material.
     estimation of optimal transportation distances for discrete distributions,
     and a convincing estimation of OT distances between \textit{continous} distributions.
 \end{itemize}
+
+% We show how to estimate the true regularized optimal transport distance through repeated experiments. 
