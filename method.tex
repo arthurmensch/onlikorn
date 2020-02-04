@@ -1,2 +1,48 @@
 %!TEX root = article.tex
 
+\section{OT distances from sample streams}
+
+We introduce a novel understanding of the Sinkhorn algorithm in this section,
+whence we derive average and online adaptations. We wish to construct an
+estimator of $\Ww(\alpha,\beta)$ from multiple sets of samples $(\hat
+\alpha_n^t)_t$ and $(\hat \beta_n^t)_t$. This estimator should successively use
+these samples to enrich a representation of the solution of \eqref{eq:dual},
+that may be arbitrary complex. $(\hat \alpha_n^t)_t$ and $(\hat \beta_n^t)_t$
+may be seen as mini-batches within a training procedure, or as a temporal stream.
+
+\subsection{Unbiased Sinkhorn iterations}
+
+\subsection{Offline mini-batch averaging}
+
+\subsection{Online estimation of Sinkhorn distances}
+
+\subsection{Bias-variance trade-offs}
+
+\section{Analysis}
+
+\subsection{Offline Sinkhorn averaging}
+
+Estimator $\dotp{\alpha}{-\log \EE[\exp(-\hat f)]} + \dotp{\beta}{-\log \EE[\exp(-\hat g)]}$
+
+- estimator properties
+
+\subsection{Online Sinkhorn convergence}
+
+- slowed down Sinkhorn convergence
+
+- Random iterated functions
+
+- Combining both
+
+\subsection{Non-convex mirror descent}
+
+\section{Experiments}
+
+\subsection{Offline distance averaging}
+
+\subsection{Online distance computations}
+
+\subsection{Training generative models}
+
+
+
