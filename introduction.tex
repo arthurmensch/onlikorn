@@ -1,33 +1,59 @@
 %!TEX root = article.tex
 \section{Introduction}
 
-Optimal transport (OT) distances are fundamental in statistical learning, both
-as a tool for analyzing the convergence of various algorithms, and as a
-data-dependant term for estimating data density, e.g. using generative models.
+Optimal transport (OT) distances are fundamental in statistical learning, both as a tool for analyzing the convergence of various algorithms, and as a data-dependent term for estimating data densities, e.g. using generative models.
+%
 OT lifts a given distance over data points living in space $\Xx$ into a distance
-between probability distributions over the data space $\Xx$ $\Pp(\Xx)$; as such,
-it allows to compare distributions with disjoint support. To alleviate the
-computational burden of optimal transport, that is cubic in the number of
-points, it is common to regularize the linear problem that defines it, using an
-entropic barrier term. This approach, that has been rediscovered many times in
-the previous thirty years, allows to approximate OT distances using a matrix
-balancing algorithm, amenable to GPU computations.
+on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$.
+%
+This distance has many favorable geometrical properties, in particular it allows one to compare distributions having disjoint supports. 
+% 
+Computing OT distance is usually performed by sampling the input distributions and solving a discretized linear program. This approach is numerically costly and is difficult to apply in typical ML scenario where data points are streamded in an online manner.   
+%
+The goal of this paper is to develop an efficient online method which addresses these issues by adapting Sikhorn's algorithm to an online setting.
+  
+%%%%
+\paragraph{OT in Machine Learning.}
 
-The Sinkhorn algorithm was introduced in a discrete setting, i.e. when both
-distributions to compare are a set of realizations. The so-called Sinkhorn
-distances between empirical distributions indeed form an estimate of the OT
-distance between the true distributions from which the samples are drawn. This
-approach estimates the OT distance in two distinct phases: we draw samples and
-evaluate a pairwise distance matrix in the first phase; we balance this distance
-matrix using Sinkhorn-Knopp iterations in the second phase, thereby obtaining a
+Typical applications.
+
+Computation bottleneck.
+
+Statistical bottleneck.
+
+
+%%%%
+\paragraph{Regularized OT.}
+
+To alleviate both these computational and statistical burdens, it is common to regularize the associated linear program.
+%
+The most successful approach in this direction is to use an entropic barrier penalty. 
+%
+When dealing with discrete distributions, this regularization can be solved numerically using Sinkhorn-Knopp's matrix balancing algorithm~\cite{}.
+%
+This approach was pushed forward for ML applications by Cuturi~\cite{} who emphasized both its parallelism and its smoothing effects, which makes this approach a perfect fit when training ML model through back-propagation. CITE
+%
+This method estimates the OT distance in two distinct phases: one draws samples and evaluate a pairwise distance matrix in the first phase ; one balances this distance matrix using Sinkhorn-Knopp iterations in the second phase, thereby obtaining a discretized 
 transportation plan and distance.
+
+Extending OT computations to arbitrary distributions (possibly having continuous densities) without relying on such a fixed a priori sampling is an emerging topic of interest. A special case is the semi-discrete setting, where one of the two distributions is discrete. Without regularization, over an Euclidean space, this can be solved efficiently using the computation of Voronoi-like diagrams~\cite{}. This idea can be extended to entropic-regularized OT~\cite{}, which can be coupled with stochastic optimization method. 
+
+When dealing with arbitrary continuous densities, which are accessed through a stream of random sample, the challenge is to approximate  the (continuous) dual variables using parametric functions. For application to generative model fitting, one can use deep networks, which leads to alternative formulation to Generative Adversarial Networks (GANs)~\cite{}. 
+%
+\todo{CITER d'autre papiers similaire d'approximation continues?}
+%
+There is however no theoretical guarantees for this type of dual approximations, due to the non-convexity of the resulting optimization problem. The only mathematically rigorous approach in this direction is when using expansions in a reproducing Hilbert space~\cite{}. Our paper proposes a different takes on this question, using a alternative type of expansions, which corresponds to an extension of the discrete Sinkhorn algorithm to the continuous online setting.
+
+
+% The Sinkhorn algorithm was introduced in a discrete setting, i.e. when both distributions to compare are a set of realizations. The so-called Sinkhorn distances between empirical distributions indeed form an estimate of the OT distance between the true distributions from which the samples are drawn. 
 
 % Sinkhorn scales in $\Oo(n^2)$, therefore it is appealing to compute
 % estimations with small sample sizes potentially repeated. Unfortunately, there
 % is a bias. We show how to adress this bias. We then propose an algorithm that
 % computes a OT estimator online.
 
-
+%%%%%
+\paragraph{Contribution.}
 
 In this paper, we show how mingling together these two phases can be beneficial
 to quickly estimate OT distances.  Our approach relies on three observations. First,
@@ -40,16 +66,16 @@ iterates produced by such approximations in a space of mixtures of simple
 functions. Those iterates are a simple transformation of the potentials in the
 Sinkhorn optimization problem.
 
-\paragraph{Contribution.}These observations allows us to propose the following
+These observations allows us to propose the following
 material.
 \begin{itemize}
     \item We introduce a new \textit{online Sinkhorn} algorithm. It produces a sequence of
     estimates $(\hat w_t)_t \in \RR$ and of transportation plans $\hat \pi_t \in
-    \Pp(\Xx \times \Xx)$, using two stream of renewed samples $\hat \alpha_t =
+    \Pp(\Xx \times \Xx)$ \todo{need to introduce this}, using two stream of renewed samples $\hat \alpha_t =
     \sum_{i=1}^n \delta_{x^t_i}$, $\hat \beta_t = \sum_{i=1}^n \delta_{y^t_i}$,
     where $x^t_i$ and $y^t_i$ are sampled from $\alpha$ and $\beta$.
     \item We show that those estimations are consistent, in the sense that $\hat
-    w_t \to \Ww_{C,\varepsilon}(\alpha, \beta)$, and $\hat \pi_t \to \pi^\star$.
+    w_t \to \Ww_{C,\varepsilon}(\alpha, \beta)$, and $\hat \pi_t \to \pi^\star$ \todo{weak convergence?}.
     \item We empirically demonstrate that our algorithm permits a faster
     estimation of optimal transportation distances for discrete distributions,
     and a convincing estimation of OT distances between \textit{continous} distributions.
