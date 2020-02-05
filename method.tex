@@ -2,47 +2,60 @@
 
 \section{OT distances from sample streams}
 
-We introduce a novel understanding of the Sinkhorn algorithm in this section,
-whence we derive average and online adaptations. We wish to construct an
-estimator of $\Ww(\alpha,\beta)$ from multiple sets of samples $(\hat
-\alpha_n^t)_t$ and $(\hat \beta_n^t)_t$. This estimator should successively use
-these samples to enrich a representation of the solution of \eqref{eq:dual},
-that may be arbitrary complex. $(\hat \alpha_n^t)_t$ and $(\hat \beta_n^t)_t$
-may be seen as mini-batches within a training procedure, or as a temporal stream.
+We introduce an online adapation of the Sinkhorn algorithm in this section. We
+wish to construct an estimator of $\Ww(\alpha,\beta)$ from multiple sets of
+samples $(\hat \alpha_n^t)_t$ and $(\hat \beta_n^t)_t$. This estimator should
+successively use these samples to enrich a representation of the solution of
+\eqref{eq:dual}, that may be arbitrary complex. $(\hat \alpha_n^t)_t$ and $(\hat
+\beta_n^t)_t$ may be seen as mini-batches within a training procedure, or as a
+temporal stream. We first introduce the intuitions behind the construction of
+our algorithm, before casting it as a non-convex stochastic mirror descent
+problem.
 
-\subsection{Unbiased Sinkhorn iterations}
+\subsection{Online Sinkhorn iterations}
 
-\subsection{Offline mini-batch averaging}
+From \eqref{eq:dual}, along the Sinkhorn optimisation trajectory, the potential $f_t$ is always the negative logarithm an
+infinite mixture of kernel functions $\kappa_y: x \to \exp(-\frac{C(\cdot, y)}{\varepsilon})$:
+\begin{equation}
+    \exp(-\frac{f_t(\cdot)}{\varepsilon}) = 
+    \int_{y \in \Yy} \exp(g_t(y))  \exp(-\frac{C(\cdot, y)}{\epsilon}) \d \beta(y),
+\end{equation}
+and similarly for $g_t$. Our algorithm will construct a sequence $(\hat f_t,
+\hat g_t)$ that behaves like $g_t$ and $f_t$ in the long run. The strong
+structural property of the continuous potentials suggests to express $\exp(-\frac{\hat f_t(\cdot)}{\varepsilon})$ as a
+finite mixture of basic kernels. That is, $\hat f_t$ and $\hat g_t$ are continuous
+functions constructed from the weights $(p_i)_{i=1}^{n_t}, (q_i)_{i=1}^{n_t} > 0$ and positions
+$(y_i)_{i=1}^{n_t} \in~\Yy, (x_i)_{i=1}^{n_t} \in~\Xx$:
+\begin{align}
+    \hat f_t(\cdot) &= - \log \sum_{i=1}^{n_t} 
+    p_i \exp(-\frac{C(\cdot, y_i)}{\varepsilon}) \\
+    \hat g_t(\cdot) &= - \log \sum_{i=1}^{n_t} 
+    q_i \exp(-\frac{C(x_i, \cdot)}{\varepsilon}).
+\end{align}
 
-\subsection{Online estimation of Sinkhorn distances}
 
-\subsection{Bias-variance trade-offs}
 
-\section{Analysis}
+% Estimator $\dotp{\alpha}{-\log \EE[\exp(-\hat f)]} + \dotp{\beta}{-\log \EE[\exp(-\hat g)]}$
 
-\subsection{Offline Sinkhorn averaging}
+% - estimator properties
 
-Estimator $\dotp{\alpha}{-\log \EE[\exp(-\hat f)]} + \dotp{\beta}{-\log \EE[\exp(-\hat g)]}$
+% \subsection{Online Sinkhorn convergence}
 
-- estimator properties
+% - slowed down Sinkhorn convergence
 
-\subsection{Online Sinkhorn convergence}
+% - Random iterated functions
 
-- slowed down Sinkhorn convergence
+% - Combining both
 
-- Random iterated functions
+% \subsection{Non-convex mirror descent}
 
-- Combining both
+% \section{Experiments}
 
-\subsection{Non-convex mirror descent}
+% \subsection{Offline distance averaging}
 
-\section{Experiments}
+% \subsection{Online distance computations}
 
-\subsection{Offline distance averaging}
-
-\subsection{Online distance computations}
-
-\subsection{Training generative models}
+% \subsection{Training generative models}
 
 
 

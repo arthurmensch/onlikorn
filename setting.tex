@@ -52,17 +52,15 @@ The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximizat
 \end{equation}
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x) \eqdef f(x)+g(y)-C(x,y)$.
 %
-We refer to~\cite{peyre2019computational} for more details on this problem.
-
-The major interest in this regularization is because it can be efficiently solved by alternated maximization on~\eqref{eq:dual}. This method, at iteration $t$
+% We refer to~\cite{peyre2019computational} for more details on this problem.
+The major interest of problem \eqref{eq:dual} is that it can be solved by alternated maximization. Namely, at iteration $t$, it is enough to update
 \begin{gather}\label{eq:sinkhorn}
     f_{t+1}(\cdot) = - T_{C,\varepsilon}(g_t, \beta), \:
     g_{t+1}(\cdot) = - T_{C,\varepsilon}(f_{t+1}, \alpha), \\
     \text{where} \quad 
     T_C(h, \mu) \triangleq \int_{y \in \Xx} \exp(\frac{h(y) - C(\cdot, y)}{\varepsilon})\d \mu(y),
 \end{gather}
-\todo{j'ai suppose $C=C^\top$ symetrique pour simplifier}
-The operation $h \mapsto T_C(h, \mu)$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}, we thus refers to it as a \textit{soft C-transform}. 
+The operation $h \mapsto T_C(h, \mu)$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
 %
 The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are continuous functions. 
 %
@@ -88,15 +86,18 @@ More precisely, when dealing with empirical distibutions $\hat \alpha = \sum_{i=
 	\qandq
 	v_{t+1} = \frac{1}{ K^\top (u_{t+1} \odot b) }
 \end{equation*}
-where $K=(e^{-\frac{C(x_i,y_i)}{\epsilon}})_{i,j=1}^n \in \RR^{n \times n}$. 
-The algorithm thus operates in two phases: a first one, during which the kernel matrix $K$ is computed (with a cost in $O(n^2)$), and a second one, during which it is balanced (each iteration having a cost in $O(n^2)$).
+where $K=(e^{-\frac{C(x_i,y_i)}{\epsilon}})_{i,j=1}^n \in \RR^{n \times n}$. The
+algorithm thus operates in two phases: a first one, during which the kernel
+matrix $K$ is computed (with a cost in $O(n^2 d)$, where $d$ is the dimension of
+$\Xx$), and a second one, during which it is balanced (each iteration having a
+cost in $O(n^2)$).
 
 The goal of this paper is to go beyond this discrete setting, and handle generic distributions (possibly having continuous densities). In particular, our numerical scheme manipulates continuous functions though an adapted parameterization which is automatically refined during the iterations.
 
 % Regularized optimal transport is elegantly written in functional spaces but the iterations \eqref{eq:sinkhorn} transfers into code only for discrete distributions  $\hat \alpha = \sum_{i=1}^n a_i \delta_{x_i}$ and $\hat \beta = \sum_{i=1}^n a_i \delta_{x_i}$. In this case, they correspond to the well-known Sinkhorn-Knopp algorithm for balancing the matrix $\exp(\frac{-C}{\varepsilon})$. 
 
 
-\paragraph{Sample complexity results.} \todo{I already say this quickly in the intro, check if we remove this section} Fortunately, the OT and Sinkhorn distances between two arbitrary distributions
+\paragraph{Sample complexity results.} Fortunately, the OT and Sinkhorn distances between two arbitrary distributions
 $\alpha$ and $\beta$ can be approximated by the distance between discrete
 realizations $\hat \alpha_n = \frac{1}{n} \sum_i \delta_{x_i}$, 
 $\hat \beta_n = \frac{1}{n} \sum_i \delta_{y_i}$, where $(x_i)_i$
@@ -105,20 +106,18 @@ $\Ww_{C, (\varepsilon)}(\hat \alpha_n, \hat \beta_n) \to \Ww_{C, (\varepsilon)}(
 with a convergence rate in $\Oo(n^{-1/2})$ for Sinkhorn distances and $\Oo(n^{-1/d})$ for
 Wasserstein distances.
 
-\paragraph{Bias in distance estimation.} Although consistency is a reassuring result, the
-sample complexity of transport in high dimensions with low regularization
-remains high. For computational reasons, we cannot choose $n$ to be much more
-than $10^5$, which is not sufficient to ensure that $\Ww_{C,\varepsilon}(\alpha,
-\beta)$ is $\varepsilon$-close to $\Ww_C$ in the typical case where $d=?$ and
-$\varepsilon = ?$.
-
-We may wonder wether we can improve the estimation of $\Ww_{C}(\alpha,\beta)$
-using several sets of samples $(\hat \alpha_n^t)_t$ and $(\hat \beta_n^t)$. Those should be of 
-reasonable size to allow Sinkhorn estimation, and may for example come from a temporal stream. \cite{}\cite{} have proposed to use 
-the Monte-Carlo estimate $\hat \Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T
-\Ww(\hat \alpha_n^t, \beta \alpha_n^t)$. However, this yields a wrong estimation
-as the distance $\Ww(\hat \alpha_n, \hat \beta_n)$ between discrete realizations
-is a \textit{biased} estimator of $\Ww(\alpha, \beta)$:
+\paragraph{Bias in distance estimation.} Although consistency is a reassuring
+result, the sample complexity of transport in high dimensions with low
+regularization remains high. For computational reasons, we cannot choose $n$ to
+be much more than $10^5$. We may wonder wether we can improve the estimation of
+$\Ww_{C}(\alpha,\beta)$ using several sets of samples $(\hat \alpha_n^t)_t$ and
+$(\hat \beta_n^t)$. Those should be of reasonable size to allow Sinkhorn
+estimation, and may for example come from a temporal stream.
+\cite{2018-Genevay-aistats} proposes to use the Monte-Carlo estimate $\hat
+\Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_n^t, \beta
+\alpha_n^t)$. However, this yields a wrong estimation as the distance $\Ww(\hat
+\alpha_n, \hat \beta_n)$ between discrete realizations is a \textit{biased}
+estimator of $\Ww(\alpha, \beta)$:
 \begin{equation}
     \Ww(\alpha, \beta) \neq 
     \EE_{\hat \alpha_n \sim \alpha, \hat \beta_n \sim \beta} [\Ww(\hat \alpha_n, \hat \beta_n)].
@@ -132,7 +131,8 @@ in computing the displacement gradient $\delta_\alpha \Ww(\alpha, \beta) \in
 \Pp(\Xx)$, in order to train $\theta$ by backpropagation. This gradient turns
 out to be the spatial derivative $\nabla_x f^\star$ of the solution of
 \eqref{eq:dual}. Yet, similarly, estimating this gradient through sampling is
-biased, as $f^\star(\alpha, \beta) \neq \EE_{\hat \alpha_n \sim \alpha, \hat
-\beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat \beta_n)]$.
+also biased, as $f^\star(\alpha, \beta) \neq \EE_{\hat \alpha_n \sim \alpha,
+\hat \beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat \beta_n)]$.  Our approach
+should help reducing this bias.
 
 \hfill

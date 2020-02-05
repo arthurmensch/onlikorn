@@ -4,76 +4,113 @@
 Optimal transport (OT) distances are fundamental in statistical learning, both as a tool for analyzing the convergence of various algorithms~\cite{canas2012learning,dalalyan2019user}, and as a data-dependent term for tasks as diverse as supervised learning~\cite{frogner2015learning}, unsupervised generative modeling~\cite{arjovsky2017wgan} or domain adaptation~\cite{courty2016optimal}.
 %
 OT lifts a given distance over data points living in space $\Xx$ into a distance
-on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$, and we refer to the monograph~\cite{santambrogio2015optimal} for a detailed mathematical treatement.
+on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$. We refer to the monograph~\cite{santambrogio2015optimal} for a detailed mathematical treatement.
 %
-This distance has many favorable geometrical properties, in particular it allows one to compare distributions having disjoint supports. 
+This distance has many favorable geometrical properties. In particular it allows one to compare distributions having disjoint supports. 
 % 
-Computing OT distance is usually performed by sampling the input distributions and solving a discretized linear program, the so-called Kantorovitch formuation~\cite{Kantorovich42}. This approach is numerically costly and is difficult to apply in typical ML scenario where data points are streamed in an online manner.   
-%
-The goal of this paper is to develop an efficient online method which addresses these issues by adapting Sikhorn's algorithm to an online setting.
+Computing OT distance is usually performed by sampling once from the input
+distributions and solving a discrete linear program (LP), due to~\citet{Kantorovich42}. This approach is numerically costly and
+statistically unefficient \cite{weed2019sharp}. The optimisation problem depends
+on a fixed sampling of points from the data. It is therefore not adapted to
+machine learning setting where data is resampled continuously (e.g. in GANs), or
+accessed in an online manner. The goal of this paper is to develop an efficient
+online method able to estimate OT distances between continuous distributions ---
+we will use a stream of data to refine the optimal transport solution. For this, we will
+adapt the celebrated Sinkhorn algorithm to an online setting.
   
 
 
 %%%%
 \paragraph{Regularized OT.}
 
-To alleviate both these computational and statistical burdens, it is common to regularize the associated linear program.
+To alleviate both the computational and statistical burdens of OT, it is common
+to regularize the Kantorovich LP.
 %
 The most successful approach in this direction is to use an entropic barrier penalty. 
 %
-When dealing with discrete distributions, this regularization can be solved numerically using Sinkhorn-Knopp's matrix balancing algorithm~\cite{Sinkhorn64,sinkhorn1967concerning}.
+When dealing with discrete distributions, this yields a problem that can be solved
+numerically using Sinkhorn-Knopp's matrix balancing
+algorithm~\cite{Sinkhorn64,sinkhorn1967concerning}.
 %
-This approach was pushed forward for ML applications by Cuturi~\cite{cuturi2013sinkhorn} who emphasized both its parallelism and its smoothing effects, which makes this approach a perfect fit when training ML model through back-propagation.
+This approach was pushed forward for ML applications
+by \citet{cuturi2013sinkhorn}. Sinkhorn distances are smooth and amenable to GPU computations, which makes them suitable as a loss function in model training.
 %
-This method estimates the OT distance in two distinct phases: one draws samples and evaluate a pairwise distance matrix in the first phase ; one balances this distance matrix using Sinkhorn-Knopp iterations in the second phase, thereby obtaining a discretized 
-transportation plan and distance.
+Sinkhorn distances are $\epsilon$-accurate approximation of OT in
+$O(n^2/\epsilon^3)$ for a number $n$ of samples~\cite{altschuler2017near} (in
+contrast to the $O(n^3)$ complexity for an exact solution). Moreover, the optimal
+value of the regularized problem does not suffers from the curse of
+dimensionality~\cite{2019-Genevay-aistats}, since the average error using $n$
+random samples decay likes $O(\epsilon^{-d/2}/\sqrt{n})$, in sharp contrast with
+the slow $O(1/n^{1/d})$ error decay of OT~\cite{weed2019sharp}. This regularized
+value can be de-biased to define the so-called Sinkhorn
+divergence~\cite{2019-Feydy-aistats}.  
 
-This approach offers many advantage over the direct solution of a linear solver. First it computes an $\epsilon$-accurate approximation of OT in $O(n^2/\epsilon^3)$ for a number $n$ of samples~\cite{altschuler2017near} (in contrast to the $O(n^3)$ complexity for an exact solution). Second, the optimal value of the regularized problem does not suffers from the curse of dimensionality~\cite{2019-Genevay-aistats}, since the average error using $n$ random samples decay likes $O(\epsilon^{-d/2}/\sqrt{n})$, in sharp contrast with the slow $O(1/n^{1/d})$ error decay of OT~\cite{weed2019sharp}. This regularized value can be de-biased to define the so-called Sinkhorn divergence~\cite{2019-Feydy-aistats}.  
+\paragraph{Handling streams of samples.} The Sinkhorn algorithm operates in two distinct phases: draw samples and
+evaluate a pairwise distance matrix in the first phase ; balance this distance
+matrix using Sinkhorn-Knopp iterations in the second phase, to obtain distance
+between the discrete distributions. This two-step approach does not estimate the
+true OT distance between distributions, and cannot handle samples provided as a
+stream, renewed at each training iteration. A cheap fix is to use Sinkhorn over
+mini-batches (see for instance~\citet{2018-Genevay-aistats} for an application to
+GANs). Yet this introduce a strong estimation bias, especially in
+high dimension (see~\citet{fatras2019learning} for a mathematical analysis). 
 
-This two step (sample and then compute) approach is however not able to introduce exact OT loss in learning problem, which often rather operate by accessing new samples during the iterations. A cheap fix is to use Sinkhorn over mini-batches (see for instance~\cite{2018-Genevay-aistats} for an application to GANs), but this introduce a strong bias which can be unacceptable, especially in high dimension (see~\cite{fatras2019learning} for a mathematical analysis). 
+\paragraph{Continuous OT.} Extending OT computations to arbitrary distributions
+(possibly having continuous densities) without relying on a fixed a priori
+sampling is an emerging topic of interest. A special case is the semi-discrete
+setting, where one of the two distributions is discrete. Without regularization,
+over an Euclidean space, this can be solved efficiently using the computation of
+Voronoi-like diagrams~\cite{merigot2011multiscale}. This idea can be extended to
+entropic-regularized OT~\cite{cuturi2018semidual}, and can also be coupled with
+stochastic optimization method~\cite{2016-genevay-nips} to tackle high
+dimensional problems (see also~\citet{staib2017parallel} for an extension to Wasserstein barycenters). 
 
-Extending OT computations to arbitrary distributions (possibly having continuous densities) without relying on such a fixed a priori sampling is an emerging topic of interest. A special case is the semi-discrete setting, where one of the two distributions is discrete. Without regularization, over an Euclidean space, this can be solved efficiently using the computation of Voronoi-like diagrams~\cite{merigot2011multiscale}. This idea can be extended to entropic-regularized OT~\cite{cuturi2018semidual}, and can also be coupled with stochastic optimization method~\cite{2016-genevay-nips} to tackle high dimensional problems (see also~\cite{staib2017parallel} for an extension to the computation of Wasserstein barycenters). 
+When dealing with arbitrary continuous densities, which are accessed through a
+stream of random sample, the challenge is to approximate  the (continuous) dual
+variables using parametric or non-parametric functions. For application to
+generative model fitting, one can use deep networks, which leads to alternative
+formulation to Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan}
+(see also~\citet{seguy2018large} for an extension to the estimation of
+transportation maps). There is however no theoretical guarantees for this type
+of dual approximations, due to the non-convexity of the resulting optimization
+problem. The only mathematically rigorous approach in this direction is to use
+reproducing Hilbert space representations of
+potentials~\cite{2016-genevay-nips}. However, this approach relies on generic functional
+approximations, that results in very slow convergence.
 
-When dealing with arbitrary continuous densities, which are accessed through a stream of random sample, the challenge is to approximate  the (continuous) dual variables using parametric functions. For application to generative model fitting, one can use deep networks, which leads to alternative formulation to Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan} (see also~\cite{seguy2018large} for an extension to the estimation of transportation maps). 
-%
-There is however no theoretical guarantees for this type of dual approximations, due to the non-convexity of the resulting optimization problem. The only mathematically rigorous approach in this direction is when using expansions in a reproducing Hilbert space~\cite{2016-genevay-nips}. Our paper proposes a different takes on this question, using an alternative type of expansions, which corresponds to an extension of the discrete Sinkhorn algorithm to the continuous online setting.
 
-
-% The Sinkhorn algorithm was introduced in a discrete setting, i.e. when both distributions to compare are a set of realizations. The so-called Sinkhorn distances between empirical distributions indeed form an estimate of the OT distance between the true distributions from which the samples are drawn. 
-
-% Sinkhorn scales in $\Oo(n^2)$, therefore it is appealing to compute
-% estimations with small sample sizes potentially repeated. Unfortunately, there
-% is a bias. We show how to adress this bias. We then propose an algorithm that
-% computes a OT estimator online.
-
-%%%%%
 \paragraph{Contribution.}
 
-In this paper, we show how mingling together the sampling and the optimization phases can be beneficial
-to quickly estimate OT distances for ML problems.  
-%
-Our approach relies on three observations. First,
-Sinkhorn iterations can be rewritten as a block convex mirror descent on the
-space of positive distributions. This formulation is valid in the discrete and
-continuous setting. Second, we can modify these iterations to rely on
-realizations $\hat \alpha_t$, $\hat \beta_t$ of the input distributions $\alpha$
-and $\beta$, renewed at each iteration $t$. Finally, we can represent the
-iterates produced by such approximations in a space of mixtures of simple
-functions. Those iterates are a simple transformation of the potentials in the
-Sinkhorn optimization problem.
-%
-This corresponds to the following contributions:
-\begin{itemize}
-    \item We introduce a new \textit{online Sinkhorn} algorithm. It produces a sequence of
-    estimates $(\hat w_t)_t \in \RR$ and of transportation plans $\hat \pi_t \in
-    \Pp(\Xx \times \Xx)$ \todo{need to introduce this}, using two stream of renewed samples $\hat \alpha_t =
-    \sum_{i=1}^n \delta_{x^t_i}$, $\hat \beta_t = \sum_{i=1}^n \delta_{y^t_i}$,
-    where $x^t_i$ and $y^t_i$ are sampled from $\alpha$ and $\beta$.
-    \item We show that those estimations are consistent, in the sense that $\hat
-    w_t \to \Ww_{C,\varepsilon}(\alpha, \beta)$, and $\hat \pi_t \to \pi^\star$ \todo{weak convergence?}.
-    \item We empirically demonstrate that our algorithm permits a faster
-    estimation of optimal transportation distances for discrete distributions,
-    and a convincing estimation of OT distances between \textit{continous} distributions.
-\end{itemize}
+Our paper proposes a new take on continuous OT estimation. We construct a
+non-parametric representation of the potentials by directly using an extension
+of the discrete Sinkhorn algorithm to the continuous setting.
 
-% We show how to estimate the true regularized optimal transport distance through repeated experiments. 
+
+% In this paper, we show how mingling together the sampling and the optimization phases can be beneficial
+% to quickly estimate OT distances for ML problems.  
+% %
+% Our approach relies on three observations. First,
+% Sinkhorn iterations can be rewritten as a block convex mirror descent on the
+% space of positive distributions. This formulation is valid in the discrete and
+% continuous setting. Second, we can modify these iterations to rely on
+% realizations $\hat \alpha_t$, $\hat \beta_t$ of the input distributions $\alpha$
+% and $\beta$, renewed at each iteration $t$. Finally, we can represent the
+% iterates produced by such approximations in a space of mixtures of simple
+% functions. Those iterates are a simple transformation of the potentials in the
+% Sinkhorn optimization problem.
+% %
+% This corresponds to the following contributions:
+% \begin{itemize}
+%     \item We introduce a new \textit{online Sinkhorn} algorithm. It produces a sequence of
+%     estimates $(\hat w_t)_t \in \RR$ and of transportation plans $\hat \pi_t \in
+%     \Pp(\Xx \times \Xx)$ \todo{need to introduce this}, using two stream of renewed samples $\hat \alpha_t =
+%     \sum_{i=1}^n \delta_{x^t_i}$, $\hat \beta_t = \sum_{i=1}^n \delta_{y^t_i}$,
+%     where $x^t_i$ and $y^t_i$ are sampled from $\alpha$ and $\beta$.
+%     \item We show that those estimations are consistent, in the sense that $\hat
+%     w_t \to \Ww_{C,\varepsilon}(\alpha, \beta)$, and $\hat \pi_t \to \pi^\star$ \todo{weak convergence?}.
+%     \item We empirically demonstrate that our algorithm permits a faster
+%     estimation of optimal transportation distances for discrete distributions,
+%     and a convincing estimation of OT distances between \textit{continous} distributions.
+% \end{itemize}
+
+% % We show how to estimate the true regularized optimal transport distance through repeated experiments. 
