@@ -15,7 +15,7 @@ distributions over the space $\Xx$.
 %
 
 The Wasserstein cost between two probability distribution $(\alpha, \beta) \in \Pp(\Xx)$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
-linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$)
+linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$):
 \begin{equation}\label{eq:wass}
     \Ww_C(\alpha, \beta) \eqdef 
     \min_{\pi \in \Pp(\Xx^2)}
@@ -53,23 +53,24 @@ The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximizat
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x) \eqdef f(x)+g(y)-C(x,y)$.
 %
 % We refer to~\cite{peyre2019computational} for more details on this problem.
-The major interest of problem \eqref{eq:dual} is that it can be solved by alternated maximization. Namely, at iteration $t$, it is enough to update
-\begin{gather}\label{eq:sinkhorn}
-    f_{t+1}(\cdot) = - T_{C,\varepsilon}(g_t, \beta), \:
+The major interest of problem \eqref{eq:dual} is that it can be solved by alternated maximization, which can be done in closed form. At iteration $t$, the iterations are simply
+\begin{align}
+    &f_{t+1}(\cdot) = - T_{C,\varepsilon}(g_t, \beta), \:
     g_{t+1}(\cdot) = - T_{C,\varepsilon}(f_{t+1}, \alpha), \\
-    \text{where} \quad 
-    T_C(h, \mu) \triangleq \int_{y \in \Xx} \exp(\frac{h(y) - C(\cdot, y)}{\varepsilon})\d \mu(y),
-\end{gather}
-The operation $h \mapsto T_C(h, \mu)$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
+    &\text{with} \:
+    T_{C,\varepsilon}(h, \mu) \triangleq 
+    \int_{y \in \Xx}\!\! \exp(\frac{h(y) - C(\cdot, y)}{\varepsilon})\d \mu(y).\label{eq:sinkhorn}
+\end{align}
+The operation $h \mapsto T_{C,\varepsilon}(h, \mu)$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
 %
 The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are continuous functions. 
 %
 % In the discrete setting, iterations 
 
-It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$ to a
-solution $(f^\star, g^\star)$ of \eqref{eq:dual}, where $\norm{f
-}_{\text{var}} = \max_x f(x) - \min_x f(x)$ is the so-called variation norm.
-% 
+It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx),
+\norm{\cdot}_{\text{var}})$ to a solution $(f^\star, g^\star)$ of
+\eqref{eq:dual}, where $\norm{f}_{\text{var}} = \max_x f(x) - \min_x f(x)$ is
+the so-called variation norm. This is true for any initialisation $f_0$.% 
 Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
 $T_{C}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$~\cite{peyre2019computational}.
 
@@ -94,10 +95,9 @@ cost in $O(n^2)$).
 
 The goal of this paper is to go beyond this discrete setting, and handle generic distributions (possibly having continuous densities). In particular, our numerical scheme manipulates continuous functions though an adapted parameterization which is automatically refined during the iterations.
 
-% Regularized optimal transport is elegantly written in functional spaces but the iterations \eqref{eq:sinkhorn} transfers into code only for discrete distributions  $\hat \alpha = \sum_{i=1}^n a_i \delta_{x_i}$ and $\hat \beta = \sum_{i=1}^n a_i \delta_{x_i}$. In this case, they correspond to the well-known Sinkhorn-Knopp algorithm for balancing the matrix $\exp(\frac{-C}{\varepsilon})$. 
+\subsection{Consistency and bias}
 
-
-\paragraph{Sample complexity results.} Fortunately, the OT and Sinkhorn distances between two arbitrary distributions
+\paragraph{Sample complexity results.} The OT and Sinkhorn distances between two arbitrary distributions
 $\alpha$ and $\beta$ can be approximated by the distance between discrete
 realizations $\hat \alpha_n = \frac{1}{n} \sum_i \delta_{x_i}$, 
 $\hat \beta_n = \frac{1}{n} \sum_i \delta_{y_i}$, where $(x_i)_i$

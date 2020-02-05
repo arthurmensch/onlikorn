@@ -41,19 +41,17 @@ contrast to the $O(n^3)$ complexity for an exact solution). Moreover, the optima
 value of the regularized problem does not suffers from the curse of
 dimensionality~\cite{2019-Genevay-aistats}, since the average error using $n$
 random samples decay likes $O(\epsilon^{-d/2}/\sqrt{n})$, in sharp contrast with
-the slow $O(1/n^{1/d})$ error decay of OT~\cite{weed2019sharp}. This regularized
-value can be de-biased to define the so-called Sinkhorn
-divergence~\cite{2019-Feydy-aistats}.  
+the slow $O(1/n^{1/d})$ error decay of OT~\cite{weed2019sharp}. The regularized
+value can be sharpened by entropic debiasing~\cite{2019-Feydy-aistats}.  
 
-\paragraph{Handling streams of samples.} The Sinkhorn algorithm operates in two distinct phases: draw samples and
-evaluate a pairwise distance matrix in the first phase ; balance this distance
-matrix using Sinkhorn-Knopp iterations in the second phase, to obtain distance
-between the discrete distributions. This two-step approach does not estimate the
-true OT distance between distributions, and cannot handle samples provided as a
-stream, renewed at each training iteration. A cheap fix is to use Sinkhorn over
-mini-batches (see for instance~\citet{2018-Genevay-aistats} for an application to
-GANs). Yet this introduce a strong estimation bias, especially in
-high dimension (see~\citet{fatras2019learning} for a mathematical analysis). 
+\paragraph{Handling streams of samples.} The Sinkhorn algorithm operates in two
+distinct phases: draw samples from the distributions and evaluate a pairwise distance matrix in the
+first phase ; balance this distance matrix using Sinkhorn-Knopp iterations in
+the second phase. This two-step approach does not estimate the true regularized OT distance, and cannot handle samples provided as a stream, e.g. renewed
+at each training iteration of an outer algorithm. A cheap fix is to use Sinkhorn over mini-batches
+(see for instance~\citet{2018-Genevay-aistats} for an application to GANs). Yet
+this introduces a strong estimation bias, especially in high dimension
+---see~\citet{fatras2019learning} for a mathematical analysis. 
 
 \paragraph{Continuous OT.} Extending OT computations to arbitrary distributions
 (possibly having continuous densities) without relying on a fixed a priori
@@ -67,7 +65,7 @@ dimensional problems (see also~\citet{staib2017parallel} for an extension to Was
 
 When dealing with arbitrary continuous densities, which are accessed through a
 stream of random sample, the challenge is to approximate  the (continuous) dual
-variables using parametric or non-parametric functions. For application to
+variables of the regularized Kantorovich LP using parametric or non-parametric functions. For application to
 generative model fitting, one can use deep networks, which leads to alternative
 formulation to Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan}
 (see also~\citet{seguy2018large} for an extension to the estimation of
@@ -82,8 +80,7 @@ approximations, that results in very slow convergence.
 \paragraph{Contribution.}
 
 Our paper proposes a new take on continuous OT estimation. We construct a
-non-parametric representation of the potentials by directly using an extension
-of the discrete Sinkhorn algorithm to the continuous setting.
+non-parametric representation of the potentials by extending the discrete Sinkhorn algorithm to the continuous setting.
 
 
 % In this paper, we show how mingling together the sampling and the optimization phases can be beneficial
