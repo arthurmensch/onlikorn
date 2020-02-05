@@ -49,19 +49,20 @@ There is however no theoretical guarantees for this type of dual approximations,
 %%%%%
 \paragraph{Contribution.}
 
-In this paper, we show how mingling together these two phases can be beneficial
-to quickly estimate OT distances.  Our approach relies on three observations. First,
+In this paper, we show how mingling together the sampling and the optimization phases can be beneficial
+to quickly estimate OT distances for ML problems.  
+%
+Our approach relies on three observations. First,
 Sinkhorn iterations can be rewritten as a block convex mirror descent on the
 space of positive distributions. This formulation is valid in the discrete and
 continuous setting. Second, we can modify these iterations to rely on
-realizations $\hat \alpha_t$, $\hat \beta_t$ of the two distributions $\alpha$
+realizations $\hat \alpha_t$, $\hat \beta_t$ of the input distributions $\alpha$
 and $\beta$, renewed at each iteration $t$. Finally, we can represent the
 iterates produced by such approximations in a space of mixtures of simple
 functions. Those iterates are a simple transformation of the potentials in the
 Sinkhorn optimization problem.
-
-These observations allows us to propose the following
-material.
+%
+This corresponds to the following contributions:
 \begin{itemize}
     \item We introduce a new \textit{online Sinkhorn} algorithm. It produces a sequence of
     estimates $(\hat w_t)_t \in \RR$ and of transportation plans $\hat \pi_t \in

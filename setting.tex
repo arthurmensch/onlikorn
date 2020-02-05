@@ -5,71 +5,98 @@ We recall the definition of optimal transport distances between arbitrary distri
 
 \subsection{Optimal transport distances and algorithms}
 
-\paragraph{Wasserstein distances.} We consider a complete space $\Xx$, equiped
-with a distance function $C: \Xx \to \Xx \to \RR$. Optimal transport lifts this
-\textit{ground metric} distance into a distance between probability
-distributions over the space $\Xx$. The Wasserstein distance between $\alpha$
-and $\beta$ is defined as the minimal cost required to move each element of mass
-of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
-linear problem (LP) over the set of transportation plans
+\paragraph{Wasserstein distances.} 
+
+We consider a complete metric space $(\Xx,d)$ (assumed to be compact for simplicity), equipped
+with a continuous cost function $C(x,y) \in \RR$ for any $(x,y) \in \Xx^2$ (assumed to be symmetric also for simplicity). 
+%
+Optimal transport lifts this \textit{ground cost} into a cost between probability
+distributions over the space $\Xx$. 
+%
+
+The Wasserstein cost between two probability distribution $(\alpha, \beta) \in \Pp(\Xx)$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
+linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$)
 \begin{equation}\label{eq:wass}
-    \Ww_C(\alpha, \beta) = 
-    \min_{
-    \substack{
-        \pi \in \PP(\Xx \times \Xx)\\\pi_1 = \alpha, \pi_2 = \beta
-    }    
-    } \dotp{C}{\pi},
+    \Ww_C(\alpha, \beta) \eqdef 
+    \min_{\pi \in \Pp(\Xx^2)}
+    \enscond{
+    	\dotp{C}{\pi}
+	}{ \pi_1=\al, \pi_2=\be},
 \end{equation}
-where $\pi_1 = \int_{y\in \Xx} d \pi(\cdot, y)$ and $\pi_2 = \int_{x\in \Xx} d
-\pi(x, \cdot)$ are the first and second marginals of the transportation plan $\pi$. It
-can shown (ref) that $\Ww_C$ is a distance over $\Pp(\Xx)$, that
-measures the convergence in law.
+where we denote $\dotp{C}{\pi} \eqdef \int C(x,y) \d\pi(x,y)$. Here,  
+$\pi_1 = \int_{y\in \Xx} \d \pi(\cdot, y)$ and $\pi_2 = \int_{x\in \Xx} \d
+\pi(x, \cdot)$ are the first and second marginals of the transportation plan $\pi$. 
+%
+When $C=d^p(x,y)$ is the $p^{\text{th}}$ power of the ground distance, with $p \geq 1$, then $\Ww_C^{\frac{1}{p}}$ is itself a distance over $\Pp(\Xx)$, whose associated topology is the one of the convergence in law~\cite{santambrogio2015optimal}.
 
 \paragraph{Entropic regularization and Sinkhorn algorithm.} 
-The solution of \eqref{eq:wass} can be approximated by a simpler optimisation problem, where an entropic term is added to the linear objective to force curvature. The so-called Sinkhorn distance
+
+The solutions of~\eqref{eq:wass} can be approximated by a strictly convex optimisation problem, where an entropic term is added to the linear objective to force curvature. The so-called Sinkhorn cost is then
 \begin{equation}\label{eq:wass}
-    \Ww_{C,\varepsilon}(\alpha, \beta) = 
+    \Ww_{C,\varepsilon}(\alpha, \beta) \eqdef 
     \min_{
     \substack{
-        \pi \in \PP(\Xx \times \Xx)
+        \pi \in \Pp(\Xx \times \Xx)
         \\\pi_1 = \alpha, \pi_2 = \beta
     }    
     } \dotp{C}{\pi} + \varepsilon \KL(\pi | \alpha \otimes \beta),
 \end{equation}
-is indeed an $\varepsilon$-approximation of $\Ww_C(\alpha,\beta)$. The later problem admits a dual form, which is a maximization problem in
-the space of continuous \textit{potential} function:
+where the Kulback-Leibler divergence is defined as $\KL(\pi | \alpha \otimes \beta) \eqdef \int \log(\frac{\d\pi}{\d\al\d\be}) \d\pi$ (which is thus equal to the mutual information of $\pi$).
+%
+This can be shown to approximate up to an $\epsilon \log(\epsilon)$ error $\Ww_C(\alpha,\beta)$ (see~\cite{2019-Genevay-aistats}), which is recovered in the limit $\epsilon=0$. 
+%
+The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous \textit{potential} function:
 \begin{equation}\label{eq:dual}
     \max_{f, g \in \Cc(\Xx)} \dotp{f}{\alpha} + \dotp{g}{\beta}
-    + \varepsilon (\dotp{\alpha \otimes \beta}{\exp(\frac{f \oplus g - C}{\epsilon})} - 1).
+    - \varepsilon \dotp{\alpha \otimes \beta}{\exp(\frac{f \oplus g - C}{\epsilon})} + \varepsilon, 
 \end{equation}
-The dual problem
-\eqref{eq:dual}, a regularized version of the dual of \eqref{eq:wass}, can be solved by alternated maximization, performing at iteration $t$
+where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x) \eqdef f(x)+g(y)-C(x,y)$.
+%
+We refer to~\cite{peyre2019computational} for more details on this problem.
+
+The major interest in this regularization is because it can be efficiently solved by alternated maximization on~\eqref{eq:dual}. This method, at iteration $t$
 \begin{gather}\label{eq:sinkhorn}
-    f_{t+1}(\cdot) = - T_{C,\varepsilon}(g_t, \beta) \qquad
-    g_{t+1}(\cdot) = - T_{C^\top,\varepsilon}(f_{t+1}, \alpha), \\
-    \text{where} \quad T_C(h, \mu) \triangleq \int_{y \in \Xx} \exp(\frac{h(y) - C(\cdot, y)}{\varepsilon})\d \mu,
+    f_{t+1}(\cdot) = - T_{C,\varepsilon}(g_t, \beta), \:
+    g_{t+1}(\cdot) = - T_{C,\varepsilon}(f_{t+1}, \alpha), \\
+    \text{where} \quad 
+    T_C(h, \mu) \triangleq \int_{y \in \Xx} \exp(\frac{h(y) - C(\cdot, y)}{\varepsilon})\d \mu(y),
 \end{gather}
-is a \textit{soft C-transform}, and the notation $f_t(\cdot)$ emphasizes the
-belonging of $f_t$ and $g_t$ to the space of continuous functions. ${(f_t)}_t$
-and ${(g_t)}_t$ converge in $(\Cc(\Xx), \Vert \cdot \Vert_{\text{var}})$ to a
-solution $(f^\star, g^\star)$ of \eqref{eq:dual}, where $\Vert f
-\Vert_{\text{var}} = \max_x f(x) - \min_x f(x)$ is the so-called variation norm. 
+\todo{j'ai suppose $C=C^\top$ symetrique pour simplifier}
+The operation $h \mapsto T_C(h, \mu)$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}, we thus refers to it as a \textit{soft C-transform}. 
+%
+The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are continuous functions. 
+%
+% In the discrete setting, iterations 
+
+It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$ to a
+solution $(f^\star, g^\star)$ of \eqref{eq:dual}, where $\norm{f
+}_{\text{var}} = \max_x f(x) - \min_x f(x)$ is the so-called variation norm.
+% 
 Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
-$T_{C^\top}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \Vert \cdot \Vert_{\text{var}})$.
+$T_{C}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$~\cite{peyre2019computational}.
 
 \subsection{Estimating OT distances with realizations}
 
-Regularized optimal transport is elegantly written in functional spaces but the
-iterations \eqref{eq:sinkhorn} transfers into code only for discrete
-distributions $\hat \alpha = \sum_{i=1}^n a_i \delta_{x_i}$ and $\hat \beta =
-\sum_{i=1}^n a_i \delta_{x_i}$. In this case, they correspond to the well-known
-Sinkhorn-Knopp algorithm for balancing the matrix
-$\exp(\frac{-C}{\varepsilon})$. The algorithm is run in two phases: a first one,
-during which the cost matrix is computed (with a cost in $\Oo(n^2 d)$), and a
-second one, during which it is balanced (each iteration have a cost in
-$\Oo(n^2)$).
+Iterations~\eqref{eq:sinkhorn} cannot be implemented when dealing with generic distributions $(\al,\be)$, because it involves continuous functions $(f_t,g_t)$. 
+%
+When the input distribution are discrete (or equivalently that $\Xx$ is a finite set) then these function can be stored using discrete sample, and algorithm~\eqref{eq:sinkhorn} is equivalent to the celebrated Sinkohrn's algorithm~~\cite{Sinkhorn64,sinkhorn1967concerning}, which is often implemented over the scaling variable $(e^{f_t/\epsilon},e^{g_t/\epsilon})$.
+%
+More precisely, when dealing with empirical distibutions $\hat \alpha = \sum_{i=1}^n a_i \delta_{x_i}$ and $\hat \beta =
+\sum_{i=1}^n a_i \delta_{x_i}$, then the approximation of $\Ww_{C,\varepsilon}(\alpha, \beta)$ using Sinkohrn iterations~\eqref{eq:sinkhorn} compute $u_t \eqdef (e^{f_t(x_i)/\epsilon})_{i=1}^n, v_t \eqdef (e^{g_t(y_i)/\epsilon})_{i=1}^n$ as
+\begin{equation*}
+	u_{t+1} = \frac{1}{ K (v_t \odot a) }
+	\qandq
+	v_{t+1} = \frac{1}{ K^\top (u_{t+1} \odot b) }
+\end{equation*}
+where $K=(e^{-\frac{C(x_i,y_i)}{\epsilon}})_{i,j=1}^n \in \RR^{n \times n}$. 
+The algorithm thus operates in two phases: a first one, during which the kernel matrix $K$ is computed (with a cost in $O(n^2)$), and a second one, during which it is balanced (each iteration having a cost in $O(n^2)$).
 
-\paragraph{Sample complexity results.} Fortunately, the OT and Sinkhorn distances between two arbitrary distributions
+The goal of this paper is to go beyond this discrete setting, and handle generic distributions (possibly having continuous densities). In particular, our numerical scheme manipulates continuous functions though an adapted parameterization which is automatically refined during the iterations.
+
+% Regularized optimal transport is elegantly written in functional spaces but the iterations \eqref{eq:sinkhorn} transfers into code only for discrete distributions  $\hat \alpha = \sum_{i=1}^n a_i \delta_{x_i}$ and $\hat \beta = \sum_{i=1}^n a_i \delta_{x_i}$. In this case, they correspond to the well-known Sinkhorn-Knopp algorithm for balancing the matrix $\exp(\frac{-C}{\varepsilon})$. 
+
+
+\paragraph{Sample complexity results.} \todo{I already say this quickly in the intro, check if we remove this section} Fortunately, the OT and Sinkhorn distances between two arbitrary distributions
 $\alpha$ and $\beta$ can be approximated by the distance between discrete
 realizations $\hat \alpha_n = \frac{1}{n} \sum_i \delta_{x_i}$, 
 $\hat \beta_n = \frac{1}{n} \sum_i \delta_{y_i}$, where $(x_i)_i$
