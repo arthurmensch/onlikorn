@@ -1,25 +1,17 @@
 %!TEX root = article.tex
 \section{Introduction}
 
-Optimal transport (OT) distances are fundamental in statistical learning, both as a tool for analyzing the convergence of various algorithms, and as a data-dependent term for estimating data densities, e.g. using generative models.
+Optimal transport (OT) distances are fundamental in statistical learning, both as a tool for analyzing the convergence of various algorithms~\cite{canas2012learning,dalalyan2019user}, and as a data-dependent term for tasks as diverse as supervised learning~\cite{frogner2015learning}, unsupervised generative modeling~\cite{arjovsky2017wgan} or domain adaptation~\cite{courty2016optimal}.
 %
 OT lifts a given distance over data points living in space $\Xx$ into a distance
-on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$.
+on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$, and we refer to the monograph~\cite{santambrogio2015optimal} for a detailed mathematical treatement.
 %
 This distance has many favorable geometrical properties, in particular it allows one to compare distributions having disjoint supports. 
 % 
-Computing OT distance is usually performed by sampling the input distributions and solving a discretized linear program. This approach is numerically costly and is difficult to apply in typical ML scenario where data points are streamded in an online manner.   
+Computing OT distance is usually performed by sampling the input distributions and solving a discretized linear program, the so-called Kantorovitch formuation~\cite{Kantorovich42}. This approach is numerically costly and is difficult to apply in typical ML scenario where data points are streamed in an online manner.   
 %
 The goal of this paper is to develop an efficient online method which addresses these issues by adapting Sikhorn's algorithm to an online setting.
   
-%%%%
-\paragraph{OT in Machine Learning.}
-
-Typical applications.
-
-Computation bottleneck.
-
-Statistical bottleneck.
 
 
 %%%%
@@ -29,20 +21,22 @@ To alleviate both these computational and statistical burdens, it is common to r
 %
 The most successful approach in this direction is to use an entropic barrier penalty. 
 %
-When dealing with discrete distributions, this regularization can be solved numerically using Sinkhorn-Knopp's matrix balancing algorithm~\cite{}.
+When dealing with discrete distributions, this regularization can be solved numerically using Sinkhorn-Knopp's matrix balancing algorithm~\cite{Sinkhorn64,sinkhorn1967concerning}.
 %
-This approach was pushed forward for ML applications by Cuturi~\cite{} who emphasized both its parallelism and its smoothing effects, which makes this approach a perfect fit when training ML model through back-propagation. CITE
+This approach was pushed forward for ML applications by Cuturi~\cite{cuturi2013sinkhorn} who emphasized both its parallelism and its smoothing effects, which makes this approach a perfect fit when training ML model through back-propagation.
 %
 This method estimates the OT distance in two distinct phases: one draws samples and evaluate a pairwise distance matrix in the first phase ; one balances this distance matrix using Sinkhorn-Knopp iterations in the second phase, thereby obtaining a discretized 
 transportation plan and distance.
 
-Extending OT computations to arbitrary distributions (possibly having continuous densities) without relying on such a fixed a priori sampling is an emerging topic of interest. A special case is the semi-discrete setting, where one of the two distributions is discrete. Without regularization, over an Euclidean space, this can be solved efficiently using the computation of Voronoi-like diagrams~\cite{}. This idea can be extended to entropic-regularized OT~\cite{}, which can be coupled with stochastic optimization method. 
+This approach offers many advantage over the direct solution of a linear solver. First it computes an $\epsilon$-accurate approximation of OT in $O(n^2/\epsilon^3)$ for a number $n$ of samples~\cite{altschuler2017near} (in contrast to the $O(n^3)$ complexity for an exact solution). Second, the optimal value of the regularized problem does not suffers from the curse of dimensionality~\cite{2019-Genevay-aistats}, since the average error using $n$ random samples decay likes $O(\epsilon^{-d/2}/\sqrt{n})$, in sharp contrast with the slow $O(1/n^{1/d})$ error decay of OT~\cite{weed2019sharp}. This regularized value can be de-biased to define the so-called Sinkhorn divergence~\cite{2019-Feydy-aistats}.  
 
-When dealing with arbitrary continuous densities, which are accessed through a stream of random sample, the challenge is to approximate  the (continuous) dual variables using parametric functions. For application to generative model fitting, one can use deep networks, which leads to alternative formulation to Generative Adversarial Networks (GANs)~\cite{}. 
+This two step (sample and then compute) approach is however not able to introduce exact OT loss in learning problem, which often rather operate by accessing new samples during the iterations. A cheap fix is to use Sinkhorn over mini-batches (see for instance~\cite{2018-Genevay-aistats} for an application to GANs), but this introduce a strong bias which can be unacceptable, especially in high dimension (see~\cite{fatras2019learning} for a mathematical analysis). 
+
+Extending OT computations to arbitrary distributions (possibly having continuous densities) without relying on such a fixed a priori sampling is an emerging topic of interest. A special case is the semi-discrete setting, where one of the two distributions is discrete. Without regularization, over an Euclidean space, this can be solved efficiently using the computation of Voronoi-like diagrams~\cite{merigot2011multiscale}. This idea can be extended to entropic-regularized OT~\cite{cuturi2018semidual}, and can also be coupled with stochastic optimization method~\cite{2016-genevay-nips} to tackle high dimensional problems (see also~\cite{staib2017parallel} for an extension to the computation of Wasserstein barycenters). 
+
+When dealing with arbitrary continuous densities, which are accessed through a stream of random sample, the challenge is to approximate  the (continuous) dual variables using parametric functions. For application to generative model fitting, one can use deep networks, which leads to alternative formulation to Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan} (see also~\cite{seguy2018large} for an extension to the estimation of transportation maps). 
 %
-\todo{CITER d'autre papiers similaire d'approximation continues?}
-%
-There is however no theoretical guarantees for this type of dual approximations, due to the non-convexity of the resulting optimization problem. The only mathematically rigorous approach in this direction is when using expansions in a reproducing Hilbert space~\cite{}. Our paper proposes a different takes on this question, using a alternative type of expansions, which corresponds to an extension of the discrete Sinkhorn algorithm to the continuous online setting.
+There is however no theoretical guarantees for this type of dual approximations, due to the non-convexity of the resulting optimization problem. The only mathematically rigorous approach in this direction is when using expansions in a reproducing Hilbert space~\cite{2016-genevay-nips}. Our paper proposes a different takes on this question, using an alternative type of expansions, which corresponds to an extension of the discrete Sinkhorn algorithm to the continuous online setting.
 
 
 % The Sinkhorn algorithm was introduced in a discrete setting, i.e. when both distributions to compare are a set of realizations. The so-called Sinkhorn distances between empirical distributions indeed form an estimate of the OT distance between the true distributions from which the samples are drawn. 
