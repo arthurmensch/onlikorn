@@ -45,7 +45,7 @@ positions ${(x_i, y_i)}_{i} \subset~\Xx$
 \end{align}
 
 %%%%%
-\paragraph{Failure of a randomized Sinkhorn.}
+\paragraph{Randomized Sinkhorn.}
 
 Provided with fresh samples $(x_i, y_i)_{n_t < i \leq n_{t+1}}$, 
 corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive approach would 
@@ -90,7 +90,7 @@ This approach allows us to estimate potential functions up to a constant. As exp
 this estimation is sufficient for most applications aiming at minimizing a Sinkhorn loss, as it only requires the spatial derivatives of the potentials~\eqref{eq-grad-backprop}. 
 %
 If required, it is however possible to estimate online the Sinkhorn distance  by performing a final soft $C$-transform, using $\Oo(n_t^2)$ operations:
-\begin{equation}
+\begin{equation}\label{eq-dist-est}
     \Ww(\alpha,\beta) \approx \frac{1}{2}\Big(\dotp{\bar \alpha_t}{f_t + \Ctrans{g_t}{\bar \alpha_t}}
      + \dotp{\bar \beta_t}{g_t + \Ctrans{f_t}{\bar \alpha_t}}\Big),
 \end{equation}
