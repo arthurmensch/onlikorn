@@ -35,14 +35,9 @@ algorithm~\cite{Sinkhorn64,sinkhorn1967concerning}.
 This approach was pushed forward for ML applications
 by \citet{cuturi2013sinkhorn}. Sinkhorn distances are smooth and amenable to GPU computations, which makes them suitable as a loss function in model training.
 %
-Sinkhorn distances are $\epsilon$-accurate approximation of OT in
-$O(n^2/\epsilon^3)$ for a number $n$ of samples~\cite{altschuler2017near} (in
-contrast to the $O(n^3)$ complexity for an exact solution). Moreover, the optimal
-value of the regularized problem does not suffers from the curse of
-dimensionality~\cite{2019-Genevay-aistats}, since the average error using $n$
-random samples decay likes $O(\epsilon^{-d/2}/\sqrt{n})$, in sharp contrast with
-the slow $O(1/n^{1/d})$ error decay of OT~\cite{weed2019sharp}. The regularized
-value can be sharpened by entropic debiasing~\cite{2019-Feydy-aistats}.  
+Sinkhorn algorithm computes $\epsilon$-accurate approximations of OT in
+$O(n^2/\epsilon^3)$ operations for a number $n$ of samples~\cite{altschuler2017near} (in
+contrast to the $O(n^3)$ complexity for an exact solution). Moreover, these Sinkhorn distances does not suffers from the curse of dimensionality~\cite{2019-Genevay-aistats}, since the average error using $n$ random samples decays like $O(\epsilon^{-d/2}/\sqrt{n})$ in dimension $d$, in sharp contrast with the slow $O(1/n^{1/d})$ error decay of OT~\cite{weed2019sharp}. These Sinkhorn distances can furthermore be sharpened by entropic debiasing~\cite{2019-Feydy-aistats}.  
 
 \paragraph{Handling streams of samples.} The Sinkhorn algorithm operates in two
 distinct phases: draw samples from the distributions and evaluate a pairwise distance matrix in the

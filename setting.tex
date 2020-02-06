@@ -48,7 +48,7 @@ This can be shown to approximate up to an $\epsilon \log(\epsilon)$ error $\Ww_C
 The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous \textit{potential} function:
 \begin{equation}\label{eq:dual}
     \max_{f, g \in \Cc(\Xx)} \dotp{f}{\alpha} + \dotp{g}{\beta}
-    - \varepsilon \dotp{\alpha \otimes \beta}{\exp(\frac{f \oplus g - C}{\epsilon})} + \varepsilon, 
+    - \varepsilon \dotp{\exp(\frac{f \oplus g - C}{\epsilon})}{\alpha \otimes \beta} + \varepsilon, 
 \end{equation}
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x) \eqdef f(x)+g(y)-C(x,y)$.
 %
