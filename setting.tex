@@ -41,24 +41,28 @@ The solutions of~\eqref{eq:wass} can be approximated by a strictly convex optimi
     }    
     } \dotp{C}{\pi} + \varepsilon \KL(\pi | \alpha \otimes \beta),
 \end{equation}
-where the Kulback-Leibler divergence is defined as $\KL(\pi | \alpha \otimes \beta) \eqdef \int \log(\frac{\d\pi}{\d\al\d\be}) \d\pi$ (which is thus equal to the mutual information of $\pi$).
+where the Kulback-Leibler divergence is defined as $\KL(\pi | \alpha \otimes
+\beta) \eqdef \int \log(\frac{\d\pi}{\d\al\d\be}) \d\pi$ (which is thus equal to
+the mutual information of $\pi$).
 %
-This can be shown to approximate up to an $\epsilon \log(\epsilon)$ error $\Ww_C(\alpha,\beta)$ (see~\cite{2019-Genevay-aistats}), which is recovered in the limit $\epsilon=0$. 
+This can be shown to approximate $\Ww_C(\alpha,\beta)$  up to an $\epsilon
+\log(\epsilon)$ error \citep{2019-Genevay-aistats}, which is recovered in the
+limit $\epsilon=0$. 
 %
-The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous \textit{potential} functions:
+The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous functions:
 \begin{equation}\label{eq:dual}
-    \max_{f, g \in \Cc(\Xx)} \dotp{f}{\alpha} + \dotp{g}{\beta}
-    - \varepsilon \dotp{\exp(\frac{f \oplus g - C}{\epsilon})}{\alpha \otimes \beta} + \varepsilon, 
+    \max_{(f, g) \in \Cc(\Xx)^2} \dotp{f}{\alpha} + \dotp{g}{\beta}
+    - \varepsilon \dotp{e^{\frac{f \oplus g - C}{\epsilon}}}{\alpha \otimes \beta} + \varepsilon, 
 \end{equation}
-where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x)
+where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 \eqdef f(x)+g(y)-C(x,y)$. We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
-The major interest of problem \eqref{eq:dual} is that it can be solved by alternated maximization, which can be done in closed form. At iteration $t$, the updates are simply
+The major interest of problem \eqref{eq:dual} is that it can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply
 \begin{align}
     &f_{t+1}(\cdot) = - T_{C,\varepsilon}(g_t, \beta), \:
     g_{t+1}(\cdot) = - T_{C,\varepsilon}(f_{t+1}, \alpha), \\
-    &\text{with} \:
+    &
     T_{C,\varepsilon}(h, \mu) \triangleq 
-    \int_{y \in \Xx}\!\! \exp(\frac{h(y) - C(\cdot, y)}{\varepsilon})\d \mu(y).\label{eq:sinkhorn}
+    - \epsilon \log \int_{y \in \Xx}\!\! \exp(\frac{h(y) - C(\cdot, y)}{\varepsilon})\d \mu(y).\label{eq:sinkhorn}
 \end{align}
 The operation $h \mapsto T_{C,\varepsilon}(h, \mu)$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
 %
@@ -66,10 +70,11 @@ The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are \textit{f
 %
 % In the discrete setting, iterations 
 
-It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx)/\sim,
+It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx),
 \norm{\cdot}_{\text{var}})$ to a solution $(f^\star, g^\star)$ of
 \eqref{eq:dual}, where $\norm{f}_{\text{var}} \eqdef \max_x f(x) - \min_x f(x)$ is
-the so-called variation norm, where $\sim$ means that functions are only considered up to an additive constant. This is true for any initialisation $f_0$.  Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
+the so-called variation norm, where $\sim$ means that functions are only considered up to an additive constant. This is true for any initialisation 
+$f_0, g_0$.  Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
 $T_{C}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$, see~\cite{peyre2019computational}.
 
 \subsection{Estimating OT distances with realizations}
@@ -107,21 +112,20 @@ $\beta$.  Consistency holds, as $\Ww_{C, (\varepsilon)}(\hat \alpha_n, \hat
 $\Oo(n^{-1/2})$ for Sinkhorn distances and $\Oo(n^{-1/d})$ for Wasserstein
 distances. 
 
-Although consistency is a reassuring
-result, the sample complexity of transport in high dimensions with low
-regularization remains high. For computational reasons, we cannot choose $n$ to
-be much more than $10^5$. We may wonder wether we can improve the estimation of
-$\Ww_{C}(\alpha,\beta)$ using several sets of samples $(\hat \alpha_n^t)_t$ and
-$(\hat \beta_n^t)$. Those should be of reasonable size to allow Sinkhorn
-estimation, and may for example come from a temporal stream.
-\citet{2018-Genevay-aistats} propose to use the Monte-Carlo estimate $\hat
-\Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_n^t, \beta
-\alpha_n^t)$. This yields a wrong estimation as the distance $\Ww(\hat
-\alpha_n, \hat \beta_n)$ between discrete realizations is a \textit{biased}
+Although consistency is a reassuring result, the sample complexity of transport
+in high dimensions with low regularization remains high. For computational
+reasons, we cannot choose $n$ to be much more than $10^5$. We may wonder wether
+we can improve the estimation of $\Ww_{C}(\alpha,\beta)$ using several sets of
+samples $(\hat \alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of
+reasonable size to allow Sinkhorn estimation, and may for example come from a
+temporal stream. \citet{2018-Genevay-aistats} propose to use the Monte-Carlo
+estimate $\hat \Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t,
+\beta_t)$. This yields a wrong estimation as the distance $\Ww(\hat
+\alpha_t, \hat \beta_t)$ between discrete realizations is a \textit{biased}
 estimator of $\Ww(\alpha, \beta)$:
 \begin{equation}
     \Ww(\alpha, \beta) \neq 
-    \EE_{\hat \alpha_n \sim \alpha, \hat \beta_n \sim \beta} [\Ww(\hat \alpha_n, \hat \beta_n)].
+    \EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta} [\Ww(\hat \alpha, \hat \beta)].
 \end{equation}
 
 \paragraph{Bias in gradients.} In several applications, the distance
@@ -132,6 +136,7 @@ in computing the displacement gradient $\delta_\alpha \Ww(\alpha, \beta) \in
 \Pp(\Xx)$, in order to train $\theta$ by backpropagation. This gradient turns
 out to be the spatial derivative $\nabla_x f^\star$ of the solution of
 \eqref{eq:dual}. Yet, similarly, estimating this gradient through sampling is
-also biased, as $f^\star(\alpha, \beta) \neq \EE_{\hat \alpha_n \sim \alpha,
-\hat \beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat \beta_n)]$.  Our approach
-should help reducing this bias.
+also biased, as the true optimal potential $f^\star(\alpha, \beta)$ is not the
+expected optimal potential under distribution sampling $\EE_{\hat \alpha_n \sim
+\alpha, \hat \beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat \beta_n)]$.  Our
+approach will help reducing this bias. Instead of averaging values over several realizations, we enrich a solution using new realizations.
