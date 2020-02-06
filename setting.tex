@@ -62,13 +62,13 @@ where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 \eqdef f(x)+g(y)-C(x,y)$. We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
 The major interest of problem \eqref{eq:dual} is that it can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply
 \begin{align}
-    &f_{t+1}(\cdot) = - T(g_t, \beta), \:
-    g_{t+1}(\cdot) = - T(f_{t+1}, \alpha), \\
+    &f_{t+1}(\cdot) = - \Ctrans{g_t}{\beta}, \:
+    g_{t+1}(\cdot) = - \Ctrans{f_{t+1}}{\alpha}, \\
     &
-    T(h, \mu) \triangleq 
+    \Ctrans{h}{\mu} \triangleq 
     - \log \int_{y \in \Xx}\!\! \exp(h(y) - C(\cdot, y))\d \mu(y).\label{eq:sinkhorn}
 \end{align}
-The operation $h \mapsto T_{C,\varepsilon}(h, \mu)$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
+The operation $h \mapsto \Ctrans{h}{\mu}$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
 %
 The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are \textit{functions}. 
 %
@@ -78,8 +78,8 @@ It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx),
 \norm{\cdot}_{\text{var}})$ to a solution $(f^\star, g^\star)$ of
 \eqref{eq:dual}, where $\norm{f}_{\text{var}} \eqdef \max_x f(x) - \min_x f(x)$ is
 the so-called variation norm, where $\sim$ means that functions are only considered up to an additive constant. This is true for any initialisation 
-$f_0, g_0$.  Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
-$T_{C}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$, see~\cite{peyre2019computational}.
+$f_0, g_0$.  Convergence is due to the strict contraction of the operators $\Ctrans{\cdot}{\beta}$ and
+$\Ctrans{\cdot}{\alpha}$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$, see~\cite{peyre2019computational}.
 
 \subsection{Estimating OT distances with realizations}
 
@@ -107,43 +107,47 @@ which it is balanced (each iteration having a cost in $O(n^2)$).
 
 % The goal of this paper is to go beyond this discrete setting, and handle generic distributions (possibly having continuous densities). In particular, our numerical scheme manipulates continuous functions though an adapted parameterization which is automatically refined during the iterations.
 
-\paragraph{Consistency and bias.} The distance $\Ww(\alpha,\beta)$ can be
-approximated by the (computable) distance between discrete realizations $\hat
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Consistency and bias.} 
+
+The OT distance $\Ww_{C,0}(\alpha,\beta)$ and its regularized version $\Ww_{C,\epsilon}(\alpha,\beta)$ can be approximated by the (computable) distance between discrete realizations $\hat
 \alpha = \frac{1}{n} \sum_i \delta_{x_i}$, $\hat \beta = \frac{1}{n} \sum_i
 \delta_{y_i}$, where $(x_i)_i$ and $(y_i)_i$ are i.i.d samples from $\alpha$ and
-$\beta$.  Consistency holds, as $\Ww_{(0)}(\hat \alpha_n, \hat \beta_n) \to
-\Ww(\alpha, \beta),$ with a convergence rate in $\Oo(n^{-1/2})$ for Sinkhorn
-distances $\Ww_{C, 1}$ and $\Oo(n^{-1/d})$ for the Wasserstein distances $\Ww_{C,0}$. 
+$\beta$.  Consistency holds, as $\Ww_{C,\epsilon}(\hat \alpha_n, \hat \beta_n) \to
+\Ww_{C,\epsilon}(\alpha, \beta)$ with a convergence rate in $\Oo(\epsilon^{-\frac{d}{2}}n^{-1/2})$ for Sinkhorn
+distances when $\epsilon>0$ and $\Oo(n^{-1/d})$ when $\epsilon=0$. 
 
 Although consistency is a reassuring result, the sample complexity of transport
 in high dimensions with low regularization remains high. For computational
 reasons, we cannot choose $n$ to be much more than $10^5$. We may wonder wether
-we can improve the estimation of $\Ww_{C}(\alpha,\beta)$ using several sets of
+we can improve the estimation of $\Ww_{C,\epsilon}(\alpha,\beta)$ using several sets of
 samples $(\hat \alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of
 reasonable size to allow Sinkhorn estimation, and may for example come from a
-temporal stream. \citet{2018-Genevay-aistats} propose to use the Monte-Carlo
+temporal stream. \citet{2018-Genevay-aistats} proposes to use a Monte-Carlo
 estimate $\hat \Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t,
-\beta_t)$. This yields a wrong estimation as the distance $\Ww(\hat
+\beta_t)$. This however yields a strongly biased estimation as the distance $\Ww(\hat
 \alpha_t, \hat \beta_t)$ between discrete realizations is a \textit{biased}
-estimator of $\Ww(\alpha, \beta)$:
-\begin{equation}
-    \Ww(\alpha, \beta) \neq 
-    \EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta} [\Ww(\hat \alpha, \hat \beta)].
-\end{equation}
+estimator of $\Ww(\alpha, \beta)$, since 
+$\Ww(\alpha, \beta) \neq 
+    \EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta} [\Ww(\hat \alpha, \hat \beta)]$. The following section details our method  to construct a provably consistent estimation of this regularized cost using a stream of samples. 
 
-\paragraph{Gradient estimations.}\label{sec:gradient} In several applications,
-the distance $\Ww(\alpha, \beta)$ is used as a loss function. This is the case
-in generative modeling, when we parametrize $\alpha$ as the push-forward of some
-noise distribution $\mu$ through a neural network $g_\theta$. It is also the
-case when computating Wasserstein barycenters \cite{}. We are then interested in
-computing the displacement gradient $\delta_\alpha \Ww(\alpha, \beta) \in
-\Pp(\Xx)$, in order to train $\theta$ by backpropagation. This gradient is the
-spatial derivative $\nabla_x f^\star$ of the solution of \eqref{eq:dual}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Gradient estimations.}\label{sec:gradient} 
+
+OT distances $\Ww(\alpha, \beta)$ are frequently used a loss function in supervised learning or unsupervised density fitting. 
+This is the case for instance in generative modeling~\cite{arjovsky2017wgan}, when we parametrize $\alpha=\alpha_\th$ as the push-forward of some noise distribution $\mu$ through a neural network $g_\theta$, which means that a sample $X$ from $\al$ is computed as $g_\th(Y)$ where $Y$ is sampled from $\mu$. A similar situation occurs for instance when computing Wasserstein barycenters \cite{staib2017parallel}. 
+%
+The gradient of $\Ee(\th) \eqdef \Ww(\alpha_\th, \beta)$ then reads~\cite{peyre2019computational} \todo{is it what you wanted to say?}
+\begin{equation}
+	\nabla \Ee(\th) = \int [\partial g_\th(y)]^*( \nabla f^\star(g_\th(y)) ) \d\mu(y)
+\end{equation}
+where $\nabla_x f^\star$ is the gradient of the optimal solution to~\eqref{eq:dual} and $[\partial g_\th(y)]^*$ is the adjoint of the Jacobian of the Neural network, which is computed using back-propagation.
+
+% We are then interested in computing the displacement gradient $\delta_\alpha \Ww(\alpha, \beta) \in \Pp(\Xx)$, in order to train $\theta$ by backpropagation. This gradient is the spatial derivative $\nabla_x f^\star$ of the solution of \eqref{eq:dual}.
 
 Similarily, estimating the derivative of the Sinkhorn potentials through
-sampling is also biased, as the true optimal potential $f^\star(\alpha, \beta)$
+sampling is also biased, as the true optimal potential $f^\star=f^\star(\alpha, \beta)$
 is not the expected optimal potential under distribution sampling $\EE_{\hat
 \alpha_n \sim \alpha, \hat \beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat
-\beta_n)]$.  Our approach will help reducing this bias. Instead of averaging the
-potentials over several realizations, we use new realizations to refine the
-potential and distance estimates.
+\beta_n)]$.  Our algorithm details in the following section helps reducing this bias. Instead of averaging the
+potentials over several realizations, we use new realizations to refine the potential and distance estimates.

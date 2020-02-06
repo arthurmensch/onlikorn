@@ -40,8 +40,8 @@ Provided with fresh samples $(x_i)_{(n_t, n_{t+1}]}$ and $(y_i)_{(n_t, n_{t+1}]}
 corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive approach
  updates the potentials using a noisy soft C-transform:
 \begin{equation}\label{eq:updates}
-     f_{t+1} = T_{C}(g_t, \hat \beta_t),
-    \qquad g_{t+1} = T_{C}(f_{t+1}, \hat \alpha_t),
+     f_{t+1} = \Ctrans{g_t}{\hat \beta_t},
+    \qquad g_{t+1} = \Ctrans{f_{t+1}}{\hat \alpha_t},
 \end{equation}
 which translates into setting all $(q_i)_{i \leq n_t}$ to $0$, each weight
  $q_i$ to $g_t(y_i) - \log(n)$ for $i \in (n_t, n_{t+1}]$, and similarly for~$p_i$.
