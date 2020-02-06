@@ -14,7 +14,7 @@ Optimal transport lifts this \textit{ground cost} into a cost between probabilit
 distributions over the space $\Xx$. 
 %
 
-The Wasserstein cost \todo{Since $\epsilon,C$ are fixed everywhere, maybe we could rename $\Ww_{C,\epsilon}$ are $\Ww$ (and name $\Ww_C$ differently) and $T$ instead of $T_{C,\epsilon}$?}  between two probability distributions $(\alpha, \beta) \in \Pp(\Xx)^2$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
+The Wasserstein cost between two probability distributions $(\alpha, \beta) \in \Pp(\Xx)^2$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
 linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$):
 \begin{equation}\label{eq:wass}
     \Ww_C(\alpha, \beta) \eqdef 

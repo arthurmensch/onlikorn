@@ -39,7 +39,7 @@ positions ${(y_i)}_{i,t} \in~\Yy, {(x_i)}_{i,s\leq t} \in~\Xx$:
 Provided with fresh samples $(x_i)_{(n_t, n_{t+1}]}$ and $(y_i)_{(n_t, n_{t+1}]}$, 
 corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive approach
  updates the potentials using a noisy soft C-transform:
-\begin{equation}\eqref{eq:updates}
+\begin{equation}\label{eq:updates}
      f_{t+1} = T_{C}(g_t, \hat \beta_t),
     \qquad g_{t+1} = T_{C}(f_{t+1}, \hat \alpha_t),
 \end{equation}
@@ -144,11 +144,11 @@ and similarly for $(p_I)_I$ and $g_t$. Once again, this operation should be made
 once every $k$ iterations. We can force $M_t$ to stay constant after a certain
 ramp.
 
-\paragraph{Out-of-loop averaging and sampling.} Optionally, we may also
+\paragraph{Out-of-loop averaging, finite samples.} Optionally, we may also
 compute out-of-loop averages of potentials
 \begin{align}
-    \exp(-\bar f_{t+1}) = (1 - \gamma_t) \exp(-\bar f_t) + \gamma_t \exp(-\hat f_t), \\
-    \exp(-\bar g_{t+1}) = (1 - \gamma_t) \exp(-\bar g_t) + \gamma_t \exp(-\hat g_t),
+    \exp(-\bar f_{t+1}) = (1 - \frac{1}{t}) \exp(-\bar f_t) + \frac{1}{t} \exp(-\hat f_t), \\
+    \exp(-\bar g_{t+1}) = (1 - \frac{1}{t}) \exp(-\bar g_t) + \frac{1}{t} \exp(-\hat g_t),
 \end{align}
 to further reduce the estimation variance. We will see that this averaging is
 useful in practice. Finally, we note that our algorithm can be run of discrete
@@ -186,26 +186,37 @@ The true gradient $\nabla F(\mu, \nu)$ of the objective~\eqref{eq:wass_reparam} 
     \nabla_\mu F(\mu, \nu) = \exp(-f) - 
     \int_{x \in \Xx} \!\!\! \exp(g(y) - C(\cdot, y))\d \beta(y),
 \end{equation}
-and similarly for $\nabla_\nu$, where $f$ and $g$ are the potentials associated
+and similarly for $\nabla_\nu F$, where $f$ and $g$ are the potentials associated
 to $f$ and $g$. $\beta$ may be replaced by a sampled $\hat \beta$ to obtain an
-\textit{unbiased estimation} $\tilde \nabla F(\mu, \nu)$of $\nabla F(\mu, \nu)$.
+\textit{unbiased estimation} $\tilde \nabla F$ of $\nabla F$, with bounded second order moments.
 This absence of bias is a helpful to prove convergence of the algorithm in high
 probability. It relies on the fact that gradients lie in the space of $\exp(-f),
-\exp(-f)$, in which the $C-transform$ is a simple expectation. The stochastic
+\exp(-f)$, in which the soft $C$-transform is a simple expectation. The stochastic
 mirror descent update then exactly yield the updates \eqref{eq:updates}:
 % 
 \begin{equation}
     \mu_t, \nu_t = \nabla \omega^\star\Big( \nabla \omega(\mu_t, \nu_t) - 
-    \eta_t \tilde \nabla F_\alpha, \beta(\mu, \nu)\Big).
+    \eta_t \tilde \nabla F(\mu, \nu)\Big).
 \end{equation}
 
-A few comments are in order. First, the objects $\mu_t$ and $\nu_t$ are abstract
-objects that are never represented in memory. Instead, their associated
-potentials $f_t$ and $g_t$ are parametrized as \eqref{eq:param}. In particular,
-$\mu_t$ and $\nu_t$ remains absolutely continuous with respect to $\alpha$ and
-$\beta$ respectively, so that the Kullbach-Liebler divergence remains finite. Note that we
-perform mirror descent in infinite spaces, which is valid as $F$ is
-relatively 1-smooth with respect to $\omega$.
+\paragraph{Remarks.} A few comments are in order. First, the objects $\mu_t$
+and $\nu_t$ are abstract objects that are never represented in memory. Instead,
+their associated potentials $f_t$ and $g_t$ are parametrized as
+\eqref{eq:param}. In particular, $\mu_t$ and $\nu_t$ remains absolutely
+continuous with respect to $\alpha$ and $\beta$ respectively, so that the
+Kullbach-Liebler divergence remains finite. Note that we perform mirror descent
+in infinite spaces, which is valid as $F$ is relatively 1-smooth with respect to
+$\omega$.
+
+Finally, we mention that in the absence of noise, and with constant step-size of
+$1$, the algorithm recovers exactly the simultaneous Sinkhorn iterations. This
+provides a new point of view on the Sinkhorn algorithm, distinct from other
+mirror descent interpretations \citep{}. 
+
+
+
+
+
 
 
 % Estimator $\dotp{\alpha}{-\log \EE[\exp(-\hat f)]} + \dotp{\beta}{-\log \EE[\exp(-\hat g)]}$
