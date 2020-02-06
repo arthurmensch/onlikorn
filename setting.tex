@@ -45,17 +45,10 @@ where the Kulback-Leibler divergence is defined as $\KL(\pi | \alpha \otimes \be
 %
 This can be shown to approximate up to an $\epsilon \log(\epsilon)$ error $\Ww_C(\alpha,\beta)$ (see~\cite{2019-Genevay-aistats}), which is recovered in the limit $\epsilon=0$. 
 %
-The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous \textit{potential} function:
+The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous \textit{potential} functions:
 \begin{equation}\label{eq:dual}
-<<<<<<< HEAD
-    \max_{f, g \in \Cc(\Xx)}
-     \triangleq \dotp{f}{\alpha} + \dotp{g}{\beta}
-    - \varepsilon \dotp{\alpha \otimes \beta}
-    {\exp(\frac{f \oplus g - C}{\epsilon})} + \varepsilon, 
-=======
     \max_{f, g \in \Cc(\Xx)} \dotp{f}{\alpha} + \dotp{g}{\beta}
     - \varepsilon \dotp{\exp(\frac{f \oplus g - C}{\epsilon})}{\alpha \otimes \beta} + \varepsilon, 
->>>>>>> b16c827cad99c43535d2e05e9b3166d12c65a92d
 \end{equation}
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x)
 \eqdef f(x)+g(y)-C(x,y)$. We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
