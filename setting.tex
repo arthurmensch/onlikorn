@@ -138,7 +138,7 @@ OT distances $\Ww(\alpha, \beta)$ are frequently used a loss function in supervi
 This is the case for instance in generative modeling~\cite{arjovsky2017wgan}, when we parametrize $\alpha=\alpha_\th$ as the push-forward of some noise distribution $\mu$ through a neural network $g_\theta$, which means that a sample $X$ from $\al$ is computed as $g_\th(Y)$ where $Y$ is sampled from $\mu$. A similar situation occurs for instance when computing Wasserstein barycenters \cite{staib2017parallel}. 
 %
 The gradient of $\Ee(\th) \eqdef \Ww(\alpha_\th, \beta)$ then reads~\cite{peyre2019computational} \todo{is it what you wanted to say?}
-\begin{equation}
+\begin{equation}\label{eq-grad-backprop}
 	\nabla \Ee(\th) = \int [\partial g_\th(y)]^*( \nabla f^\star(g_\th(y)) ) \d\mu(y)
 \end{equation}
 where $\nabla_x f^\star$ is the gradient of the optimal solution to~\eqref{eq:dual} and $[\partial g_\th(y)]^*$ is the adjoint of the Jacobian of the Neural network, which is computed using back-propagation.
