@@ -2,17 +2,17 @@
 
 \section{OT distances from sample streams}
 
-We now introduce an online adapation of the Sinkhorn algorithm that is our major contribution. We
-wish to construct an estimator of $\Ww(\alpha,\beta)$ from successive sets of
-samples $(\hat \alpha_t)_t = \frac{1}{n} \sum_{i=nt}^{n(t+1) - 1} \delta_{x_i}$
- and similar ${(\hat \beta_t)}_t$. This estimator should
-successively use these samples to enrich a representation of the solution of
-\eqref{eq:dual}, that may be arbitrary complex. $(\hat \alpha_t)_t$ and $(\hat
-\beta_t)_t$ may be seen as mini-batches within a training procedure, or as a
-temporal stream. We first introduce the intuitions behind the construction of
-our algorithm, before casting it as a non-convex stochastic mirror descent. In the following, we 
-set $\varepsilon$ to $1$ without loss of generality, as $\Ww_{C, \varepsilon} = \epsilon \Ww_{C, 1}$. 
-We set $n_t = nt$.
+We now introduce an online adapation of the Sinkhorn algorithm, the major
+contribution of this paper. We wish to construct an estimator of
+$\Ww(\alpha,\beta)$, $f^\star$ and $g^\star$ using successive sets of samples
+$(\hat \alpha_t)_t = \frac{1}{n} \sum_{i=nt}^{n(t+1) - 1} \delta_{x_i}$ and
+${(\hat \beta_t)}_t$. Our estimator progressively enrich a representation of the
+solution of \eqref{eq:dual}, that may be arbitrary complex. $(\hat \alpha_t)_t$
+and $(\hat \beta_t)_t$ may be seen as mini-batches within a training procedure,
+or as a temporal stream. 
+
+We first introduce the intuitions behind the construction of our algorithm,
+before casting it as a non-convex stochastic mirror descent. We set $n_t = nt$.
 
 \subsection{Online Sinkhorn iterations}
 
@@ -46,17 +46,18 @@ corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive 
 which translates into setting all $(q_i)_{i \leq n_t}$ to $0$, each weight
  $q_i$ to $g_t(y_i) - \log(n)$ for $i \in (n_t, n_{t+1}]$, and similarly for~$p_i$.
 
-The variance of the updates \eqref{eq:updates} does not reduce: this algorithm does nos converge.
-However, it is possible to show, through the contractance of the random operator
-$T_C(\cdot, \hat \beta_t)_t$ and $T_C(\cdot, \hat \alpha_t)$, that the Markov
-chain ${(f_t, g_t)}_t$ that it defines converges towards a stationary
-distribution independant of sampling and initialisation.
+The variance of the updates \eqref{eq:updates} does not reduce: this
+\textit{random Sinkhorn} algorithm does nos converge. However, it is possible to
+show, through the contractance of the random operator $T_C(\cdot, \hat
+\beta_t)_t$ and $T_C(\cdot, \hat \alpha_t)$, that the Markov chain ${(f_t,
+g_t)}_t$ that it defines converges towards a stationary distribution independant
+of initialisation (\autoref{prop:markov})
 
-To ensure convergence towards a fixed minimizer, we must therefore take more
-cautions steps---in other words, we cannot afford to forget past iterates to
-obtain a consistent estimation of potentials. We introduce a learning rate in
-Sinkhorn iterations, that averages the past representations and the newly
-computed noisy $C$-transforms.
+To ensure convergence towards the potentials $(f^\star, g^\star)$ (up to a
+constant factor), we must therefore take more cautions steps---in other words,
+we cannot afford to forget past iterates to obtain a consistent estimation of
+potentials. We introduce a learning rate in Sinkhorn iterations, that averages
+the past representations and the newly computed noisy $C$-transforms.
 \begin{equation}\label{eq:updates}
     \exp(-f_{t+1})
     ) = (1 - \eta_t) \exp(-f_t) 
@@ -70,6 +71,18 @@ weights of past samples are reduced by a constant factor, while new weights are
 computed from the evaluation of $g_t(\cdot)$ at random new points ${(y_j)}_j$. Note that we
 perform \textit{simultenous updates} of $f_t$ and $g_t$, once again from
 theoretical considerations.
+
+\paragraph{Estimating the distance.} Our approach allows to estimate
+potential functions up to a constant. As explained in \autoref{sec:gradient},
+this estimation is sufficient for minimizing objectives involving a Sinkhorn loss, as we
+only need the spatial derivatives of the potentials. 
+However, it is possible to estimate the Sinkhorn distance using online computation by performing a last soft $C$-transform, with a cost in $\Oo(n_t^2)$:
+\begin{equation}
+    \frac{1}{2}\Big(\dotp{\bar \alpha_t}{f_t + T(g_t, \bar \alpha_t)}
+     + \dotp{\bar \beta_t}{g_t + T(f_t, \bar \alpha_t)}\Big),
+\end{equation}
+where $\bar \alpha_t = \frac{1}{n_{t+1}}\sum_{i=1}^{n_{t+1}} \delta_{x_i}$
+gathers all previously seen samples, and similarly for $\bar \beta_t$.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
@@ -95,7 +108,7 @@ theoretical considerations.
     \State Returns $f_T : (q_j, y_j)_{(0, n_T]}$ and
     $g_T : (p_i, x_i)_{(0, n_T]}$
     \end{algorithmic}
-    \caption{Online Sinkhorn}\label{alg:online_sinkhorn}
+    \caption{Online Sinkhorn potentials}\label{alg:online_sinkhorn}
 \end{algorithm}
 
 \subsection{Algorithm, complexity, refinements}
@@ -120,12 +133,12 @@ amounts to replace, after iteration $t$, for all $j \in (0, n_{t+1}]$
     \sum_{i=1}^{n_{t+1}} \exp(p_i - C(x_i, y_j)),
 \end{align}
 and similarly for each $p_i$. This is exactly performing one step of the
- discrete Sinkhorn algorithm with distributions $\bar \alpha =
- \frac{1}{n_{t+1}}\sum_{i=1}^{n_{t+1}} \delta_{x_i}$ and $\bar \beta$. This will
- reduce the dual cost $F_{ \bar \alpha, \bar \beta}(f_t, g_t)$, and on average,
- the energy $F_{\alpha, \beta}$. Of course, this reweighted
- scheme (akin to the fully-reweighted Frank-Wolfe scheme \cite{}) has a cost in
- $\Oo(n_t^2)$. It may be used every $k$ iterations, with $k$ linearly increasing with $t$.
+ discrete Sinkhorn algorithm with distributions $\bar \alpha_t$ and $\bar
+ \beta_t$. This will reduce the dual cost $F_{ \bar \alpha, \bar \beta}(f_t,
+ g_t)$, and on average, the energy $F_{\alpha, \beta}$. Of course, this
+ reweighted scheme (akin to the fully-reweighted Frank-Wolfe scheme \cite{}) has
+ a cost in $\Oo(n_t^2)$. It may be used every $k$ iterations, with $k$ linearly
+ increasing with $t$.
 
 \paragraph{Memory compression.} The memory requirement in $\Oo(N)$ is an
 avoidable limitation of the algorithm, which cannot be avoided sas the optimal
@@ -141,8 +154,7 @@ weights and potentials as
     f_t(\cdot) &\gets - \log\sum_{J=1}^{M_t} \exp(Q_J - C(\cdot, \bar Y_J)),
 \end{align}
 and similarly for $(p_I)_I$ and $g_t$. Once again, this operation should be made
-once every $k$ iterations. We can force $M_t$ to stay constant after a certain
-ramp.
+once every $k$ iterations. We can force $M_t$ to stay constant after linearly increase it.
 
 \paragraph{Out-of-loop averaging, finite samples.} Optionally, we may also
 compute out-of-loop averages of potentials
@@ -192,14 +204,14 @@ to $f$ and $g$. $\beta$ may be replaced by a sampled $\hat \beta$ to obtain an
 This absence of bias is a helpful to prove convergence of the algorithm in high
 probability. It relies on the fact that gradients lie in the space of $\exp(-f),
 \exp(-f)$, in which the soft $C$-transform is a simple expectation. The stochastic
-mirror descent update then exactly yield the updates \eqref{eq:updates}:
+mirror descent update then exactly yields the updates \eqref{eq:updates}:
 % 
 \begin{equation}
     \mu_t, \nu_t = \nabla \omega^\star\Big( \nabla \omega(\mu_t, \nu_t) - 
     \eta_t \tilde \nabla F(\mu, \nu)\Big).
 \end{equation}
 
-\paragraph{Remarks.} A few comments are in order. First, the objects $\mu_t$
+\paragraph{Interpretation.} First, the objects $\mu_t$
 and $\nu_t$ are abstract objects that are never represented in memory. Instead,
 their associated potentials $f_t$ and $g_t$ are parametrized as
 \eqref{eq:param}. In particular, $\mu_t$ and $\nu_t$ remains absolutely

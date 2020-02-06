@@ -1,1 +1,16 @@
 %!TEX root = article.tex
+\section{Experiments}
+
+We have introduced and stated convergence results on the online Sinkhorn
+algorithms. These convergence results are non-quantitative, and therefore
+requires an extensive experiment validation. Our experiments will be three-fold:
+first, we show that online Sinkhorn accurately correctly estimate the solutions
+of \eqref{eq:wass} and the Sinkhorn distance, overcoming the bias due to
+performing sampling only once in the regular Sinkhorn algorithm. Then, we show
+that online Sinkhorn accelerates the Sinkhorn algorithm, by estimating sketches
+of potentials during the computation of the distance matrix. Finally, we show
+how online Sinkhorn allows to estimate potentials with accurate shapes, compared
+to SGD with RKHS representations \citep{2016-genevay-nips}.
+
+\subsection{Consistent estimation of Sinkhorn distance}
+

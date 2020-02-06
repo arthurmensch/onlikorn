@@ -17,7 +17,7 @@ distributions over the space $\Xx$.
 The Wasserstein cost between two probability distributions $(\alpha, \beta) \in \Pp(\Xx)^2$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
 linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$):
 \begin{equation}\label{eq:wass}
-    \Ww_C(\alpha, \beta) \eqdef 
+    \Ww_{C,0}(\alpha, \beta) \eqdef 
     \min_{\pi \in \Pp(\Xx^2)}
     \enscond{
     	\dotp{C}{\pi}
@@ -27,7 +27,10 @@ where we denote $\dotp{C}{\pi} \eqdef \int C(x,y) \d\pi(x,y)$. Here,
 $\pi_1 = \int_{y\in \Xx} \d \pi(\cdot, y)$ and $\pi_2 = \int_{x\in \Xx} \d
 \pi(x, \cdot)$ are the first and second marginals of the transportation plan $\pi$. 
 %
-When $C=d^p(x,y)$ is the $p^{\text{th}}$ power of the ground distance, with $p \geq 1$, then $\Ww_C^{\frac{1}{p}}$ is itself a distance over $\Pp(\Xx)$, whose associated topology is the one of the convergence in law~\cite{santambrogio2015optimal}.
+When $C=d^p(x,y)$ is the $p^{\text{th}}$ power of the ground distance, with $p
+\geq 1$, then $\Ww_{C,0}^{\frac{1}{p}}$ is itself a distance over $\Pp(\Xx)$, whose
+associated topology is the one of the convergence in
+law~\cite{santambrogio2015optimal}.
 
 \paragraph{Entropic regularization and Sinkhorn algorithm.} 
 
@@ -47,22 +50,23 @@ the mutual information of $\pi$).
 %
 This can be shown to approximate $\Ww_C(\alpha,\beta)$  up to an $\epsilon
 \log(\epsilon)$ error \citep{2019-Genevay-aistats}, which is recovered in the
-limit $\epsilon=0$. 
+limit $\epsilon=0$. In the following, we set $\varepsilon$ to $1$ without loss
+of generality, as $\Ww_{C, \varepsilon} = \epsilon \Ww_{C, 1}$, and simply write $\Ww$.
 %
 The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous functions:
 \begin{equation}\label{eq:dual}
     \max_{(f, g) \in \Cc(\Xx)^2} \dotp{f}{\alpha} + \dotp{g}{\beta}
-    - \varepsilon \dotp{e^{\frac{f \oplus g - C}{\epsilon}}}{\alpha \otimes \beta} + \varepsilon, 
+    - \dotp{\exp(f \oplus g - C)}{\alpha \otimes \beta} + 1, 
 \end{equation}
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 \eqdef f(x)+g(y)-C(x,y)$. We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
 The major interest of problem \eqref{eq:dual} is that it can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply
 \begin{align}
-    &f_{t+1}(\cdot) = - T_{C,\varepsilon}(g_t, \beta), \:
-    g_{t+1}(\cdot) = - T_{C,\varepsilon}(f_{t+1}, \alpha), \\
+    &f_{t+1}(\cdot) = - T(g_t, \beta), \:
+    g_{t+1}(\cdot) = - T(f_{t+1}, \alpha), \\
     &
-    T_{C,\varepsilon}(h, \mu) \triangleq 
-    - \epsilon \log \int_{y \in \Xx}\!\! \exp(\frac{h(y) - C(\cdot, y)}{\varepsilon})\d \mu(y).\label{eq:sinkhorn}
+    T(h, \mu) \triangleq 
+    - \log \int_{y \in \Xx}\!\! \exp(h(y) - C(\cdot, y))\d \mu(y).\label{eq:sinkhorn}
 \end{align}
 The operation $h \mapsto T_{C,\varepsilon}(h, \mu)$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
 %
@@ -85,18 +89,18 @@ When the input distribution are discrete (or equivalently that $\Xx$ is a finite
 set) then these function can be stored using discrete sample, and
 algorithm~\eqref{eq:sinkhorn} corresponds to the celebrated
 \citet{sinkhorn1967concerning}, which is often implemented over the scaling
-variable $(e^{f_t/\epsilon},e^{g_t/\epsilon})$.
+variable $(e^{f_t},e^{g_t})$.
 %
 More precisely, when dealing with empirical distibutions $\alpha =
 \frac{1}{n}\sum_{i=1}^n \delta_{x_i}$ and $\beta = \frac{1}{n} \sum_{i=1}^n
 \delta_{x_i}$, then the Sinkohrn iterations~\eqref{eq:sinkhorn} update $u_t \eqdef
-(e^{f_t(x_i)/\epsilon})_{i=1}^n, v_t \eqdef (e^{g_t(y_i)/\epsilon})_{i=1}^n$ as
+(e^{f_t(x_i)})_{i=1}^n, v_t \eqdef (e^{g_t(y_i)})_{i=1}^n$ as
 \begin{equation*}
 	u_{t+1} = \frac{n}{ K v_t }
 	\qandq
 	v_{t+1} = \frac{n}{ K^\top u_{t+1} }
 \end{equation*}
-where $K=(e^{-\frac{C(x_i,y_i)}{\epsilon}})_{i,j=1}^n \in \RR^{n \times n}$. The algorithm thus operates in two
+where $K=(e^{-C(x_i,y_i)})_{i,j=1}^n \in \RR^{n \times n}$. The algorithm thus operates in two
 phases: a first one, during which the kernel matrix $K$ is computed (with a cost
 in $O(n^2 d)$, where $d$ is the dimension of $\Xx$), and a second one, during
 which it is balanced (each iteration having a cost in $O(n^2)$).
@@ -107,10 +111,9 @@ which it is balanced (each iteration having a cost in $O(n^2)$).
 approximated by the (computable) distance between discrete realizations $\hat
 \alpha = \frac{1}{n} \sum_i \delta_{x_i}$, $\hat \beta = \frac{1}{n} \sum_i
 \delta_{y_i}$, where $(x_i)_i$ and $(y_i)_i$ are i.i.d samples from $\alpha$ and
-$\beta$.  Consistency holds, as $\Ww_{C, (\varepsilon)}(\hat \alpha_n, \hat
-\beta_n) \to \Ww_{C, (\varepsilon)}(\alpha, \beta),$ with a convergence rate in
-$\Oo(n^{-1/2})$ for Sinkhorn distances and $\Oo(n^{-1/d})$ for Wasserstein
-distances. 
+$\beta$.  Consistency holds, as $\Ww_{(0)}(\hat \alpha_n, \hat \beta_n) \to
+\Ww(\alpha, \beta),$ with a convergence rate in $\Oo(n^{-1/2})$ for Sinkhorn
+distances $\Ww_{C, 1}$ and $\Oo(n^{-1/d})$ for the Wasserstein distances $\Ww_{C,0}$. 
 
 Although consistency is a reassuring result, the sample complexity of transport
 in high dimensions with low regularization remains high. For computational
@@ -128,15 +131,19 @@ estimator of $\Ww(\alpha, \beta)$:
     \EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta} [\Ww(\hat \alpha, \hat \beta)].
 \end{equation}
 
-\paragraph{Bias in gradients.} In several applications, the distance
-$\Ww(\alpha, \beta)$ is used as a loss function. This is the case in generative
-modeling, when we parametrize $\alpha$ as the push-forward of some noise
-distribution $\mu$ through a neural network $g_\theta$. We are then interested
-in computing the displacement gradient $\delta_\alpha \Ww(\alpha, \beta) \in
-\Pp(\Xx)$, in order to train $\theta$ by backpropagation. This gradient turns
-out to be the spatial derivative $\nabla_x f^\star$ of the solution of
-\eqref{eq:dual}. Yet, similarly, estimating this gradient through sampling is
-also biased, as the true optimal potential $f^\star(\alpha, \beta)$ is not the
-expected optimal potential under distribution sampling $\EE_{\hat \alpha_n \sim
-\alpha, \hat \beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat \beta_n)]$.  Our
-approach will help reducing this bias. Instead of averaging values over several realizations, we enrich a solution using new realizations.
+\paragraph{Gradient estimations.}\label{sec:gradient} In several applications,
+the distance $\Ww(\alpha, \beta)$ is used as a loss function. This is the case
+in generative modeling, when we parametrize $\alpha$ as the push-forward of some
+noise distribution $\mu$ through a neural network $g_\theta$. It is also the
+case when computating Wasserstein barycenters \cite{}. We are then interested in
+computing the displacement gradient $\delta_\alpha \Ww(\alpha, \beta) \in
+\Pp(\Xx)$, in order to train $\theta$ by backpropagation. This gradient is the
+spatial derivative $\nabla_x f^\star$ of the solution of \eqref{eq:dual}.
+
+Similarily, estimating the derivative of the Sinkhorn potentials through
+sampling is also biased, as the true optimal potential $f^\star(\alpha, \beta)$
+is not the expected optimal potential under distribution sampling $\EE_{\hat
+\alpha_n \sim \alpha, \hat \beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat
+\beta_n)]$.  Our approach will help reducing this bias. Instead of averaging the
+potentials over several realizations, we use new realizations to refine the
+potential and distance estimates.
