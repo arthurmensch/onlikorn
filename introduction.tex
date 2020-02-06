@@ -53,33 +53,10 @@ at each training iteration of an outer algorithm. A cheap fix is to use Sinkhorn
 this introduces a strong estimation bias, especially in high dimension
 ---see~\citet{fatras2019learning} for a mathematical analysis. 
 
-\paragraph{Continuous OT.} Extending OT computations to arbitrary distributions
-(possibly having continuous densities) without relying on a fixed a priori
-sampling is an emerging topic of interest. A special case is the semi-discrete
-setting, where one of the two distributions is discrete. Without regularization,
-over an Euclidean space, this can be solved efficiently using the computation of
-Voronoi-like diagrams~\cite{merigot2011multiscale}. This idea can be extended to
-entropic-regularized OT~\cite{cuturi2018semidual}, and can also be coupled with
-stochastic optimization method~\cite{2016-genevay-nips} to tackle high
-dimensional problems (see also~\citet{staib2017parallel} for an extension to Wasserstein barycenters). 
-
-When dealing with arbitrary continuous densities, which are accessed through a
-stream of random sample, the challenge is to approximate  the (continuous) dual
-variables of the regularized Kantorovich LP using parametric or non-parametric functions. For application to
-generative model fitting, one can use deep networks, which leads to alternative
-formulation to Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan}
-(see also~\citet{seguy2018large} for an extension to the estimation of
-transportation maps). There is however no theoretical guarantees for this type
-of dual approximations, due to the non-convexity of the resulting optimization
-problem. The only mathematically rigorous approach in this direction is to use
-reproducing Hilbert space representations of
-potentials~\cite{2016-genevay-nips}. However, this approach relies on generic functional
-approximations, that results in very slow convergence.
-
 
 \paragraph{Contribution.}
 
-Our paper proposes a new take on continuous OT estimation. We construct a
+Our paper proposes a new take on estimating optimal transport distances between continuous distributions. We construct a
 non-parametric representation of the potentials by extending the discrete Sinkhorn algorithm to the continuous setting.
 
 
@@ -110,4 +87,31 @@ non-parametric representation of the potentials by extending the discrete Sinkho
 %     and a convincing estimation of OT distances between \textit{continous} distributions.
 % \end{itemize}
 
-% % We show how to estimate the true regularized optimal transport distance through repeated experiments. 
+% % We show how to estimate the true regularized optimal transport distance through repeated experiments.
+
+\section{Related work}
+
+\paragraph{Continuous optimal transport.} Extending OT computations to arbitrary distributions
+(possibly having continuous densities) without relying on a fixed a priori
+sampling is an emerging topic of interest. A special case is the semi-discrete
+setting, where one of the two distributions is discrete. Without regularization,
+over an Euclidean space, this can be solved efficiently using the computation of
+Voronoi-like diagrams~\cite{merigot2011multiscale}. This idea can be extended to
+entropic-regularized OT~\cite{cuturi2018semidual}, and can also be coupled with
+stochastic optimization method~\cite{2016-genevay-nips} to tackle high
+dimensional problems (see also~\citet{staib2017parallel} for an extension to Wasserstein barycenters). 
+
+When dealing with arbitrary continuous densities, which are accessed through a
+stream of random sample, the challenge is to approximate  the (continuous) dual
+variables of the regularized Kantorovich LP using parametric or non-parametric functions. For application to
+generative model fitting, one can use deep networks, which leads to alternative
+formulation to Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan}
+(see also~\citet{seguy2018large} for an extension to the estimation of
+transportation maps). There is however no theoretical guarantees for this type
+of dual approximations, due to the non-convexity of the resulting optimization
+problem. The only mathematically rigorous approach in this direction is to use
+reproducing Hilbert space representations of
+potentials~\cite{2016-genevay-nips}. However, this approach relies on generic functional
+approximations, that results in very slow convergence.
+
+\paragraph{Optimisation in continuous spaces.} Frank Wolfe, Mirror descent in infinite spaces, stochastic mirror descent.
