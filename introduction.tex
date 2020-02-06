@@ -97,16 +97,16 @@ stochastic optimization method~\cite{2016-genevay-nips} to tackle high
 dimensional problems (see also~\citet{staib2017parallel} for an extension to Wasserstein barycenters). 
 
 When dealing with arbitrary continuous densities, which are accessed through a
-stream of random sample, the challenge is to approximate  the (continuous) dual
-variables of the regularized Kantorovich LP using parametric or non-parametric functions. For application to
-generative model fitting, one can use deep networks, which leads to alternative
-formulation to Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan}
+stream of random samples, the challenge is to approximate  the (continuous) dual
+variables of the regularized Kantorovich LP using parametric or non-parametric classes of functions. For application to
+generative model fitting, one can use deep networks, which leads to an alternative
+formulation of Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan}
 (see also~\citet{seguy2018large} for an extension to the estimation of
 transportation maps). There is however no theoretical guarantees for this type
 of dual approximations, due to the non-convexity of the resulting optimization
 problem. The only mathematically rigorous approach in this direction is to use
 reproducing Hilbert space representations of
 potentials~\cite{2016-genevay-nips}. However, this approach relies on generic functional
-approximations, that results in very slow convergence.
+approximations, which results in a slow convergence.
 
 \paragraph{Optimisation in continuous spaces.} Frank Wolfe, Mirror descent in infinite spaces, stochastic mirror descent.
