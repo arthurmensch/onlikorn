@@ -194,58 +194,79 @@ algorithm is a \textit{subsampled} Sinkhorn algorithm for histograms, which is d
 This online Sinkhorn can be recast as a stochastic mirror descent algorithm, which enables a convergence analysis.
 %
 This equivalence is obtained by applying a change
-of variable in \eqref{eq:wass}, defining $\mu \triangleq \alpha \exp(f)$, $\nu
-\triangleq \beta \exp(g)$. The dual problem solution $F_{\alpha, \beta}^\star$
+of variable in \eqref{eq:wass}, defining 
+\begin{equation}\label{eq-change-var}
+	\mu \triangleq \alpha \exp(f)
+	\qandq 
+	\nu \triangleq \beta \exp(g). 
+\end{equation}
+The dual problem~\eqref{eq:dual} 
 rewrites as a minimisation problem over positive measures on $\Xx$ and $\Yy$:
 \begin{equation}\label{eq:wass_reparam}
-    - \!\!\!\!\min_{\substack{\mu \in \Mm^+(\Xx) \\ 
-    \nu \in \Mm^+(\Yy)}} \!\!\!\KL(\alpha | \mu)
-    + \KL(\beta | \nu) + \dotp{\mu \otimes \nu}{\exp(-C)} - 1,
+    - \!\!\!\!\min_{(\mu,\nu) \in \Mm^+(\Xx)^2} \!\!\!\KL(\alpha | \mu)
+    + \KL(\beta | \nu) + \dotp{\mu \otimes \nu}{e^{-C}} - 1,
 \end{equation}
-where the function $\KL: \Pp(\Xx) \times \Mm^+(\Xx) \triangleq \dotp{\alpha}{
-    \log \frac{\d \alpha}{\d \mu}}$ is the Kullback-Lieber divergence between
-$\alpha$ and $\mu$. This objective is block convex in $\mu$, $\nu$, but not jointly convex. As it is defined on \textit{Banach} spaces, we can solve it using stochastic mirror descent. For this, we define the (convex) distance generating function $\Mm^+(\Xx)^2 \to \RR$:
+where the function $\KL: \Pp(\Xx) \times \Mm^+(\Xx) \triangleq \dotp{\alpha}{ \log \frac{\d \alpha}{\d \mu}}$ is the Kullback-Leibler divergence between
+$\alpha$ and $\mu$. 
+%
+This objective is block convex in $\mu$, $\nu$, but not jointly convex. 
+%
+As we now detail, this problem can be solved using a stochastic mirror descent~\cite{beck2003mirror}, applied here over the Banach space of Radon measure on $\Xx$, equipped with the total variation norm. 
+
+%%%
+\paragraph{Mirror maps.}
+
+For this, we define the (convex) distance generating function $\Mm^+(\Xx)^2 \to \RR$:
 \begin{equation}
     \omega(\mu, \nu) \triangleq \KL(\alpha | \mu) + \KL(\beta | \nu).
 \end{equation}
-The gradient of this function and of its Fenchel conjugate $\omega^\star: \Cc(X)
-\times \Cc(\Yy) \to \RR$ yields two \textit{mirror maps}. For all $\mu, \nu \in
-\Mm^+(\Xx)^2$, $p, q \in \Cc(\Xx)^2$,
+The gradient of this function and of its Fenchel conjugate $\omega^\star: \Cc(\Xx)^2 \to \RR$ yields two \textit{mirror maps}. For all $(\mu, \nu) \in
+\Mm^+(\Xx)^2$, $(p, q) \in \Cc(\Xx)^2$, \todo{Shouldn't $p,q$ be $>0$?} \todo{shouldn't there be a second component in $ \nabla \omega(\mu, \nu)$?}
 \begin{equation}
-    \nabla \omega(\mu, \nu) = - \frac{\d \alpha}{\d \mu}
+    \nabla \omega(\mu, \nu) = - \frac{\d \alpha}{\d \mu}, 
     \qquad \nabla \omega^\star(p, q) = (-\frac{\alpha}{p}, -\frac{\beta}{q}).
 \end{equation}
-The true gradient $\nabla F(\mu, \nu)$ of the objective~\eqref{eq:wass_reparam} reads
+The gradient $\nabla F(\mu, \nu)$ (according to the duality pairing with continuous functions) of the objective $F$ appearing in~\eqref{eq:wass_reparam} reads\todo{Wouldn't it make more sense to write the formula bellow using only $\mu,\nu$ and not $f,g$?}
 \begin{equation}
-    \nabla_\mu F(\mu, \nu) = \exp(-f) - 
+    \nabla_\mu F(\mu, \nu) = e^{-f} - 
     \int_{x \in \Xx} \!\!\! \exp(g(y) - C(\cdot, y))\d \beta(y),
 \end{equation}
-and similarly for $\nabla_\nu F$, where $f$ and $g$ are the potentials associated
-to $f$ and $g$. $\beta$ may be replaced by a sampled $\hat \beta$ to obtain an
-\textit{unbiased estimation} $\tilde \nabla F$ of $\nabla F$, with bounded second order moments.
-This absence of bias is a helpful to prove convergence of the algorithm in high
-probability. It relies on the fact that gradients lie in the space of $\exp(-f),
-\exp(-f)$, in which the soft $C$-transform is a simple expectation. The stochastic
-mirror descent update then exactly yields the updates \eqref{eq:updates}:
-% 
-\begin{equation}
-    \mu_t, \nu_t = \nabla \omega^\star\Big( \nabla \omega(\mu_t, \nu_t) - 
-    \eta_t \tilde \nabla F(\mu, \nu)\Big).
-\end{equation}
+and similarly for $\nabla_\nu F$, where \todo{did not understand what are $f,g$} $f$ and $g$ are the potentials associated
+to $f$ and $g$. 
 
-\paragraph{Interpretation.} First, the objects $\mu_t$
-and $\nu_t$ are abstract objects that are never represented in memory. Instead,
+%%%
+\paragraph{Stochastic mirror descent.}
+
+To define stochastic mirror descent iterations, $\beta$ is- replaced by random samples $\hat \beta$, which in turn defines an \textit{unbiased gradient estimate} $\tilde \nabla F$ of $\nabla F$, which has bounded second order moments.
+%
+This absence of bias is crucial to prove convergence of the algorithm (with high
+probability) \todo{put ref where this is stated/proved}. This proof relies on the fact that these gradients belong to \todo{in what sense this is a space? I feel this discussion is too difficult to follow and maybe not useful} the space of \todo{typo??} $\exp(-f),
+\exp(-f)$, in which the soft $C$-transform is a simple expectation. 
+%
+Using these mirror maps and this stochastic estimation of the gradient, one has the following equivalence result, whose proofs follows from direct computations. 
+
+\begin{proposition}
+The stochastic mirror descent iterations
+\begin{equation}
+    (\mu_t, \nu_t) = \nabla \omega^\star\Big( \nabla \omega(\mu_t, \nu_t) - 
+    \eta_t \tilde \nabla F(\mu_t, \nu_t)\Big)
+\end{equation}
+are equal to the updates~\eqref{eq:updates} under the change of variable~\eqref{eq-change-var}.
+\end{proposition}
+
+%%%
+\paragraph{Interpretation.} 
+
+It is important to realize that $\mu_t$ and $\nu_t$ does not need to be stored in memory. Instead,
 their associated potentials $f_t$ and $g_t$ are parametrized as
 \eqref{eq:param}. In particular, $\mu_t$ and $\nu_t$ remains absolutely
 continuous with respect to $\alpha$ and $\beta$ respectively, so that the
-Kullbach-Liebler divergence remains finite. Note that we perform mirror descent
-in infinite spaces, which is valid as $F$ is relatively 1-smooth with respect to
-$\omega$.
+Kullbach-Leibler divergence terms are always finite. Note that this corresponds to a mirror descent
+in an infinite-dimensional spaces, which is valid as $F$ is relatively 1-smooth with respect to
+$\omega$ \todo{what does this mean?}.
 
-Finally, we mention that in the absence of noise, and with constant step-size of
-$1$, the algorithm recovers exactly the simultaneous Sinkhorn iterations. This
-provides a new point of view on the Sinkhorn algorithm, distinct from other
-mirror descent interpretations \citep{}. 
+Finally, we mention that  when computing exact gradient (in the absence of noise) and when using constant step-size of
+$\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variable. This provides a novel interpretation on the Sinkhorn algorithm, which is different from the usual Bregman projection and mirror descent interpretations \citep{benamou2015iterative}, which is crucial to be adapted to an online stochastic setting~\cite{mishchenko2019sinkhorn}. 
 
 
 
