@@ -14,7 +14,7 @@ Optimal transport lifts this \textit{ground cost} into a cost between probabilit
 distributions over the space $\Xx$. 
 %
 
-The Wasserstein cost between two probability distribution $(\alpha, \beta) \in \Pp(\Xx)$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
+The Wasserstein cost \todo{Since $\epsilon,C$ are fixed everywhere, maybe we could rename $\Ww_{C,\epsilon}$ are $\Ww$ (and name $\Ww_C$ differently) and $T$ instead of $T_{C,\epsilon}$?}  between two probability distributions $(\alpha, \beta) \in \Pp(\Xx)^2$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
 linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$):
 \begin{equation}\label{eq:wass}
     \Ww_C(\alpha, \beta) \eqdef 
@@ -67,31 +67,26 @@ The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are continuou
 %
 % In the discrete setting, iterations 
 
-It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx),
+It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx)/\sim,
 \norm{\cdot}_{\text{var}})$ to a solution $(f^\star, g^\star)$ of
-\eqref{eq:dual}, where $\norm{f}_{\text{var}} = \max_x f(x) - \min_x f(x)$ is
-the so-called variation norm. This is true for any initialisation $f_0$.% 
-Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
-$T_{C}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$~\cite{peyre2019computational}.
+\eqref{eq:dual}, where $\norm{f}_{\text{var}} \eqdef \max_x f(x) - \min_x f(x)$ is
+the so-called variation norm, where $\sim$ means that functions are only considered up to an additive constant. This is true for any initialisation $f_0$.  Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
+$T_{C}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$, see~\cite{peyre2019computational}.
 
 \subsection{Estimating OT distances with realizations}
 
 Iterations~\eqref{eq:sinkhorn} cannot be implemented when dealing with generic distributions $(\al,\be)$, because it involves continuous functions $(f_t,g_t)$. 
 %
-When the input distribution are discrete (or equivalently that $\Xx$ is a finite set) then these function can be stored using discrete sample, and algorithm~\eqref{eq:sinkhorn} is equivalent to the celebrated Sinkohrn's algorithm~~\cite{Sinkhorn64,sinkhorn1967concerning}, which is often implemented over the scaling variable $(e^{f_t/\epsilon},e^{g_t/\epsilon})$.
-%
-More precisely, when dealing with empirical distibutions $\hat \alpha = \sum_{i=1}^n a_i \delta_{x_i}$ and $\hat \beta =
-\sum_{i=1}^n a_i \delta_{x_i}$, then the approximation of $\Ww_{C,\varepsilon}(\alpha, \beta)$ using Sinkohrn iterations~\eqref{eq:sinkhorn} compute $u_t \eqdef (e^{f_t(x_i)/\epsilon})_{i=1}^n, v_t \eqdef (e^{g_t(y_i)/\epsilon})_{i=1}^n$ as
-\begin{equation*}
+When the input  are discrete empirical distributions $\hat \alpha = \sum_{i=1}^n a_i \delta_{x_i}$ and $\hat \beta =
+\sum_{i=1}^n a_i \delta_{x_i}$ (or equivalently that $\Xx$ is a finite set) then these functions can be stored using discrete samples. Iterations~\eqref{eq:sinkhorn} are equivalent to the celebrated Sinkohrn's algorithm~~\cite{Sinkhorn64,sinkhorn1967concerning} which computes $u_t \eqdef (e^{f_t(x_i)/\epsilon})_{i=1}^n, v_t \eqdef (e^{g_t(y_i)/\epsilon})_{i=1}^n$ as
+\begin{equation}\label{eq-sink-multi}
 	u_{t+1} = \frac{1}{ K (v_t \odot a) }
 	\qandq
 	v_{t+1} = \frac{1}{ K^\top (u_{t+1} \odot b) }
-\end{equation*}
-where $K=(e^{-\frac{C(x_i,y_i)}{\epsilon}})_{i,j=1}^n \in \RR^{n \times n}$. The
+\end{equation}
+where $K=(e^{-\frac{C(x_i,y_i)}{\epsilon}})_{i,j=1}^n \in \RR^{n \times n}$. Here $``\frac{\cdot}{\cdot}"$ and $``\cdot \odot \cdot"$ are entry-wise division and multiplication of vectors. The
 algorithm thus operates in two phases: a first one, during which the kernel
-matrix $K$ is computed (with a cost in $O(n^2 d)$, where $d$ is the dimension of
-$\Xx$), and a second one, during which it is balanced (each iteration having a
-cost in $O(n^2)$).
+matrix $K$ is computed (in $O(n^2 d)$ operations when $\Xx=\RR^d$ and a Euclidean cost $C$), and a second one, during which it is balanced using iterations~\eqref{eq-sink-multi} (each iteration having a cost in $O(n^2)$).
 
 The goal of this paper is to go beyond this discrete setting, and handle generic distributions (possibly having continuous densities). In particular, our numerical scheme manipulates continuous functions though an adapted parameterization which is automatically refined during the iterations.
 
