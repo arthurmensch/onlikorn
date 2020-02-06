@@ -15,14 +15,18 @@ our algorithm, before casting it as a non-convex stochastic mirror descent.
 \subsection{Online Sinkhorn iterations}
 
 From \eqref{eq:dual}, along the Sinkhorn optimisation trajectory, the potential $f_t$ is always the negative logarithm an
-infinite mixture of kernel functions $\kappa_y: x \to \exp(-\frac{C(\cdot, y)}{\varepsilon})$:
-\begin{equation}
-    \exp(-\frac{f_t(\cdot)}{\varepsilon}) = 
-    \int_{y \in \Yy} \exp(g_t(y))  \exp(-\frac{C(\cdot, y)}{\epsilon}) \d \beta(y),
-\end{equation}
+infinite mixture of kernel functions $\kappa_y(x) \eqdef \exp(-\frac{C(\cdot, y)}{\varepsilon})$
+\begin{equation*}
+    \exp\Big(-\frac{f_t(\cdot)}{\varepsilon}\Big) = 
+    \int_{\Xx} \exp(g_t(y))  \exp\Big(-\frac{C(\cdot, y)}{\epsilon}\Big) \d \beta(y),
+\end{equation*}
+\begin{equation*}
+    e^{-\frac{f_t(\cdot)}{\varepsilon}} = 
+    \int_{\Xx} e^{g_t(y)}  e^{-\frac{C(\cdot, y)}{\epsilon}} \d \beta(y),
+\end{equation*}
 and similarly for $g_t$. Our algorithm will construct a sequence $(\hat f_t,
 \hat g_t)$ that behaves like $g_t$ and $f_t$ in the long run. The strong
-structural property of the continuous potentials suggests to express $\exp(-\frac{\hat f_t(\cdot)}{\varepsilon})$ as a
+structural property of the continuous potentials suggests to express $e^{-\frac{\hat f_t(\cdot)}{\varepsilon}}$ as a
 finite mixture of kernel functions. That is, $\hat f_t$ and $\hat g_t$ are continuous
 functions constructed respectively from the weights ${(q_i^t)}_{i,s}, {(p_i^s)}_{i,s} > 0$ and positions
 ${(y_i^s)}_{i,t} \in~\Yy, {(x_i^s)}_{i,s\leq t} \in~\Xx$:
@@ -174,16 +178,15 @@ The gradient of this function and of its Fenchel conjugate $\omega^\star: \Cc(X)
     \nabla \omega(\mu, \nu) = - \frac{\d \alpha}{\d \mu}
     \qquad \nabla \omega^\star(p, q) = (-\frac{\alpha}{p}, -\frac{\beta}{q}).
 \end{equation}
- should be an unbiased estimation
-of the true gradient $\nabla F(\mu, \nu)$ of the objective function~\eqref{eq:wass_reparam}.
-For all $x \in \Xx$, this gradient reads
+The true gradient $\nabla F(\mu, \nu)$ of the objective~\eqref{eq:wass_reparam} reads
 \begin{equation}
     \nabla_\mu F(\mu, \nu) = \exp(-\frac{f}{\varepsilon}) - 
-    \int_{y \in \Yy} \exp(\frac{g(y) - C(x, y)}{\varepsilon})\d \beta(y),
+    \int_{y \in \Yy} \!\!\! \exp(\frac{g(y) - C(x, y)}{\varepsilon})\d \beta(y),
 \end{equation}
-where $f$ and $g$ are the potentials associated to $f$ and $g$. $\beta$ may be
-replaced by a sampled $\beta$ to obtain an unbiased estimation $\tilde \nabla
-F(\mu, \nu)$of $\nabla F(\mu, \nu)$. The stochastic mirror descent update
+and similarly for $\nabla_\nu$, where $f$ and $g$ are the potentials associated
+to $f$ and $g$. $\beta$ may be replaced by a sampled $\hat \beta$ to obtain an
+unbiased estimation $\tilde \nabla F(\mu, \nu)$of $\nabla F(\mu, \nu)$. The
+stochastic mirror descent update
 % 
 \begin{equation}
     \mu_t, \nu_t = \nabla \omega^\star\Big( \nabla \omega(\mu_t, \nu_t) - 
@@ -195,7 +198,7 @@ A few comments are in order. First, the objects $\mu_t$ and $\nu_t$ are abstract
 objects that are never represented in memory. Instead, their associated
 potentials $f_t$ and $g_t$ are parametrized as \eqref{eq:param}. In particular,
 $\mu_t$ and $\nu_t$ remains absolutely continuous with respect to $\alpha$ and
-$\beta$ respectively, so that the Kullbach-Liebler divergence remain finite.
+$\beta$ respectively, so that the Kullbach-Liebler divergence remains finite.
 
 
 % Estimator $\dotp{\alpha}{-\log \EE[\exp(-\hat f)]} + \dotp{\beta}{-\log \EE[\exp(-\hat g)]}$

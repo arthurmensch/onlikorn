@@ -14,7 +14,7 @@ Optimal transport lifts this \textit{ground cost} into a cost between probabilit
 distributions over the space $\Xx$. 
 %
 
-The Wasserstein cost between two probability distribution $(\alpha, \beta) \in \Pp(\Xx)$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
+The Wasserstein cost \todo{Since $\epsilon,C$ are fixed everywhere, maybe we could rename $\Ww_{C,\epsilon}$ are $\Ww$ (and name $\Ww_C$ differently) and $T$ instead of $T_{C,\epsilon}$?}  between two probability distributions $(\alpha, \beta) \in \Pp(\Xx)^2$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
 linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$):
 \begin{equation}\label{eq:wass}
     \Ww_C(\alpha, \beta) \eqdef 
@@ -47,10 +47,15 @@ This can be shown to approximate up to an $\epsilon \log(\epsilon)$ error $\Ww_C
 %
 The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous \textit{potential} function:
 \begin{equation}\label{eq:dual}
+<<<<<<< HEAD
     \max_{f, g \in \Cc(\Xx)}
      \triangleq \dotp{f}{\alpha} + \dotp{g}{\beta}
     - \varepsilon \dotp{\alpha \otimes \beta}
     {\exp(\frac{f \oplus g - C}{\epsilon})} + \varepsilon, 
+=======
+    \max_{f, g \in \Cc(\Xx)} \dotp{f}{\alpha} + \dotp{g}{\beta}
+    - \varepsilon \dotp{\exp(\frac{f \oplus g - C}{\epsilon})}{\alpha \otimes \beta} + \varepsilon, 
+>>>>>>> b16c827cad99c43535d2e05e9b3166d12c65a92d
 \end{equation}
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x)
 \eqdef f(x)+g(y)-C(x,y)$. We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
@@ -68,12 +73,11 @@ The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are \textit{f
 %
 % In the discrete setting, iterations 
 
-It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx),
+It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx)/\sim,
 \norm{\cdot}_{\text{var}})$ to a solution $(f^\star, g^\star)$ of
-\eqref{eq:dual}, where $\norm{f}_{\text{var}} = \max_x f(x) - \min_x f(x)$ is
-the so-called variation norm. This is true for any initialisation $f_0$.% 
-Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
-$T_{C}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$~\cite{peyre2019computational}.
+\eqref{eq:dual}, where $\norm{f}_{\text{var}} \eqdef \max_x f(x) - \min_x f(x)$ is
+the so-called variation norm, where $\sim$ means that functions are only considered up to an additive constant. This is true for any initialisation $f_0$.  Convergence is due to the strict contraction of the operators $T_C(\cdot, \beta)$ and
+$T_{C}(\cdot, \alpha)$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$, see~\cite{peyre2019computational}.
 
 \subsection{Estimating OT distances with realizations}
 
