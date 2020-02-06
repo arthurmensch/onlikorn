@@ -2,56 +2,68 @@
 
 \section{OT distances from sample streams}
 
-We now introduce an online adapation of the Sinkhorn algorithm, the major
-contribution of this paper. We wish to construct an estimator of
+We now introduce an online adaptation of the Sinkhorn algorithm, the major
+contribution of this paper. It constructs an estimator of
 $\Ww(\alpha,\beta)$, $f^\star$ and $g^\star$ using successive sets of samples
 $(\hat \alpha_t)_t = \frac{1}{n} \sum_{i=nt}^{n(t+1) - 1} \delta_{x_i}$ and
-${(\hat \beta_t)}_t$. Our estimator progressively enrich a representation of the
-solution of \eqref{eq:dual}, that may be arbitrary complex. $(\hat \alpha_t)_t$
-and $(\hat \beta_t)_t$ may be seen as mini-batches within a training procedure,
+${(\hat \beta_t)}_t$. 
+%
+Our estimator progressively enriches a representation of the
+solution of~\eqref{eq:dual}, that may be arbitrary complex. $(\hat \alpha_t)_t$
+and $(\hat \beta_t)_t$ may be seen as mini-batches of size $n$ within a training procedure,
 or as a temporal stream. 
 
-We first introduce the intuitions behind the construction of our algorithm,
-before casting it as a non-convex stochastic mirror descent. We set $n_t = nt$.
+We first introduce in Section~\ref{sec-online-sink-iter} the intuitions behind the construction of our algorithm,
+before casting it in Section~\ref{sec-mirror} as a non-convex stochastic mirror descent to establish convergence guaranties. 
+%
+We set $n_t \eqdef nt$.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Online Sinkhorn iterations}
+\label{sec-online-sink-iter}
 
 From \eqref{eq:dual}, along the Sinkhorn optimisation trajectory, the potential $f_t$ is always the negative logarithm an
 infinite mixture of kernel functions $\kappa_y(x) \eqdef \exp(-C(\cdot, y))$:
 \begin{equation*}
     e^{-f_t(\cdot)} = 
-    \int_{\Xx} e^{g_t(y)}  e^{-C(\cdot, y)} \d \beta(y),
+    \int_{\Xx} e^{g_t(y)}  \kappa_y  \d \beta(y),
 \end{equation*}
-and similarly for $g_t$. Our algorithm will construct a sequence of
-non-parametric potentials $(f_t, g_t)$ that behaves like the continuous
-potentials $g_t$ and $f_t$ in the long run. The strong structural property of
+and similarly for $g_t$. Our algorithm constructs a sequence of
+non-parametric potentials $(f_t, g_t)_t$ which approximate the continuous
+potentials \todo{what are these $f_t,g_t$? do you meant $f^\star$ and $g^\star$?} $g_t$ and $f_t$ in the long run. The strong structural property of
 the continuous potentials suggests to express
 $\exp(-f_t)$ as a finite mixture of kernel functions.
 That is, $f_t$ and $g_t$ are continuous functions constructed
-respectively from the weights ${(q_i)}_{i}, {(p_i)}_{i \leq tn} > 0$ and
-positions ${(y_i)}_{i,t} \in~\Yy, {(x_i)}_{i,s\leq t} \in~\Xx$:
+respectively from the weights ${(p_i > 0, q_i > 0)}_{i \leq n_t}$ and
+positions ${(x_i, y_i)}_{i} \subset~\Xx$
 \begin{align}\label{eq:param}
-    f_t(\cdot) &= - \log \sum_{i=1}^{n_t} 
+    f_t(\cdot) &= - \log \sum_{i=1}^{n_t}, 
     \exp(q_i - C(\cdot, y_i)) \\
     g_t(\cdot) &= - \log \sum_{i=1}^{n_t}
     \exp(p_i - C(x_i, \cdot)).
 \end{align}
-Provided with fresh samples $(x_i)_{(n_t, n_{t+1}]}$ and $(y_i)_{(n_t, n_{t+1}]}$, 
-corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive approach
- updates the potentials using a noisy soft C-transform:
+
+%%%%%
+\paragraph{Failure of a randomized Sinkhorn}
+
+Provided with fresh samples $(x_i, y_i)_{n_t < i \leq n_{t+1}}$, 
+corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive approach would 
+ update the potentials using a noisy soft $C$-transform:
 \begin{equation}\label{eq:updates}
      f_{t+1} = \Ctrans{g_t}{\hat \beta_t},
     \qquad g_{t+1} = \Ctrans{f_{t+1}}{\hat \alpha_t},
 \end{equation}
-which translates into setting all $(q_i)_{i \leq n_t}$ to $0$, each weight
- $q_i$ to $g_t(y_i) - \log(n)$ for $i \in (n_t, n_{t+1}]$, and similarly for~$p_i$.
+which is equivalent to setting all $(q_i)_{i \leq n_t}$ to $0$, and assigning each weight
+ $q_i$ to $g_t(y_i) - \log(n)$ for $n_t < i \leq  n_{t+1}$ and similarly for~$p_i$.
 
-The variance of the updates \eqref{eq:updates} does not reduce: this
-\textit{random Sinkhorn} algorithm does nos converge. However, it is possible to
-show, through the contractance of the random operator $T_C(\cdot, \hat
-\beta_t)_t$ and $T_C(\cdot, \hat \alpha_t)$, that the Markov chain ${(f_t,
+The variance of the updates \eqref{eq:updates} does not decay through the iteration, so that this
+\textit{random Sinkhorn} algorithm does nos converge. However, thanks to the contractance of the random operator $\Ctrans{\cdot}{\hat \beta_t}$ and $\Ctrans{\cdot}{\hat \alpha_t}$, \autoref{prop:markov} shows that that the Markov chain ${(f_t,
 g_t)}_t$ that it defines converges towards a stationary distribution independant
-of initialisation (\autoref{prop:markov})
+of initialization.
+
+%%%%%
+\paragraph{Online Sinkhorn}
 
 To ensure convergence towards the potentials $(f^\star, g^\star)$ (up to a
 constant factor), we must therefore take more cautions steps---in other words,
@@ -59,10 +71,10 @@ we cannot afford to forget past iterates to obtain a consistent estimation of
 potentials. We introduce a learning rate in Sinkhorn iterations, that averages
 the past representations and the newly computed noisy $C$-transforms.
 \begin{equation}\label{eq:updates}
-    \exp(-f_{t+1})
-    ) = (1 - \eta_t) \exp(-f_t) 
+    e^{-f_{t+1}}
+    \eqdef (1 - \eta_t) e^{-f_t} 
     + \eta_t 
-    \exp(-T(g_t, \hat \beta_t)),
+    e^{-\Ctrans{g_t}{\hat \beta_t}},
 \end{equation}
 and similarly for $g_t$. Performing the averaging in the space of
 $\exp(-\hat f_{t})$ yields simple updates for the weights
@@ -78,8 +90,8 @@ this estimation is sufficient for minimizing objectives involving a Sinkhorn los
 only need the spatial derivatives of the potentials. 
 However, it is possible to estimate the Sinkhorn distance using online computation by performing a last soft $C$-transform, with a cost in $\Oo(n_t^2)$:
 \begin{equation}
-    \frac{1}{2}\Big(\dotp{\bar \alpha_t}{f_t + T(g_t, \bar \alpha_t)}
-     + \dotp{\bar \beta_t}{g_t + T(f_t, \bar \alpha_t)}\Big),
+    \frac{1}{2}\Big(\dotp{\bar \alpha_t}{f_t + \Ctrans{g_t}{\bar \alpha_t}}
+     + \dotp{\bar \beta_t}{g_t + \Ctrans{f_t}{\bar \alpha_t}}\Big),
 \end{equation}
 where $\bar \alpha_t = \frac{1}{n_{t+1}}\sum_{i=1}^{n_{t+1}} \delta_{x_i}$
 gathers all previously seen samples, and similarly for $\bar \beta_t$.
@@ -111,6 +123,8 @@ gathers all previously seen samples, and similarly for $\bar \beta_t$.
     \caption{Online Sinkhorn potentials}\label{alg:online_sinkhorn}
 \end{algorithm}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Algorithm, complexity, refinements}
 
 We provide the pseudo-code of online Sinkhorn in \autoref{alg:online_sinkhorn}.
@@ -168,7 +182,10 @@ $\alpha$ and $\beta$, in which case we can tabulate the vectors $p$ and $q$. The
 algorithm is a \textit{subsampled} Sinkhorn algorithm for histograms, that we provide in the
 appendix for completeness.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A non-convex stochastic mirror descent}
+\label{sec-mirror}
 
 Online Sinkhorn corresponds to a stochastic mirror descent algorithm applied to
 the objective function $F_{\alpha, \beta}$. To see it, we first apply a change
