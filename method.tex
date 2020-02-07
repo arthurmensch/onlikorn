@@ -180,7 +180,9 @@ weights and potentials as
     f_t(\cdot) &\gets - \log\sum_{J=1}^{M_t} \exp(Q_J - C(\cdot, \bar Y_J)),
 \end{align}
 and similarly for $(p_I)_I$ and $g_t$. Once again, this operation should be made
-once every $k$ iterations. We can force $M_t$ to stay constant after linearly increasing in a first stage. The empirical validation of this approach is left for future work.
+once every $k$ iterations. $M_t$ can for instance be set constant after linearly
+increasing in a first stage. This heuristic is important for applications but
+requires significant engineering: we leave it for future work.
 
 \paragraph{Out-of-loop averaging, finite samples.} Optionally, we may also
 compute out-of-loop averages of potentials
