@@ -1,13 +1,12 @@
 %!TEX root = article.tex
 \section{Experiments}\label{sec:exps}
 
-\begin{figure*}[t]
+\begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{continuous.pdf}
-    \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stage of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$).}
-    \label{fig:potentials}
-\end{figure*}
-
+    \includegraphics[width=\linewidth]{comparison.pdf}
+    \caption{Comparison of online, random and fixed sampling Sinkhorn performances. Online Sinkhorn overcome the bias of sampling---especially with out-of-loop averaging. Random Sinkhorn gives fast estimations, whose variance do not decrease.}
+    \label{fig:convergence}
+\end{figure}
 
 We have introduced and stated convergence results on the online Sinkhorn
 algorithms. These convergence results are non-quantitative, and therefore
@@ -36,13 +35,6 @@ measuring $\Vert f - f^\star \Vert_{\text{var}} + \Vert g - g^\star
 of computations performed--- the evaluation of $C(x_i, y_i)$ and the computation
 of each addition in the $C$-transform are elementary computation units.
 Additionaly, we report the curves using out-of-loop averaging. 
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{comparison.pdf}
-    \caption{Comparison of online, random and fixed sampling Sinkhorn performances. Online Sinkhorn overcome the bias of sampling---especially with out-of-loop averaging. Random Sinkhorn gives fast estimations, whose variance do not decrease.}
-    \label{fig:convergence}
-\end{figure}
 
 \paragraph{Results.} We report convergence curves in \autoref{fig:convergence}.
 Compared to the subsampled Sinkhorn algorithm that computes a biased estimate of
@@ -79,6 +71,14 @@ the cost matrix $C$ is completely evaluated. At this point (iteration $t$),
 online Sinkhorn provides the estimates $f_{t}, g_{t}$. From then, the algorithm
 only performs full Sinkhorn updates.
 
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\linewidth]{continuous.pdf}
+    \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stage of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$).}
+    \label{fig:potentials}
+\end{figure*}
+
+
 \paragraph{Results.} We report convergence curves in
 \autoref{fig:early_compute}. The proposed scheme indeed provides an improvement
 upon Sinkhorn algorithm. After $N^2$ computation (the cost of estimating $C$),
@@ -102,9 +102,9 @@ mixtures) from which we sample. In the absence of reference $\Ww$ (which is
 precisely not computable without a method akin to ours), we monitor the
 trajectories of the potentials, and compare them to the Sinkhorn potentials for
 realisation of $\alpha$ and $\beta$ of size $n=2000$. We also monitor the
-estimated transportation plan $\hat \pi_t = \alpha \otimes \beta
-\exp(\frac{f\oplus g - C}{\varepsilon})$. We run the experiments with
-$n_t=5000$.
+estimated transportation plan $\hat \pi_t = (\alpha \otimes \beta)
+\exp(\frac{f\oplus g - C}{\varepsilon}) \in \Mm^+(\Xx)^2$. We run the experiments with
+$n_T=5000$.
 
 \paragraph{Results.} We show the convergence trajectories of the potentials in
 \autoref{fig:potentials}. Online Sinkhorn refines the potentials $(f_t, g_t)_t$ until convergence. Our usage of the natural potential parametrization \eqref{eq:param}
@@ -122,7 +122,7 @@ expressed as a Gaussian mixture. With RKHS representations of potentials, the
 dual problem \eqref{eq:sinkhorn} can be solved using stochastic gradient
 descent, with theoretical convergence guarantees. As advocated by the authors,
 we run a grid over the bandwidth parameter $\sigma$ to select the best
-performing runs. We set $n_t = 50000$, and $\epsilon = 10^{-1} \max C$. We could not successfully use the method for lower $\epsilon$.
+performing runs. We set $n_T = 50000$, and $\epsilon = 10^{-1} \max C$. We could not obtain converging runs for SGD with lower $\epsilon$.
 
 We compare the final potentials and associated
 transportation plans in \autoref{fig:comparison_rkhs}. Our method estimates
