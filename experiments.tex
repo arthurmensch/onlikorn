@@ -4,7 +4,7 @@
 We have introduced and stated convergence results on the online Sinkhorn
 algorithm. These convergence results are non-quantitative and therefore require
 an extensive experiment validation. Our experiments are three-fold: first, we
-show that online Sinkhorn accurately estimates correctly the solutions of
+show that online Sinkhorn correctly estimates the solutions of
 \eqref{eq:wass} and the Sinkhorn distance, overcoming the bias due to the fixed
 a priori sampling of the regular Sinkhorn algorithm. Then, we show how online
 Sinkhorn accelerates the Sinkhorn algorithm, by progressively estimating
@@ -19,28 +19,32 @@ this manuscript.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{comparison.pdf}
-    \caption{Comparison of online, random and fixed sampling Sinkhorn performances. Online Sinkhorn overcome the bias of sampling---especially with out-of-loop averaging. Random Sinkhorn gives fast estimations, whose variance do not decrease.}
+
+    \vspace{-1em}
+
+    \caption{Comparison of online, random and fixed sampling Sinkhorn performances. Online Sinkhorn overcomes the bias of sampling---especially with out-of-loop averaging. Random Sinkhorn gives fast estimations, whose variance does not decrease.}
     \label{fig:convergence}
 \end{figure}
 
 
-We first consider discrete distributions $(\alpha, \beta)$, to be able to
-compute reference distance $\Ww(\alpha, \beta)$ and potentials $f^\star$,
-$g^\star$, using Sinkhorn's algorithm. The goal here is not to perform better
+We first consider a discrete distribution $(\alpha, \beta)$, to be able to
+compute the reference distance $\Ww = \Ww(\alpha, \beta)$ and the optimal potentials $f^\star$,
+$g^\star$, using Sinkhorn algorithm. The goal here is not to perform better
 than the Sinkhorn algorithm in the long run. Indeed, the constraints of online
 Sinkhorn yields unnecessary slow-downs when dealing with small discrete
 distributions. Rather, our purpose is to illustrate the consistence of online
 Sinkhorn. We choose $\alpha$ and $\beta$ to be two discrete 1-D distributions,
 $\Xx=\RR$, sampled from the continuous densities displayed in
 \autoref{fig:potentials}. We set $\varepsilon = 10^{-2} \max_{x,y}
-C(x,y)=\norm{x-y}^2$ and use $\eta_t = \frac{1}{\sqrt{t}}$ for online Sinkhorn,
-in all experiments. We compare the performance of Sinkhorn, online Sinkhorn and
-random Sinkhorn, measuring $\Vert f - f^\star \Vert_{\text{var}} + \Vert g -
-g^\star \Vert_{\text{var}}$ and the absolute error $| \Ww_t - \Ww |$ versus the
-number of computations performed--- the evaluation of $C(x_i, y_i)$ and the
-computation of each addition in the $C$-transform being considered as elementary
-computation units. We further report the curves using out-of-loop, $\gamma_t =
-\frac{1}{\sqrt{t}}$ averaging. 
+C(x,y)$, where we use the squared Euclidean loss (regularized $\Ww_2$
+setting)---the distributions $\alpha$ and $\beta$ have bounded support. We use $\eta_t =
+\frac{1}{\sqrt{t}}$ for online Sinkhorn, in all experiments. We compare the
+performance of Sinkhorn, online Sinkhorn and random Sinkhorn, measuring $\Vert f
+- f^\star \Vert_{\text{var}} + \Vert g - g^\star \Vert_{\text{var}}$ and the
+absolute error $| \Ww_t - \Ww |$ versus the number of computations performed---
+the evaluation of $C(x_i, y_i)$ and the computation of each addition in the
+$C$-transform being considered as elementary computation units. We further
+report the performance of using out-of-loop averaging with $\gamma_t = \frac{1}{\sqrt{t}}$.
 
 \paragraph{Results.} We report convergence curves in \autoref{fig:convergence}.
 Compared to the subsampled Sinkhorn algorithm that computes a biased estimate of
@@ -60,6 +64,9 @@ the original problem, although this should be further investigated.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{early_compute}
+    
+    \vspace{-1em}
+
     \caption{Using online Sinkhorn during the initial computation of the cost
      matrix accelerates the Sinkhorn algorithm: it provides good estimates of
      the potentials $f$ and $g$ to warm start the full Sinkhorn algorithm.
@@ -146,6 +153,6 @@ sensitive to bandwidth selection.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{continuous_francis-crop.pdf}
-    \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential \citep{2016-genevay-nips}, with best bandwidth parameter. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its more appropriate parametrization. $\varepsilon = 10^{-1} \max \hat C$,}
+    \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential \citep{2016-genevay-nips}, with best bandwidth parameter. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its more appropriate parametrization. $\varepsilon = 10^{-1} \max \hat C$.}
     \label{fig:comparison_rkhs}
 \end{figure}

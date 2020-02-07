@@ -87,7 +87,7 @@ convergence analysis.
 %%%%%
 \paragraph{Estimating Sinkhorn distance.} 
 
-The iterations \eqref{eq:updates} allows to estimate potential functions up to a constant. As explained in~\autoref{sec:gradient},
+The iterations \eqref{eq:updates} allow to estimate potential functions up to a constant. As explained in~\autoref{sec:gradient},
 this estimation is sufficient for most applications aiming at minimizing a Sinkhorn loss, as it only requires the spatial derivatives of the potentials.
 %
 If required, it is however possible to estimate the Sinkhorn distance using our method, by performing a final soft $C$-transform, using $\Oo(n_T^2)$ operations:
@@ -134,12 +134,12 @@ We perform the updates for $q_i$ and $p_i$ in log-space, for numerical stability
 Each iteration has complexity $\Oo(t\,n^2)$, due to the evaluation of the
 distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$, $(y_i)_{(n_t, n_{t+1}]}$
 and to the computation of the
-soft $C$-transforms. Online Sinkhorn estimates and record a distance matrix
-$(C(x_i,y_j))_{i,j}$ on the fly, in parallel to the update of the potentials
+soft $C$-transforms. Online Sinkhorn estimates and records a distance matrix
+$(C(x_i,y_j))_{i,j}$ on the fly, in parallel to the updates of the potentials
 $f_t$ and $g_t$. In total, its computation cost after drawing $n_t$ samples is
 $\Oo(n_t^2)$, and its memory cost is $\Oo(n_t)$.
 %
-We propose some heuristic refinements to accelerate convergence and alleviate the memory and computational cost.
+We propose some heuristics to accelerate convergence and alleviate memory and computational cost.
 
 
 %%%%%
@@ -156,8 +156,8 @@ amounts to replace, after iteration $t$, for all $i \in (0, n_{t+1}]$,
 \end{align}
 and similarly for each $p_i$. This corresponds to performing one step of the
  discrete Sinkhorn algorithm with distributions $\bar \alpha_t$ and $\bar
- \beta_t$. This reduces the dual cost $F_{ \bar \alpha, \bar \beta}(f_t, g_t)$,
- and on average, the energy $F_{\alpha, \beta}$. This reweighted scheme (akin to
+ \beta_t$. This increases the dual cost $F_{ \bar \alpha, \bar \beta}(f_t, g_t)$,
+ and ``on average'', the energy $F_{\alpha, \beta}$. This reweighted scheme (akin to
  the fully-corrective Frank-Wolfe scheme from \citet{lacoste2015global}) has a cost in
  $\Oo(n_t^2)$. In practice, it can be used only every $k$ iterations, with $k$
  increasing with $t$. We study a combination of partial and full updates in
@@ -192,7 +192,7 @@ to further reduce the estimation variance. We show in \autoref{sec:exps} that
 this averaging is efficient in practice. Finally, we note that our algorithm
 applies on both continuous or discrete distributions. When $\alpha$ and $\beta$
 are discrete distributions of size $N$, we can store $p$ and $q$ as fixed-size
-vectors of size $N$, and subsample mini-batches of size $n < N$. The resulting
+vectors of size~$N$, and subsample mini-batches of size $n < N$. The resulting
 algorithm is a \textit{subsampled} Sinkhorn algorithm for histograms, which is
 detailed in the appendix for completeness. We show in \autoref{sec:exps} that it
 is useful to accelerate the first phase of the Sinkhorn algorithm.
@@ -235,8 +235,9 @@ The gradient of this function and of its Fenchel conjugate $\omega^\star:
 \Cc(\Xx)^2 \to \RR$ yields two \textit{mirror maps}. For all $(\mu, \nu) \in
 \Mm^+(\Xx)^2$, $(\varrho, \varphi) \in \Cc(\Xx)^2, \varrho > 0, \varphi > 0$,
 \begin{equation}
-    \nabla \omega(\mu, \nu) = - \frac{\d \alpha}{\d \mu}, 
-    \qquad \nabla \omega^\star(\varrho, \varphi) = (-\frac{\alpha}{\varrho}, -\frac{\beta}{\varphi}).
+    \nabla \omega(\mu, \nu) = (- \frac{\d \alpha}{\d \mu}, - \frac{\d \beta}{\d \nu} )
+    \qquad \nabla \omega^\star(\varrho, \varphi)
+     = (-\frac{\alpha}{\varrho}, -\frac{\beta}{\varphi}).
 \end{equation}
 The gradient $\nabla F(\mu, \nu)$ of the objective $F$ appearing
 in~\eqref{eq:wass_reparam} is a continuous function

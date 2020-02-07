@@ -15,7 +15,7 @@ We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:u
 \begin{proposition}\label{prop:markov}
     The random Sinkhorn algorithm \eqref{eq:updates} yields a time-homogeneous
     Markov chain ${(f_t, g_t)}_t$ which is $(\hat \alpha_s, \hat \beta_s)_{s \leq
-    t}$ measurable, and weak-star converges toward a stationary distribution
+    t}$ measurable, and converges in law towards a stationary distribution
     $(F_\infty, G_\infty) \in \Pp(\Cc(\Xx)^2)$ independent of the initialization
     point $(f_0, g_0)$.
 \end{proposition}
@@ -35,11 +35,11 @@ converge to $\EE[\exp(-F_\infty)] \in \Cc(\Xx)$ for $\gamma_t = \frac{1}{t}$. Th
     \EE[\exp(-G_\infty)] &=
      \dotp{\alpha}{\EE[\exp(F_\infty)] \exp(-C)}.
 \end{align}
-This fixed point equations are close to the Sinkhorn fixed point equations, and converges to them 
+These fixed point equations are close to the Sinkhorn fixed point equations, and
 get closer as $\varepsilon$ increases, since $\varepsilon \EE[\exp(\pm F_\infty /
 \varepsilon)] \to \EE[F_\infty]$ as $\varepsilon \to \infty$. Running the random
-Sinkhorn algorithm with out-of-loop averaging fails to provide exactly the dual solution, but 
-however defines an approximate solution of the original problem whose accuracy depends on $\epsilon$. 
+Sinkhorn algorithm with out-of-loop averaging fails to provide exactly the dual solution.
+However, it defines an approximate solution of the original problem whose accuracy depends on $\epsilon$. 
 %
 We leave the quantification of this approximation for future work.
 
@@ -86,6 +86,6 @@ Finally, we state a result on the complete online Sinkhorn algorithm, which conv
         \to \Ww(\alpha, \beta).
     \end{gather}
 \end{proposition}
-This result relies on Theorem 5.2 from~\citet{zhou2017convergence}, that establish convergence with
+This result relies on Theorem 5.2 from~\citet{zhou2017convergence}, that establishes convergence with
 high probability of stochastic mirror descent applied to non-convex but locally coherent objectives. In particular, the proof of this results does not rely on the finite dimension of the ambiant space.
 
