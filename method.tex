@@ -26,7 +26,6 @@ From \eqref{eq:dual}, along the continuous (and untractable) Sinkhorn
 optimisation trajectory ${(\bar f_t, \bar g_t)}_t$, the potential $\bar f_t$ is
 always the negative logarithm of an infinite mixture of kernel functions
 $\kappa_y(x) \eqdef \exp(-C(\cdot, y))$:
-
 \begin{equation*}
     \exp(-\bar f_t(\cdot)) = 
     \int_{\y \in \Xx} \exp(\bar g_t(y))  \kappa_y  \d \beta(y),
@@ -43,10 +42,8 @@ q_i)}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i} \subset~\Xx$ as
     g_t(\cdot) &= - \log \sum_{i=1}^{n_t}
     \exp(p_i - C(x_i, \cdot)).
 \end{align}
-
 %%%%%
 \paragraph{Randomized Sinkhorn.}
-
 Provided with fresh samples $(x_i, y_i)_{n_t < i \leq n_{t+1}}$, 
 corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive approach would 
  update the potentials using a noisy soft $C$-transform:
@@ -99,7 +96,7 @@ If required, it is however possible to estimate the Sinkhorn distance using our 
      + \dotp{\bar \beta_T}{g_T + \Ctrans{f_T}{\bar \alpha_T}}\Big),
 \end{equation}
 where $\bar \alpha_t \eqdef \frac{1}{n_{t+1}}\sum_{i=1}^{n_{t+1}} \delta_{x_i}$
-and $\bar \beta_t$ gather all seen samples.
+and $\bar \beta_t$ gather previous samples.
 
 \begin{algorithm}[t]
     \begin{algorithmic}

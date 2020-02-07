@@ -127,13 +127,13 @@ performing runs. We set $n_t = 50000$, and $\epsilon = 10^{-1} \max C$. We could
 We compare the final potentials and associated
 transportation plans in \autoref{fig:comparison_rkhs}. Our method estimates
 potentials with much less errors, especially in areas where the mass of $\alpha$
-and $\beta$ is low. Its computational complexity is comparable; furthermore, it
+and $\beta$ is low. Its computational complexity is comparable. Furthermore, it
 does not require to set any hyperparameters, whereas we observed RKHS SGD to be
 very sensitive to bandwidth selection.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{continuous_francis-crop.pdf}
-    \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its appropriate parametrization.}
+    \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential \citep{2016-genevay-nips}, with best bandwidth parameter. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its more appropriate parametrization.}
     \label{fig:comparison_rkhs}
 \end{figure}
