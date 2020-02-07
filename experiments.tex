@@ -40,7 +40,7 @@ Additionaly, we report the curves using out-of-loop averaging.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{comparison.pdf}
-    \caption{Comparison of online, random and fixed sampling Sinkhorn performances. Online Sinkhorn overcome the bias of sampling. Random Sinkhorn gives quick relevant estimations, whose variance do not decrease. Out-of-loop averaging helps in online Sinkhorn.}
+    \caption{Comparison of online, random and fixed sampling Sinkhorn performances. Online Sinkhorn overcome the bias of sampling---especially with out-of-loop averaging. Random Sinkhorn gives fast estimations, whose variance do not decrease.}
     \label{fig:convergence}
 \end{figure}
 
@@ -65,7 +65,7 @@ the original problem, although this should be further investigated.
     \caption{Using online Sinkhorn during the initial computation of the cost
      matrix brings a significant speed-up to the Sinkhorn algorithm: it provides
      good estimates of the potentials $f_t$ and $g_t$ usable as initializaiton
-     for the first full Sinkhorn iteration.\label{fig:early_compute}}
+     for the first full Sinkhorn iteration. Curves averaged over 5 runs. \label{fig:early_compute}}
 \end{figure}
 
 \subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
@@ -133,7 +133,7 @@ very sensitive to bandwidth selection.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{continuous_francis.pdf}
+    \includegraphics[width=\linewidth]{continuous_francis-crop.pdf}
     \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its appropriate parametrization.}
     \label{fig:comparison_rkhs}
 \end{figure}
