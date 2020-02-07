@@ -1,7 +1,7 @@
 %!TEX root = article.tex
 \section{Background: optimal transport distances}
 
-We recall the definition of optimal transport distances between arbitrary distributions (i.e. not necessarily discrete), then review how these are estimated using finite samples.
+We recall the definition of optimal transport distances between arbitrary distributions (i.e. not necessarily discrete), then review how these are estimated using finite realizations.
 
 \subsection{Optimal transport distances and algorithms}
 
@@ -48,19 +48,21 @@ where the Kulback-Leibler divergence is defined as $\KL(\pi | \alpha \otimes
 \beta) \eqdef \int \log(\frac{\d\pi}{\d\al\d\be}) \d\pi$ (which is thus equal to
 the mutual information of $\pi$).
 %
-This can be shown to approximate $\Ww_C(\alpha,\beta)$  up to an $\epsilon
-\log(\epsilon)$ error \citep{2019-Genevay-aistats}, which is recovered in the
-limit $\epsilon=0$. In the following, we set $\varepsilon$ to $1$ without loss
-of generality, as \todo{you meant $\epsilon \Ww_{C/\epsilon, 1}$? } $\Ww_{C, \varepsilon} = \epsilon \Ww_{C, 1}$, and simply write $\Ww$.
+$\Ww_{C,\varepsilon}$ approximate $\Ww_C(\alpha,\beta)$ up to an $\epsilon
+\log(\epsilon)$ error \citep{2019-Genevay-aistats}. In the following, we set
+$\varepsilon$ to $1$ without loss of generality, as $\Ww_{C, \varepsilon} =
+\epsilon \Ww_{C / \varepsilon, 1}$, and simply write $\Ww$.
 %
 The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous functions:
 \begin{equation}\label{eq:dual}
-    \max_{(f, g) \in \Cc(\Xx)^2} \dotp{f}{\alpha} + \dotp{g}{\beta}
+    \max_{(f, g) \in \Cc(\Xx)^2} \dotp{f}{\alpha} + 
+    \dotp{g}{\beta}
     - \dotp{\exp(f \oplus g - C)}{\alpha \otimes \beta} + 1, 
 \end{equation}
+
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 \eqdef f(x)+g(y)-C(x,y)$. We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
-The major interest of problem \eqref{eq:dual} is that it can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply
+Problem \eqref{eq:dual} can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply
 \begin{align}
     &f_{t+1}(\cdot) = - \Ctrans{g_t}{\beta}, \:
     g_{t+1}(\cdot) = - \Ctrans{f_{t+1}}{\alpha}, \\
@@ -70,84 +72,94 @@ The major interest of problem \eqref{eq:dual} is that it can be solved by altern
 \end{align}
 The operation $h \mapsto \Ctrans{h}{\mu}$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
 %
-The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are \textit{functions}. 
+The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are
+\textit{functions}. 
 %
 % In the discrete setting, iterations 
 
 It can be shown that ${(f_t)}_t$ and ${(g_t)}_t$ converge in $(\Cc(\Xx),
 \norm{\cdot}_{\text{var}})$ to a solution $(f^\star, g^\star)$ of
-\eqref{eq:dual}, where $\norm{f}_{\text{var}} \eqdef \max_x f(x) - \min_x f(x)$ is
-the so-called variation norm, where $\sim$ means that functions are only considered up to an additive constant. This is true for any initialisation 
-$f_0, g_0$.  Convergence is due to the strict contraction of the operators $\Ctrans{\cdot}{\beta}$ and
-$\Ctrans{\cdot}{\alpha}$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$, see~\cite{peyre2019computational}.
+\eqref{eq:dual}, where $\norm{f}_{\text{var}} \eqdef \max_x f(x) - \min_x f(x)$
+is the so-called variation norm. Functions endowed with this norm are only
+considered up to an additive constant.  Global convergence is due to the strict
+contraction of the operators $\Ctrans{\cdot}{\beta}$ and
+$\Ctrans{\cdot}{\alpha}$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$
+\citep{peyre2019computational}.
 
 \subsection{Estimating OT distances with realizations}
 
-Iterations~\eqref{eq:sinkhorn} cannot be implemented when dealing with generic distributions $(\al,\be)$, because it involves continuous functions ${(f_t,g_t)}_t$. 
+Iterations~\eqref{eq:sinkhorn} cannot be implemented when dealing with generic distributions $(\al,\be)$, because they involve continuous functions ${(f_t,g_t)}_t$. 
 %
 When the input distribution are discrete (or equivalently that $\Xx$ is a finite
-set) then these function can be stored using discrete sample, and
-algorithm~\eqref{eq:sinkhorn} corresponds to the celebrated
-\citet{sinkhorn1967concerning}, which is often implemented over the scaling
+set) then these function can be stored on discrete vectors;
+the iterations~\eqref{eq:sinkhorn} correspond to the celebrated
+\citet{sinkhorn1967concerning} algorithm, which is often implemented over the scaling
 variable $(e^{f_t},e^{g_t})$.
 %
-More precisely, when dealing with empirical distibutions $\alpha =
+More precisely, with $\alpha =
 \frac{1}{n}\sum_{i=1}^n \delta_{x_i}$ and $\beta = \frac{1}{n} \sum_{i=1}^n
-\delta_{x_i}$, then the Sinkohrn iterations~\eqref{eq:sinkhorn} update $u_t \eqdef
+\delta_{x_i}$, the Sinkohrn iterations~\eqref{eq:sinkhorn} update $u_t \eqdef
 (e^{f_t(x_i)})_{i=1}^n, v_t \eqdef (e^{g_t(y_i)})_{i=1}^n$ as
 \begin{equation*}
 	u_{t+1} = \frac{n}{ K v_t }
 	\qandq
 	v_{t+1} = \frac{n}{ K^\top u_{t+1} }
 \end{equation*}
-where $K=(e^{-C(x_i,y_i)})_{i,j=1}^n \in \RR^{n \times n}$. The algorithm thus operates in two
-phases: a first one, during which the kernel matrix $K$ is computed (with a cost
-in $O(n^2 d)$, where $d$ is the dimension of $\Xx$), and a second one, during
-which it is balanced (each iteration having a cost in $O(n^2)$).
+where $K=(e^{-C(x_i,y_i)})_{i,j=1}^n \in \RR^{n \times n}$. The algorithm thus
+operates in two phases: a first one, during which the kernel matrix $K$ is
+computed, with a cost in $O(n^2 d)$, where $d$ is the dimension of $\Xx$; a
+second one, during which $K$ is balanced, each iteration costing
+$O(n^2)$. The online Sinkhorn algorithm that we propose mixes these two phases to accelerate convergence
+(see experiments of \autoref{sec:accelerating}).
 
 % The goal of this paper is to go beyond this discrete setting, and handle generic distributions (possibly having continuous densities). In particular, our numerical scheme manipulates continuous functions though an adapted parameterization which is automatically refined during the iterations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Consistency and bias.} 
+\paragraph{Consistency and bias.}\label{sec:gradient}
 
-The OT distance $\Ww_{C,0}(\alpha,\beta)$ and its regularized version $\Ww_{C,\epsilon}(\alpha,\beta)$ can be approximated by the (computable) distance between discrete realizations $\hat
-\alpha = \frac{1}{n} \sum_i \delta_{x_i}$, $\hat \beta = \frac{1}{n} \sum_i
-\delta_{y_i}$, where $(x_i)_i$ and $(y_i)_i$ are i.i.d samples from $\alpha$ and
-$\beta$.  Consistency holds, as $\Ww_{C,\epsilon}(\hat \alpha_n, \hat \beta_n) \to
-\Ww_{C,\epsilon}(\alpha, \beta)$ with a convergence rate in $\Oo(\epsilon^{-\frac{d}{2}}n^{-1/2})$ for Sinkhorn
-distances when $\epsilon>0$ and $\Oo(n^{-1/d})$ when $\epsilon=0$. 
-
-Although consistency is a reassuring result, the sample complexity of transport
-in high dimensions with low regularization remains high. For computational
-reasons, we cannot choose $n$ to be much more than $10^5$. We may wonder wether
-we can improve the estimation of $\Ww_{C,\epsilon}(\alpha,\beta)$ using several sets of
-samples $(\hat \alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of
-reasonable size to allow Sinkhorn estimation, and may for example come from a
-temporal stream. \citet{2018-Genevay-aistats} proposes to use a Monte-Carlo
-estimate $\hat \Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t,
-\beta_t)$. This however yields a strongly biased estimation as the distance $\Ww(\hat
-\alpha_t, \hat \beta_t)$ between discrete realizations is a \textit{biased}
-estimator of $\Ww(\alpha, \beta)$, since 
-$\Ww(\alpha, \beta) \neq 
-    \EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta} [\Ww(\hat \alpha, \hat \beta)]$. The following section details our method  to construct a provably consistent estimation of this regularized cost using a stream of samples. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Gradient estimations.}\label{sec:gradient} 
-
-OT distances $\Ww(\alpha, \beta)$ are frequently used a loss function in supervised learning or unsupervised density fitting. 
-This is the case for instance in generative modeling~\cite{arjovsky2017wgan}, when we parametrize $\alpha=\alpha_\th$ as the push-forward of some noise distribution $\mu$ through a neural network $g_\theta$, which means that a sample $X$ from $\al$ is computed as $g_\th(Y)$ where $Y$ is sampled from $\mu$. A similar situation occurs for instance when computing Wasserstein barycenters \cite{staib2017parallel}. 
-%
-The gradient of $\Ee(\th) \eqdef \Ww(\alpha_\th, \beta)$ then reads~\cite{peyre2019computational} \todo{is it what you wanted to say?}
-\begin{equation}\label{eq-grad-backprop}
-	\nabla \Ee(\th) = \int [\partial g_\th(y)]^*( \nabla f^\star(g_\th(y)) ) \d\mu(y)
-\end{equation}
-where $\nabla_x f^\star$ is the gradient of the optimal solution to~\eqref{eq:dual} and $[\partial g_\th(y)]^*$ is the adjoint of the Jacobian of the Neural network, which is computed using back-propagation.
-
-% We are then interested in computing the displacement gradient $\delta_\alpha \Ww(\alpha, \beta) \in \Pp(\Xx)$, in order to train $\theta$ by backpropagation. This gradient is the spatial derivative $\nabla_x f^\star$ of the solution of \eqref{eq:dual}.
+The OT distance $\Ww_{C,0}(\alpha,\beta)$ and its regularized version
+$\Ww_{C,\epsilon}(\alpha,\beta)$ can be approximated by the (computable)
+distance between discrete realizations $\hat \alpha = \frac{1}{n} \sum_i
+\delta_{x_i}$, $\hat \beta = \frac{1}{n} \sum_i \delta_{y_i}$, where ${(x_i)}_i$
+and ${(y_i)}_i$ are i.i.d samples from $\alpha$ and $\beta$.  Consistency holds,
+as $\Ww_{C,\epsilon}(\hat \alpha_n, \hat \beta_n) \to \Ww_{C,\epsilon}(\alpha,
+\beta)$. Although this is a reassuring result, the sample complexity of
+transport in high dimensions with low regularization remains high (see
+\autoref{sec:related}). For computational reasons, we cannot choose $n$ to be
+much more than $10^5$. We may wonder wether we can improve the estimation of
+$\Ww_{C,\epsilon}(\alpha,\beta)$ using several sets of samples $(\hat
+\alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of reasonable size to
+allow Sinkhorn estimation, and may for example come from a temporal stream.
+\citet{2018-Genevay-aistats} proposes to use a Monte-Carlo estimate $\hat
+\Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t, \beta_t)$.
+However, this yields a biased estimation as the the distance $\Ww(\alpha,
+\beta)$ differs from its expectation under sampling $\EE_{\hat \alpha \sim
+\alpha, \hat \beta \sim \beta} [\Ww(\hat \alpha, \hat \beta)]$. To address this
+issue, our algorithm computes a consistent estimation of the Sinkhorn cost
+using a stream of samples.
 
 Similarily, estimating the derivative of the Sinkhorn potentials through
-sampling is also biased, as the true optimal potential $f^\star=f^\star(\alpha, \beta)$
-is not the expected optimal potential under distribution sampling $\EE_{\hat
-\alpha_n \sim \alpha, \hat \beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat
-\beta_n)]$.  Our algorithm details in the following section helps reducing this bias. Instead of averaging the
-potentials over several realizations, we use new realizations to refine the potential and distance estimates.
+sampling is biased, as the true optimal potential $f^\star=f^\star(\alpha,
+\beta)$ is not the expected optimal potential under sampling $\EE_{\hat \alpha_n
+\sim \alpha, \hat \beta_n \sim \beta}[f^\star(\hat \alpha_n, \hat \beta_n)]$.
+Our algorithm estimates the true continuous potential functions (up to a
+constant) and overcome the sampling bias.
+
+We note that knowing potential functions up to a constant is sufficient to
+Sinkhorn distance as a loss function, e.g. to train generative models or compute
+barycenters \cite{staib2017parallel}---backpropagation through the Sinkhorn
+distance indeed use the gradients $\nabla f^\star$, $\nabla g^\star$. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \paragraph{Gradient estimations.}\label{sec:gradient} 
+
+% OT distances $\Ww(\alpha, \beta)$ are frequently used a loss function in
+% supervised learning or unsupervised density fitting. This is the case for
+% instance in generative modeling~\cite{arjovsky2017wgan}, when we parametrize
+% $\alpha=\alpha_\th$ as the push-forward of some noise distribution $\mu$ through
+% a neural network $g_\theta$, which means that a sample $X$ from $\al$ is
+% computed as $g_\th(Y)$ where $Y$ is sampled from $\mu$. A similar situation
+% occurs for instance when computing Wasserstein barycenters
+% \cite{staib2017parallel}. The gradient of $\Ee(\th) \eqdef \Ww(\alpha_\th,
+% \beta)$ only depends on $\nabla_x f^\star$, i.e. the spatial gradient of the
+% optimal solution to~\eqref{eq:dual}~\cite{peyre2019computational}. 

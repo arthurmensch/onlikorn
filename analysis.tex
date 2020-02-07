@@ -20,23 +20,23 @@ We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:u
     point $(f_0, g_0)$.
 \end{proposition}
 
-The proof of this result follows from \citep{diaconis_iterated} convergence theorem on
-iterated random functions which are contracting on average. 
-%
-It uses the fact that
-$\Ctrans{\cdot}{\hat \beta}$ and $\Ctrans{\cdot}{\hat \alpha}$ are \textit{always}
-contracting, independent of the distributions $\hat \alpha$ and $\hat \beta$.
+This result follows from \citet{diaconis_iterated} convergence theorem on
+iterated random functions which are contracting on average. We simply use the
+fact that $\Ctrans{\cdot}{\hat \beta}$ and $\Ctrans{\cdot}{\hat \alpha}$ are
+\textit{always} contracting, independent of the distributions $\hat \alpha$ and
+$\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$.
 
-Note that using the law of large number for Markov chains, the out-of-loop averages
-$\exp(-\bar f_t), \exp(-\bar f_t)$ converge to $\EE[\exp(-F_\infty)] \in
-\Cc(\Xx)$, that verifies the following fixed point equations
+Note that using the law of large number for Markov chains
+\citep{breiman_strong_1960}, the out-of-loop averages $\exp(-\bar f_t),
+\exp(-\bar f_t)$ converge to $\EE[\exp(-F_\infty)] \in \Cc(\Xx)$, that verifies
+the following fixed point equations
 \begin{align}
     \EE[\exp(-F_\infty)] &=
-     \dotp{\EE[\exp(G_\infty)] \exp(-C)}{\beta} \\
+     \dotp{\beta}{\EE[\exp(G_\infty)] \exp(-C)} \\
     \EE[\exp(-G_\infty)] &=
-     \dotp{\EE[\exp(F_\infty)] \exp(-C)}{\alpha}.
+     \dotp{\alpha}{\EE[\exp(F_\infty)] \exp(-C)}.
 \end{align}
-This fixed point is close to the Sinkhorn fixed point iterations, and converges to them 
+This fixed point equations are close to the Sinkhorn fixed point equations, and converges to them 
 get closer as $\varepsilon$ increases, since $\varepsilon \EE[\exp(\pm F_\infty /
 \varepsilon)] \to \EE[F_\infty]$ as $\varepsilon \to \infty$. Running the random
 Sinkhorn algorithm with out-of-loop averaging fails to provide exactly the dual solution, but 
@@ -45,7 +45,7 @@ however defines an approximate solution of the original problem whose accuracy d
 We leave the quantification of this approximation for future work.
 
 %%%
-\paragraph{Noise-free Online Sinkhorn.}
+\paragraph{Noise-free online Sinkhorn.}
 
 Variance reduction is therefore necessary, to ensure that the limit stationary
 distribution is deterministic. The following proposition shows that the modified online Sinkhorn algorithm converges in the absence of noise.
@@ -66,7 +66,7 @@ down, we only obtain the convergence of $f_t \to f^\star + A$, and $g_t \to
 g^\star$, where $f^\star$ and $g^\star$ are solutions of \eqref{eq:wass} and $A$
 is a constant depending on initialization. This is only a small caveat, as we
 can average the potentials and their soft $C$-transform to remove the offset
-$C$ (which corresponds to~\eqref{eq-dist-est}). When estimating the spatial derivative of $f^\star$ for training purposes, this is not necessary, as already exposed in Section~\ref{sec:gradient}.
+$A$ (which corresponds to~\eqref{eq-dist-est}). When estimating $f^\star$ for training purposes, this is not necessary, as exposed in \autoref{sec:gradient}.
 
 %%%
 \paragraph{Online Sinkhorn.}
@@ -81,11 +81,11 @@ Finally, we state a result on the complete online Sinkhorn algorithm, which conv
     \begin{gather}
         \Vert f_t - f^\star \Vert_{\text{var}} + \Vert g_t - 
         g^\star \Vert_{\text{var}} \to 0 \\
-        \frac{1}{2} \dotp{\alpha}{f_t + \Ctrans{g_t}{\alpha}} + \dotp{\beta}{g_t + \Ctrans{f_t}{\beta}} 
+        \Ww_t =\frac{1}{2} \dotp{\alpha}{f_t + \Ctrans{g_t}{\alpha}} + \dotp{\beta}{g_t + \Ctrans{f_t}{\beta}} 
         \to \Ww(\alpha, \beta).
     \end{gather}
 \end{proposition}
 % 
-This result relies on Proposition 4 from \cite{zhou2017convergence}, that show convergence with
+This result relies on Proposition 4 from \citet{zhou2017convergence}, that show convergence with
 high probability of stochastic mirror descent with non-convex but locally coherent functionals.
 
