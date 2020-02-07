@@ -14,9 +14,7 @@ statistically unefficient \cite{weed2019sharp}. The optimisation problem depends
 on a fixed sampling of points from the data. It is therefore not adapted to
 machine learning setting where data is resampled continuously (e.g. in GANs), or
 accessed in an online manner. The goal of this paper is to develop an efficient
-online method able to estimate OT distances between continuous distributions ---
-we will use a stream of data to refine an approximate optimal transport solution. For this, we will
-adapt the celebrated Sinkhorn algorithm to an online setting.
+online method able to estimate OT distances between continuous distributions. We will use a stream of data to refine an approximate optimal transport solution, adapting the celebrated Sinkhorn algorithm to an online setting.
   
 
 
@@ -36,7 +34,9 @@ computations, which makes them suitable as a loss function in model training.
 The Sinkhorn algorithm operates in two distinct phases: draw samples from the
 distributions and evaluate a pairwise distance matrix in the first phase;
 balance this distance matrix using Sinkhorn-Knopp iterations in the second
-phase. This two-step approach does not estimate the true regularized OT
+phase.
+
+This two-step approach does not estimate the true regularized OT
 distance, and cannot handle samples provided as a stream, e.g. renewed at each
 training iteration of an outer algorithm. A cheap fix is to use Sinkhorn over
 mini-batches (see for instance~\citet{2018-Genevay-aistats} for an application
@@ -54,9 +54,14 @@ transport plan.
     descent algorithm. This shows convergence of the algorithm
     with high probability. We analyse special cases of online Sinkhorn.
     \item We demonstrate the performance of online Sinkhorn for estimating OT
-    distances between continuous distributions and for accelerating the early phase of discrete Sinkhorn iterations. We discuss
-    several trade-offs.
+    distances between continuous distributions and for accelerating the early phase of discrete Sinkhorn iterations. Comparison with other methods advocates for our original non-parametric representations of OT solutions.
 \end{itemize}
+
+\paragraph{Notations.} We denote $\Cc(\Xx)$ the set of continuous functions over
+a space $\Xx$, $\Mm^+(\Xx)$ and $\Pp(\Xx)$ the set of positive and probability
+measures on $\Xx$, respectively. $\frac{d \mu}{d \alpha}$ denotes the
+Radon-Nikodym derivative of measure $\mu$ with respect to measure $\alpha$. We
+write $(i, j]$ the sequence $[i+1, \dots, j]$.
 
 
 % In this paper, we show how mingling together the sampling and the optimization phases can be beneficial
@@ -90,7 +95,7 @@ transport plan.
 
 \section{Related work}\label{sec:related}
 
-We review recent work on Sinkhorn and OT estimation. 
+We review recent work on Sinkhorn distances and on the general problem of estimating optimal transport distances. 
 
 \paragraph{Sinkhorn properties.} Sinkhorn algorithm computes $\epsilon$-accurate
 approximations of OT in $O(n^2/\epsilon^3)$ operations for a number $n$ of
@@ -99,7 +104,7 @@ exact solution). Moreover, these Sinkhorn distances does not suffers from the
 curse of dimensionality~\cite{2019-Genevay-aistats}, since the average error
 using $n$ random samples decays like $O(\epsilon^{-d/2}/\sqrt{n})$ in dimension
 $d$, in sharp contrast with the slow $O(1/n^{1/d})$ error decay of
-OT~\cite{weed2019sharp}. These Sinkhorn distances can furthermore be sharpened
+OT~\cite{dudley_speed_1969,weed2019sharp}. These Sinkhorn distances can furthermore be sharpened
 by entropic debiasing~\cite{2019-Feydy-aistats}. Our work is rather orthogonal to these references, as it focuses on estimating distances between continuous distributions.
 
 \paragraph{Continuous optimal transport.} Extending OT computations to arbitrary distributions
@@ -114,13 +119,13 @@ dimensional problems (see also~\citet{staib2017parallel} for an extension to Was
 
 When dealing with arbitrary continuous densities, which are accessed through a
 stream of random samples, the challenge is to approximate  the (continuous) dual
-variables of the regularized Kantorovich LP using parametric or non-parametric classes of functions. For application to
-generative model fitting, one can use deep networks, which leads to an alternative
-formulation of Generative Adversarial Networks (GANs)~\cite{arjovsky2017wgan}
-(see also~\citet{seguy2018large} for an extension to the estimation of
-transportation maps). There is however no theoretical guarantees for this type
-of dual approximations, due to the non-convexity of the resulting optimization
-problem. The only mathematically rigorous algorithm uses
-reproducing Hilbert space representations of
-potentials~\cite{2016-genevay-nips}. However, this approach relies on generic functional
-approximations, which results in a slow convergence. The functional representation that we use turns out to be more adapted.
+variables of the regularized Kantorovich LP using parametric or non-parametric
+classes of functions. For application to generative model fitting, one can use
+deep networks, which leads to an alternative formulation of Generative
+Adversarial Networks (GANs)~\cite{arjovsky2017wgan} (see
+also~\citet{seguy2018large} for an extension to the estimation of transportation
+maps). There is however no theoretical guarantees for this type of dual
+approximations, due to the non-convexity of the resulting optimization problem.
+To our knowledge, the only mathematically rigorous algorithm uses reproducing
+Hilbert space representations of potentials~\cite{2016-genevay-nips}. As this
+construction is generic to all optimisation problems over functions, the convergence is slow. The representations we introduce outperform RKHS representations (\autoref{sec:compare}).

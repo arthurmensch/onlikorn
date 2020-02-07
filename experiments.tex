@@ -1,6 +1,21 @@
 %!TEX root = article.tex
 \section{Experiments}\label{sec:exps}
 
+We have introduced and stated convergence results on the online Sinkhorn
+algorithm. These convergence results are non-quantitative and therefore require
+an extensive experiment validation. Our experiments are three-fold: first, we
+show that online Sinkhorn accurately estimates correctly the solutions of
+\eqref{eq:wass} and the Sinkhorn distance, overcoming the bias due to the fixed
+a priori sampling of the regular Sinkhorn algorithm. Then, we show how online
+Sinkhorn accelerates the Sinkhorn algorithm, by progressively estimating
+sketches of the dual potentials, in parallel to the computation of the distance
+matrix. Finally, we show how online Sinkhorn allows one to estimate accurately
+the geometry of the dual, significantly improving the result using SGD with RKHS
+expansions~\citep{2016-genevay-nips}. Numpy and Pytorch code are provided with
+this manuscript.
+
+\subsection{Consistent estimation of Sinkhorn distances}
+
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{comparison.pdf}
@@ -8,39 +23,30 @@
     \label{fig:convergence}
 \end{figure}
 
-We have introduced and stated convergence results on the online Sinkhorn
-algorithms. These convergence results are non-quantitative, and therefore
-requires an extensive experiment validation. Our experiments will be three-fold:
-first, we show that online Sinkhorn accurately estimates correctly the solutions
-of \eqref{eq:wass} and the Sinkhorn distance, overcoming the bias due to
-sampling only once in the regular Sinkhorn algorithm. Then, we show
-how online Sinkhorn can accelerate the Sinkhorn algorithm, by estimating sketches
-of potentials simultaneously to the computation of the distance matrix. Finally, we show
-how online Sinkhorn allows to estimate potentials with accurate shapes, compared
-to SGD with RKHS representations \citep{2016-genevay-nips}.
 
-\subsection{Consistent estimation of Sinkhorn distances}
-
-We first work with discrete probabilities $(\alpha, \beta)$, to be able to compute a reference
-distance $\Ww(\alpha, \beta)$ and potentials $f^\star$, $g^\star$, using the Sinkhorn
-algorithm. We note that we do not hope to perform better than the Sinkhorn
-algorithm, as the constraint of online Sinkhorn yields unnecessary slow-downs in
-this case---instead, our purpose is simply to show the consistence of online
-Sinkhorn. We choose $\alpha$ and $\beta$ to be two simple discrete $1D$
-distributions, sampled from the one displayed in \autoref{fig:potentials}. We set
-$\varepsilon = 10^{-2} \max_{x,y} C(x,y)$. We
-compare the performance of Sinkhorn, online Sinkhorn and random Sinkhorn,
-measuring $\Vert f - f^\star \Vert_{\text{var}} + \Vert g - g^\star
-\Vert_{\text{var}}$ and the absolute error $| \Ww_t - \Ww |$ versus the number
-of computations performed--- the evaluation of $C(x_i, y_i)$ and the computation
-of each addition in the $C$-transform are elementary computation units.
-Additionaly, we report the curves using out-of-loop averaging. 
+We first consider discrete distributions $(\alpha, \beta)$, to be able to
+compute reference distance $\Ww(\alpha, \beta)$ and potentials $f^\star$,
+$g^\star$, using Sinkhorn's algorithm. The goal here is not to perform better
+than the Sinkhorn algorithm in the long run. Indeed, the constraints of online
+Sinkhorn yields unnecessary slow-downs when dealing with small discrete
+distributions. Rather, our purpose is to illustrate the consistence of online
+Sinkhorn. We choose $\alpha$ and $\beta$ to be two discrete 1-D distributions,
+$\Xx=\RR$, sampled from the continuous densities displayed in
+\autoref{fig:potentials}. We set $\varepsilon = 10^{-2} \max_{x,y}
+C(x,y)=\norm{x-y}^2$ and use $\eta_t = \frac{1}{\sqrt{t}}$ for online Sinkhorn,
+in all experiments. We compare the performance of Sinkhorn, online Sinkhorn and
+random Sinkhorn, measuring $\Vert f - f^\star \Vert_{\text{var}} + \Vert g -
+g^\star \Vert_{\text{var}}$ and the absolute error $| \Ww_t - \Ww |$ versus the
+number of computations performed--- the evaluation of $C(x_i, y_i)$ and the
+computation of each addition in the $C$-transform being considered as elementary
+computation units. We further report the curves using out-of-loop, $\gamma_t =
+\frac{1}{\sqrt{t}}$ averaging. 
 
 \paragraph{Results.} We report convergence curves in \autoref{fig:convergence}.
 Compared to the subsampled Sinkhorn algorithm that computes a biased estimate of
 the distance $\Ww$ (purple), the online Sinkhorn algorithm successfully
 estimates the distance and the associated potentials, despite performing only
-partial $C$-transforms (green). Random Sinkhorn (red) finds a decent estimation
+partial $C$-transforms (red). Random Sinkhorn (blue) finds a decent estimation
 of the distance and potentials, with fewer computations than the full Sinkhorn
 algorithm, but fails to converge. Averaging the random Sinkhorn iterations finds
 a biased estimation. The vanilla online Sinkhorn converges towards the true
@@ -55,85 +61,91 @@ the original problem, although this should be further investigated.
     \centering
     \includegraphics[width=\linewidth]{early_compute}
     \caption{Using online Sinkhorn during the initial computation of the cost
-     matrix brings a significant speed-up to the Sinkhorn algorithm: it provides
-     good estimates of the potentials $f_t$ and $g_t$ usable as initializaiton
-     for the first full Sinkhorn iteration. Curves averaged over 5 runs. \label{fig:early_compute}}
+     matrix accelerates the Sinkhorn algorithm: it provides good estimates of
+     the potentials $f$ and $g$ to warm start the full Sinkhorn algorithm.
+     Curves averaged over 5 runs. \label{fig:early_compute}}
 \end{figure}
 
 \subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
 
-The Sinkhorn algorithm requires to compute the matrix $C$ prior to estimating
-the first potentials $f_1$ and $g_1$. Online Sinkhorn jointly computes this
-matrix with first sketches of the potentials. We therefore assess the
-performance of the following \textit{online+full Sinkhorn} algorithm in a
-discrete setting: online Sinkhorn is run for the first $n_t$ iterations, until
-the cost matrix $C$ is completely evaluated. At this point (iteration $t$),
-online Sinkhorn provides the estimates $f_{t}, g_{t}$. From then, the algorithm
-only performs full Sinkhorn updates.
+The discrete Sinkhorn algorithm requires to compute a full matrix $\hat C \eqdef
+(C(x_i,y_i))_{i,j}$  of size $N \times N$, prior to estimating the
+potentials $f_1$ and $g_1$ by a first $C$-transform. In contrast, online Sinkhorn can progressively
+computes this matrix while computing first sketches of the potentials. We therefore
+assess the performance of the following \textit{online+full Sinkhorn} algorithm
+in a discrete setting: online Sinkhorn is run with batch-size $n$ during the first iterations, until
+observing each sample of $[1,N]$, i.e. until the cost matrix $C$ is completely evaluated.
+At this point (iteration $t$), online Sinkhorn provides the estimates $f_{t},
+g_{t}$. From then, the algorithm only performs full Sinkhorn updates.
 
 \begin{figure*}[t]
     \centering
     \includegraphics[width=\linewidth]{continuous.pdf}
-    \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stage of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$).}
+    \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stages of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$). $\varepsilon = 10^{-2} \max \hat C$.}
+
     \label{fig:potentials}
 \end{figure*}
 
 
 \paragraph{Results.} We report convergence curves in
 \autoref{fig:early_compute}. The proposed scheme indeed provides an improvement
-upon Sinkhorn algorithm. After $N^2$ computation (the cost of estimating $C$),
-both the function value and distance to optimum are lower using our scheme: the
-Sinkhorn algorithm can operate on initial good approximations of optimal
-potentials, provided for approximately twice the cost of estimating the matrix
-$C$ in dimension $1$. The \textit{online+full} Sinkhorn algorithm thus keep an
-advantage over the full Sinkhorn algorithm over time. Note that the cost of
-estimating these potentials becomes negligible as the dimension increase---the
-cost of computing $C$ dominates. This strongly advocates for using an online
-scheme as a warm-up for regularized OT estimation. The gain decrease with
-$\epsilon$, but remains important even for $\epsilon = 10^{-4} \max C$ (see
-appendix). We add that using a
-sampling-without-replacement scheme brings an additional speed-up (see appendix), as well as out-of-loop averaging.
+upon Sinkhorn algorithm. After $N^2$ computation (the cost of estimating the
+full matrix $\hat C$), both the function value and distance to optimum are lower
+using our scheme: the full Sinkhorn algorithm then operates from a good
+initialization for potentials. Computing those cost approximately as much as
+estimating the matrix $\hat C$ in dimension $1$. The \textit{online+full}
+Sinkhorn algorithm then maintain an advantage over the full Sinkhorn algorithm
+over time. Note that the cost of estimating initial potentials becomes negligible
+as the dimension increase---the cost of computing $\hat C$ dominates. This
+strongly advocates for using an online scheme as a warm-up for regularized OT
+estimation. We note that using smaller batch-size $n$ may lead to higher speed-up (here, $n=50$ performs better than $n=100$).
+There is an optimal $n$. The speed gain decreases with $\epsilon$, but remains
+significant even for $\epsilon = 10^{-4} \max \hat C$. We add that
+using a sampling-without-replacement scheme brings an additional speed-up. Out-of-loop averaging is also beneficial. We refer to the appendix for additional figures.
 
 \subsection{Continuous potential estimation}
 
 Finally, we measure the performance of our algorithm in a truly continuous
-setting, where $\alpha$ and $\beta$ are parametric distributions (Gaussian
-mixtures) from which we sample. In the absence of reference $\Ww$ (which is
-precisely not computable without a method akin to ours), we monitor the
+setting, where $\alpha$ and $\beta$ are $1$-D parametric distributions (Gaussian
+mixtures) from which we sample. In the absence of reference $\Ww$ (which cannot be accurately computed
+without a method akin to ours), we monitor the
 trajectories of the potentials, and compare them to the Sinkhorn potentials for
-realisation of $\alpha$ and $\beta$ of size $n=2000$. We also monitor the
+realization of $\alpha$ and $\beta$ of size $n=2000$. We also monitor the
 estimated transportation plan $\hat \pi_t = (\alpha \otimes \beta)
 \exp(\frac{f\oplus g - C}{\varepsilon}) \in \Mm^+(\Xx)^2$. We run the experiments with
 $n_T=5000$.
 
 \paragraph{Results.} We show the convergence trajectories of the potentials in
-\autoref{fig:potentials}. Online Sinkhorn refines the potentials $(f_t, g_t)_t$ until convergence. Our usage of the natural potential parametrization \eqref{eq:param}
-allows the iterates to quickly identify the correct function shape. The final
-plan is undistinguishable from the true transportation plan. Quantitative values
-converge similarly to the curves in \autoref{fig:convergence}.
+\autoref{fig:potentials}. Online Sinkhorn refines the potentials $(f_t, g_t)_t$ until convergence. The fact that our method uses an adapted potential parametrization~\eqref{eq:param}
+allows the iterates to quickly identify the correct shape of the optimum. The
+final plan is undistinguishable from the true transportation plan. Quantitative
+values (distance to true potentials, error in Sinkhorn distance estimation) converge as in
+\autoref{fig:convergence}.
 
-\paragraph{Comparison to concurrent approach.} Finally, we compare online
-Sinkhorn to constructing representations of Sinkhorn potentials in universal
-RKHS \cite{2016-genevay-nips}. This competing approach sets $f_t(\cdot) =
-\sum_{i=1}^{n_t} \alpha_t \kappa(\cdot, x_i)$, with similar $g_t$, where $\kappa$ is
-a reproducing kernel (typically a Gaussian). This differs from the
+\paragraph{Comparison to concurrent approach.}\label{sec:compare}Finally, we compare online
+Sinkhorn to constructing representations of Sinkhorn potentials using universal
+RKHS~\cite{2016-genevay-nips}. This competing approach sets $f_t(\cdot) =
+\sum_{i=1}^{n_t} \alpha_t \kappa(\cdot, x_i)$ (and similarly for $g_t$), where $\kappa$ is
+a reproducing kernel (typically a Gaussian). This differs significantly from the
 representations that we propose, for which $\exp(-f_t)$, and not $f_t$, is
-expressed as a Gaussian mixture. With RKHS representations of potentials, the
+expressed as a kernel mixture. 
+%
+With RKHS representations of potentials, the
 dual problem \eqref{eq:sinkhorn} can be solved using stochastic gradient
 descent, with theoretical convergence guarantees. As advocated by the authors,
-we run a grid over the bandwidth parameter $\sigma$ to select the best
-performing runs. We set $n_T = 50000$, and $\epsilon = 10^{-1} \max C$. We could not obtain converging runs for SGD with lower $\epsilon$.
+we run a grid search over the bandwidth parameter~$\sigma$ of the Gaussian kernel to select the best
+performing runs. We set $n_T = 50000$, and $\epsilon = 10^{-1} \max C$. We could not successfully use the RKHS method for lower $\epsilon$.
 
-We compare the final potentials and associated
-transportation plans in \autoref{fig:comparison_rkhs}. Our method estimates
-potentials with much less errors, especially in areas where the mass of $\alpha$
-and $\beta$ is low. Its computational complexity is comparable. Furthermore, it
-does not require to set any hyperparameters, whereas we observed RKHS SGD to be
-very sensitive to bandwidth selection.
+We compare the final potentials and associated transportation plans in
+\autoref{fig:comparison_rkhs}. Our method estimates potentials with much less
+errors, especially in areas where the mass of $\alpha$ and $\beta$ is low. The
+computational complexity of both algorithm is comparable. Online Sinkhorn does
+not require to set any hyperparameters, whereas we observed that SGD in RKHS is very
+sensitive to bandwidth selection.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{continuous_francis-crop.pdf}
-    \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential \citep{2016-genevay-nips}, with best bandwidth parameter. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its more appropriate parametrization.}
+    \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential \citep{2016-genevay-nips}, with best bandwidth parameter. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its more appropriate parametrization. $\varepsilon = 10^{-1} \max \hat C$,}
     \label{fig:comparison_rkhs}
 \end{figure}

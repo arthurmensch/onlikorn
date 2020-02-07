@@ -16,7 +16,7 @@ We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:u
     The random Sinkhorn algorithm \eqref{eq:updates} yields a time-homogeneous
     Markov chain ${(f_t, g_t)}_t$ which is $(\hat \alpha_s, \hat \beta_s)_{s \leq
     t}$ measurable, and weak-star converges toward a stationary distribution
-    $(F_\infty, G_\infty) \in \Pp(\Cc(\Cc)^2)$ independent of the initialization
+    $(F_\infty, G_\infty) \in \Pp(\Cc(\Xx)^2)$ independent of the initialization
     point $(f_0, g_0)$.
 \end{proposition}
 
@@ -27,9 +27,8 @@ fact that $\Ctrans{\cdot}{\hat \beta}$ and $\Ctrans{\cdot}{\hat \alpha}$ are
 $\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$.
 
 Note that using the law of large number for Markov chains
-\citep{breiman_strong_1960}, the out-of-loop averages $\exp(-\bar f_t),
-\exp(-\bar f_t)$ converge to $\EE[\exp(-F_\infty)] \in \Cc(\Xx)$, that verifies
-the following fixed point equations
+\citep{breiman_strong_1960}, the out-of-loop averages $\exp(-\bar f_t)$ for
+converge to $\EE[\exp(-F_\infty)] \in \Cc(\Xx)$ for $\gamma_t = \frac{1}{t}$. This expectation verifies the following fixed point equations
 \begin{align}
     \EE[\exp(-F_\infty)] &=
      \dotp{\beta}{\EE[\exp(G_\infty)] \exp(-C)} \\
@@ -48,7 +47,7 @@ We leave the quantification of this approximation for future work.
 \paragraph{Noise-free online Sinkhorn.}
 
 Variance reduction is therefore necessary, to ensure that the limit stationary
-distribution is deterministic. The following proposition shows that the modified online Sinkhorn algorithm converges in the absence of noise.
+distribution is deterministic. The following proposition shows that the modified "slowed-down" online Sinkhorn algorithm converges in the absence of noise.
 
 \begin{proposition}\label{eq:deterministic}
     We suppose that $\hat \alpha_t = \alpha$, $\hat \beta_t = \beta$ for all
@@ -61,23 +60,25 @@ distribution is deterministic. The following proposition shows that the modified
          \to \Ww(\alpha, \beta).
     \end{gather}
 \end{proposition}
-Note that, due to the fact that we perform simultaneous updates and slow them
-down, we only obtain the convergence of $f_t \to f^\star + A$, and $g_t \to
-g^\star$, where $f^\star$ and $g^\star$ are solutions of \eqref{eq:wass} and $A$
-is a constant depending on initialization. This is only a small caveat, as we
-can average the potentials and their soft $C$-transform to remove the offset
-$A$ (which corresponds to~\eqref{eq-dist-est}). When estimating $f^\star$ for training purposes, this is not necessary, as exposed in \autoref{sec:gradient}.
-
+Note that, due to the fact that we perform simultaneous updates, we only obtain
+the convergence of $f_t \to f^\star + A$, and $g_t \to g^\star$, where $f^\star$
+and $g^\star$ are solutions of \eqref{eq:wass} and $A$ is a constant depending
+on initialization. This is only a small caveat, as we can average the potentials
+and their soft $C$-transform as in \eqref{eq-dist-est} to remove the offset $A$.
+This is not necessary when using the Sinkhorn distance as a loss for training
+purposes, e.g. for generative modeling or barycenter estimation as in
+\citet{staib2017parallel}. Backpropagation through the Sinkhorn distance indeed
+relies only on the gradients of the potentials $\nabla_x f^\star(\cdot)$,
+$\nabla_y g^\star(\cdot)$ \citep[e.g.][]{cuturi2018semidual}.
 %%%
 \paragraph{Online Sinkhorn.}
 
 Finally, we state a result on the complete online Sinkhorn algorithm, which converges with high probability.
- 
 \begin{proposition}
-    Assume that $\Vert f_0 - f^\star \Vert_{\text{var}} < 1$ and $\Vert f_0 -
-    f^\star \Vert_{\text{var}} < 1$, $\sum_t \eta_t = \infty$ and $\sum_t
-    \eta_t^2 < \infty$. Then, with a probability which can be as close to $1$
-    as possible by decreasing the step-sizes,
+    Assume that $\Vert f_0 - f^\star \Vert_{\text{var}} \leq 1$ and $\Vert g_0 -
+    g^\star \Vert_{\text{var}} \leq 1$, $\sum_t \eta_t = \infty$ and $\sum_t
+    \eta_t^2 < \infty$ and fix a level of confidence $\delta$. Then, with
+    probability $1- \delta$, provided that $\eta_t$ is small enough,
     \begin{gather}
         \Vert f_t - f^\star \Vert_{\text{var}} + \Vert g_t - 
         g^\star \Vert_{\text{var}} \to 0 \\
@@ -85,7 +86,6 @@ Finally, we state a result on the complete online Sinkhorn algorithm, which conv
         \to \Ww(\alpha, \beta).
     \end{gather}
 \end{proposition}
-% 
-This result relies on Proposition 4 from \citet{zhou2017convergence}, that show convergence with
-high probability of stochastic mirror descent with non-convex but locally coherent functionals.
+This result relies on Theorem 5.2 from~\citet{zhou2017convergence}, that establish convergence with
+high probability of stochastic mirror descent applied to non-convex but locally coherent objectives. In particular, the proof of this results does not rely on the finite dimension of the ambiant space.
 

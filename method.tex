@@ -3,8 +3,8 @@
 \section{OT distances from sample streams}
 
 We introduce an online adaptation of the Sinkhorn algorithm, the major
-contribution of this paper. We construct an estimator of $f^\star$ and $g^\star$
-and $\Ww(\alpha,\beta)$ using successive sets of samples $(\hat \alpha_t)_t =
+contribution of this paper. We construct an estimator of $f^\star$, $g^\star$
+and $\Ww(\alpha,\beta)$ using successive sets of samples ${(\hat \alpha_t)}_t =
 \frac{1}{n} \sum_{i=n_t + 1}^{n_{t+1}} \delta_{x_i}$ and ${(\hat \beta_t)}_t$,
 where we set $n_t = nt$. $(\hat \alpha_t)_t$ and $(\hat \beta_t)_t$ may be seen
 as mini-batches of size $n$ within a training procedure, or as a temporal stream
@@ -65,15 +65,15 @@ stationary distribution independant of initialization.
 \paragraph{Online Sinkhorn.}
 
 To ensure convergence towards the potentials $(f^\star, g^\star)$ (up to a
-constant factor), we must therefore take more cautions steps---in other words,
+constant factor), we must therefore take more cautious steps---in other words,
 we cannot afford to forget past iterates to obtain a consistent estimation of
 potentials. We introduce a learning rate in Sinkhorn iterations, that averages
 the past representations and the newly computed noisy $C$-transforms.
 \begin{equation}\label{eq:updates}
-    e^{-f_{t+1}}
-    \eqdef (1 - \eta_t) e^{-f_t} 
+    \exp(-f_{t+1})
+    \eqdef (1 - \eta_t) \exp(-f_t) 
     + \eta_t 
-    e^{-\Ctrans{g_t}{\hat \beta_t}},
+    \exp(-\Ctrans{g_t}{\hat \beta_t}),
 \end{equation}
 and similarly for $g_t$. Performing the averaging over the space of inverse
 scalings $(e^{-\hat f_{t}},e^{-\hat g_{t}})$ yields simple updates for the
@@ -93,18 +93,18 @@ this estimation is sufficient for most applications aiming at minimizing a Sinkh
 If required, it is however possible to estimate the Sinkhorn distance using our method, by performing a final soft $C$-transform, using $\Oo(n_T^2)$ operations:
 \begin{equation}\label{eq-dist-est}
     \Ww_t = \frac{1}{2}\Big(\dotp{\bar \alpha_T}{f_T + \Ctrans{g_T}{\bar \alpha_T}}
-     + \dotp{\bar \beta_T}{g_T + \Ctrans{f_T}{\bar \alpha_T}}\Big),
+     {+} \dotp{\bar \beta_T}{g_T {+} \Ctrans{f_T}{\bar \alpha_T}}\Big),
 \end{equation}
 where $\bar \alpha_t \eqdef \frac{1}{n_{t+1}}\sum_{i=1}^{n_{t+1}} \delta_{x_i}$
-and $\bar \beta_t$ gather previous samples.
+and $\bar \beta_t$ gather previous observed samples.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
     \Input Distribution $\alpha$ and $\beta$, learning weights ${(\eta_t)}_t$
     \State Set $p_i = q_i = 0$ for $i \in (0, n_t]$
     \For{$t= 0, \dots, {T-1}$}
-        \For{$i = j \in (0, n_t]$}
-        \State $q_j \gets q + \log(1 - \eta_t)$, $p_i \gets p + \log(1 - \eta_t)$,
+        \For{$i \in (0, n_t]$}
+        \State $q_i \gets q_i + \log(1 - \eta_t)$, $p_i \gets p_i + \log(1 - \eta_t)$,
         \EndFor
         \State Sample $(x_i)_{(n_t, n_{t+1}]} \sim \alpha$, $(y_j)_{(n_t, n_{t+1}]} \sim \beta$
         \For{$i \in (n_t, n_{t+1}]$}
@@ -130,10 +130,11 @@ and $\bar \beta_t$ gather previous samples.
 \subsection{Algorithm, complexity and refinements}\label{sec:alg}
 
 The pseudo-code of online Sinkhorn is detailed in \autoref{alg:online_sinkhorn}.
+We perform the updates for $q_i$ and $p_i$ in log-space, for numerical stability reasons.
 Each iteration has complexity $\Oo(t\,n^2)$, due to the evaluation of the
 distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$, $(y_i)_{(n_t, n_{t+1}]}$
 and to the computation of the
-soft $C$-transforms. Online Sinkhorn progressively estimates a distance matrix
+soft $C$-transforms. Online Sinkhorn estimates and record a distance matrix
 $(C(x_i,y_j))_{i,j}$ on the fly, in parallel to the update of the potentials
 $f_t$ and $g_t$. In total, its computation cost after drawing $n_t$ samples is
 $\Oo(n_t^2)$, and its memory cost is $\Oo(n_t)$.
@@ -155,11 +156,12 @@ amounts to replace, after iteration $t$, for all $i \in (0, n_{t+1}]$,
 \end{align}
 and similarly for each $p_i$. This corresponds to performing one step of the
  discrete Sinkhorn algorithm with distributions $\bar \alpha_t$ and $\bar
- \beta_t$. This reduces the dual cost $F_{ \bar \alpha, \bar \beta}(f_t,
- g_t)$, and on average, the energy $F_{\alpha, \beta}$. This
- reweighted scheme (akin to the fully-corrective Frank-Wolfe scheme \cite{lacoste2015global}) has
- a cost in $\Oo(n_t^2)$. In practice, it can be used only every $k$ iterations, with $k$
- increasing with $t$.
+ \beta_t$. This reduces the dual cost $F_{ \bar \alpha, \bar \beta}(f_t, g_t)$,
+ and on average, the energy $F_{\alpha, \beta}$. This reweighted scheme (akin to
+ the fully-corrective Frank-Wolfe scheme from \citet{lacoste2015global}) has a cost in
+ $\Oo(n_t^2)$. In practice, it can be used only every $k$ iterations, with $k$
+ increasing with $t$. We study a combination of partial and full updates in
+ \autoref{sec:accelerating}.
 
 %%%%%
 \paragraph{Memory compression.} 
@@ -178,13 +180,13 @@ weights and potentials as
     f_t(\cdot) &\gets - \log\sum_{J=1}^{M_t} \exp(Q_J - C(\cdot, \bar Y_J)),
 \end{align}
 and similarly for $(p_I)_I$ and $g_t$. Once again, this operation should be made
-once every $k$ iterations. We can force $M_t$ to stay constant after linearly increasing in a first stage.
+once every $k$ iterations. We can force $M_t$ to stay constant after linearly increasing in a first stage. The empirical validation of this approach is left for future work.
 
 \paragraph{Out-of-loop averaging, finite samples.} Optionally, we may also
 compute out-of-loop averages of potentials
 \begin{align}
-    \exp(-\bar f_{t+1}) = (1 - \frac{1}{t}) \exp(-\bar f_t) + \frac{1}{t} \exp(-\hat f_t), \\
-    \exp(-\bar g_{t+1}) = (1 - \frac{1}{t}) \exp(-\bar g_t) + \frac{1}{t} \exp(-\hat g_t),
+    \exp(-\bar f_{t+1}) = (1 - \gamma_t) \exp(-\bar f_t) + \gamma_t \exp(-\hat f_t), \\
+    \exp(-\bar g_{t+1}) = (1 - \gamma_t) \exp(-\bar g_t) + \gamma_t \exp(-\hat g_t),
 \end{align}
 to further reduce the estimation variance. We show in \autoref{sec:exps} that
 this averaging is efficient in practice. Finally, we note that our algorithm
@@ -239,7 +241,7 @@ The gradient of this function and of its Fenchel conjugate $\omega^\star:
 The gradient $\nabla F(\mu, \nu)$ of the objective $F$ appearing
 in~\eqref{eq:wass_reparam} is a continuous function
 \begin{equation}
-    \nabla_\mu F(\mu, \nu) = \frac{1}{\frac{\d\mu}{\d\alpha}} - \int_{y \in \Xx}
+    \nabla_\mu F(\mu, \nu) = - \frac{1}{\frac{\d\mu}{\d\alpha}} + \int_{y \in \Xx}
     \frac{\d \nu}{\d \beta}(y) \exp(- C(\cdot, y)) \d \beta(y)
 \end{equation}
 and similarly for $\nabla_\nu F$.
@@ -271,7 +273,7 @@ their associated potentials $f_t$ and $g_t$ are parametrized as
 \eqref{eq:param}. In particular, $\mu_t$ and $\nu_t$ remains absolutely
 continuous with respect to $\alpha$ and $\beta$ respectively, so that the
 Kullbach-Leibler divergence terms are always finite. Note that the mirror descent
-we consider operates in an infinite-dimensional space.
+we consider operates in an infinite-dimensional space, which is valid under mild conditions \citep{hsieh2018finding}.
 
 Finally, we mention that  when computing exact gradient (in the absence of noise) and when using constant step-size of
 $\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variable. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\cite{mishchenko2019sinkhorn}. 
