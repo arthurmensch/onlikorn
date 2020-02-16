@@ -2,61 +2,33 @@
 
 \input{preamble.tex}
 
-% \renewcommand*{\bibfont}{\small}
-\graphicspath{{./figures/}}
 
-\usepackage{icml2020}
+\def\icml{1}
 
-% If accepted, instead use the following line for the camera-ready submission:
-%\usepackage[accepted]{icml2020}
-
-% The \icmltitle you define below is probably too long as a header.
-% Therefore, a short form for the running title is supplied here:
-\icmltitlerunning{Online Sinkhorn: optimal transportation distances from sample streams}
+\if\icml1
+\input{icml_preamble.tex}
+\else
+\input{neutral_preamble.tex}
+\fi
 
 \begin{document}
 
-\twocolumn[
-\icmltitle{Online Sinkhorn: optimal transportation distances from sample streams}
+\begin{bibunit}
 
-% It is OKAY to include author information, even for blind
-% submissions: the style file will automatically remove it for you
-% unless you've provided the [accepted] option to the icml2020
-% package.
 
-% List of affiliations: The first argument should be a (short)
-% identifier you will use later to specify author affiliations
-% Academic affiliations should list Department, University, City, Region, Country
-% Industry affiliations should list Company, City, Region, Country
-
-% You can specify symbols, otherwise they are numbered in order.
-% Ideally, you should not use this facility. Affiliations will be numbered
-% in order of appearance and this is the preferred way.
-\icmlsetsymbol{equal}{*}
-
-\begin{icmlauthorlist}
-\icmlauthor{Arthur Mensch}{ens}
-\icmlauthor{Gabriel Peyré}{ens}
-\end{icmlauthorlist}
-
-\icmlaffiliation{ens}{ENS, DMA, Paris, France}
-
-\icmlcorrespondingauthor{Arthur Mensch}{arthur.mensch@m4x.org}
-
-% You may provide any keywords that you
-% find helpful for describing your paper; these are used to populate
-% the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{Non-convex optimisation, game theory, GANs}
-
-\vskip 0.3in
-]
-
-\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
-% \printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
+\if\icml1
+\input{icml_heading.tex}
+\else
+\input{neutral_heading.tex}
+\fi
 
 \begin{abstract}
   \input{abstract.tex}
 \end{abstract}
+
+\if\icml0
+\medskip
+\fi
 
 \input{introduction.tex}
 
@@ -72,18 +44,24 @@
 
 \input{conclusion.tex}
 
+\if\icml0
+\section{Acknowledgements}
+This work was supported by the European Research Council (ERC project NORIA). A.M thanks Anna Korba for helpful discussions on mirror descent algorithms, and Thibault Séjourné for suggesting relevant references.
+\fi
 
+\putbib
+\end{bibunit}
 
-% \section{Acknowledgements}
-% This work was supported by the European Research Council (ERC project NORIA).
+\appendix
 
-\pagebreak
-
-\bibliography{biblio}
-\bibliographystyle{icml2020}
+\begin{bibunit}
 
 \onecolumn
 
-\appendix
+\input{appendix.tex}
+
+\putbib
+
+\end{bibunit}
 
 \end{document}

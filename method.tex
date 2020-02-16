@@ -47,19 +47,19 @@ q_i)}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i} \subset~\Xx$ as
 Provided with fresh samples $(x_i, y_i)_{n_t < i \leq n_{t+1}}$, 
 corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive approach would 
  update the potentials using a noisy soft $C$-transform:
-\begin{equation}\label{eq:updates}
+\begin{equation}\label{eq:updates_naive}
      f_{t+1} = \Ctrans{g_t}{\hat \beta_t},
     \qquad g_{t+1} = \Ctrans{f_{t+1}}{\hat \alpha_t},
 \end{equation}
 which is equivalent to setting all $(q_i)_{i \leq n_t}$ to $0$, and assigning each weight
  $q_i$ to $g_t(y_i) - \log(n)$ for $n_t < i \leq  n_{t+1}$ and similarly for~$p_i$.
 %
-The variance of the updates~\eqref{eq:updates} does not decay through the
+The variance of the updates~\eqref{eq:updates_naive} does not decay through the
 iteration, hence \textit{random Sinkhorn} algorithm does nos converge.
-However, thanks to the contractance of the random operator $\Ctrans{\cdot}{\hat
+However, thanks to the contraction of the random operator $\Ctrans{\cdot}{\hat
 \beta_t}$ and $\Ctrans{\cdot}{\hat \alpha_t}$, \autoref{prop:markov} shows that
 that the Markov chain ${(f_t, g_t)}_t$ that it defines converges towards a
-stationary distribution independant of initialization.
+stationary distribution independent of initialization.
 
 %%%%%
 \paragraph{Online Sinkhorn.}
@@ -96,7 +96,7 @@ If required, it is however possible to estimate the Sinkhorn distance using our 
      {+} \dotp{\bar \beta_T}{g_T {+} \Ctrans{f_T}{\bar \alpha_T}}\Big),
 \end{equation}
 where $\bar \alpha_t \eqdef \frac{1}{n_{t+1}}\sum_{i=1}^{n_{t+1}} \delta_{x_i}$
-and $\bar \beta_t$ gather previous observed samples.
+and $\bar \beta_t$ gather previously observed samples.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
@@ -109,11 +109,11 @@ and $\bar \beta_t$ gather previous observed samples.
         \State Sample $(x_i)_{(n_t, n_{t+1}]} \sim \alpha$, $(y_j)_{(n_t, n_{t+1}]} \sim \beta$
         \For{$i \in (n_t, n_{t+1}]$}
             \State $q_i \gets 
-            - \log \frac{\eta_t}{n} 
-            \sum_{j=1}^{n_t} \exp(\frac{p_j - C(x_j, y_i)}{\varepsilon})$
+            \log(\eta_t) - \log \frac{1}{n_t} 
+            \sum_{j=1}^{n_t} \exp(p_j - C(x_j, y_i))$
             \State $p_i \gets 
-            - \log \frac{\eta_t}{n} 
-            \sum_{j=1}^{n_t} \exp(\frac{q_j - C(x_i, y_j)}{\varepsilon})$
+            \log(\eta_t) - \log \frac{1}{n_t} 
+            \sum_{j=1}^{n_t} \exp(q_j - C(x_i, y_j))$
         \EndFor
         \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (n_{t+1})$
         \State\hspace{2.45cm} $p_i = f_t(x_i) - \log (n_{t+1})$
@@ -224,7 +224,7 @@ $\alpha$ and $\mu$.
 %
 This objective is block convex in $\mu$, $\nu$, but not jointly convex. 
 %
-As we now detail, this problem can be solved using a stochastic mirror descent~\cite{beck2003mirror}, applied here over the Banach space of Radon measures on $\Xx$, equipped with the total variation norm. 
+As we now detail, this problem can be solved using a stochastic mirror descent~\citep{beck2003mirror}, applied here over the Banach space of Radon measures on $\Xx$, equipped with the total variation norm. 
 
 %%%
 \paragraph{Mirror maps and gradient.}
@@ -235,7 +235,7 @@ For this, we define the (convex) distance generating function $\Mm^+(\Xx)^2 \to 
 \end{equation}
 The gradient of this function and of its Fenchel conjugate $\omega^\star:
 \Cc(\Xx)^2 \to \RR$ yields two \textit{mirror maps}. For all $(\mu, \nu) \in
-\Mm^+(\Xx)^2$, $(\varrho, \varphi) \in \Cc(\Xx)^2, \varrho > 0, \varphi > 0$,
+\Mm^+(\Xx)^2$, $(\varrho, \varphi) \in \Cc(\Xx)^2, \varrho < 0, \varphi < 0$,
 \begin{equation}
     \nabla \omega(\mu, \nu) = (- \frac{\d \alpha}{\d \mu}, - \frac{\d \beta}{\d \nu} )
     \qquad \nabla \omega^\star(\varrho, \varphi)
@@ -279,7 +279,7 @@ Kullbach-Leibler divergence terms are always finite. Note that the mirror descen
 we consider operates in an infinite-dimensional space, which is valid under mild conditions \citep{hsieh2018finding}.
 
 Finally, we mention that  when computing exact gradient (in the absence of noise) and when using constant step-size of
-$\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variable. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\cite{mishchenko2019sinkhorn}. 
+$\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variable. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\citep{mishchenko2019sinkhorn}. 
 
 
 

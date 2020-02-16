@@ -5,8 +5,6 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
- 
-
 % Bold math
 \usepackage{bm}
 \usepackage{dsfont}
@@ -17,6 +15,8 @@
 \usepackage{nicefrac}
 \usepackage[super]{nth}
 \usepackage{microtype}
+
+\usepackage{multibib}
 
 \usepackage[english]{babel}
 
@@ -29,6 +29,8 @@
 
 
 \usepackage{graphicx}
+\graphicspath{{./figures/}}
+
 \usepackage{subcaption}
 
 % For colors
@@ -58,38 +60,6 @@ urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
 \renewcommand{\subsubsectionautorefname}{\S\@gobble}%
 }
 \makeatother
-
-% \makeatletter
-% \renewbibmacro*{textcite}{%
-%   \iffieldequals{namehash}{\cbx@lasthash}
-%     {\usebibmacro{cite:comp}}
-%     {\usebibmacro{cite:dump}%
-%      \iffirstcitekey
-%        {}
-%        {\textcitedelim}%
-%      \usebibmacro{cite:init}%
-%      \ifnameundef{labelname}
-%        {\printfield[citetitle]{labeltitle}}
-%        {\printnames{labelname}}%
-%      \mkbibsuperscript{%
-%      \usebibmacro{cite:comp}}%
-%      \stepcounter{textcitecount}%
-%      \savefield{namehash}{\cbx@lasthash}}}
-
-% \DeclareCiteCommand{\textcite}
-%   {\let\cbx@tempa=\empty
-%    \undef\cbx@lasthash
-%    \iffieldundef{prenote}
-%      {}
-%      {\BibliographyWarning{Ignoring prenote argument}}%
-%    \iffieldundef{postnote}
-%      {}
-%      {\BibliographyWarning{Ignoring postnote argument}}}
-%   {\usebibmacro{citeindex}%
-%    \usebibmacro{textcite}}
-%   {}
-%   {}
-% \makeatother
 
 % Float parameters, for more full pages.
 % From Gaël Varoquaux
@@ -124,17 +94,6 @@ urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
 \usepackage{mathtools} % for psmallmatrix
 \mathtoolsset{showonlyrefs}
 
-% Algorithm
-%\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
-%\algrenewcommand{\algorithmiccomment}[1]{$\vartriangleright$ #1}
-%\algrenewcommand{\algorithmicreturn}{\textbf{Return: }}
-%\algnewcommand\algorithmicinput{\textbf{Input: }}
-%\algnewcommand\Input{\State \algorithmicinput}
-
-\usepackage{footnote} % for footnotes
-\makesavenoteenv{algorithm}
-
 \usepackage{amsthm}
 
 \newtheorem{theorem}{Theorem}
@@ -162,9 +121,9 @@ urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
 \newcommand{\remarkautorefname}{Rmk.}
 
 \newcommand{\todo}[1]{{\color{red} TODO: #1}}
-\newcommand{\enscond}[2]{ \left\{ #1 \;:\; #2 \right\} }
-
-\newcommand{\Ctrans}[2]{T_{#2}(#1)}
-
 
 \input{commands.tex}
+
+\usepackage{bibunits}
+\defaultbibliography{biblio}
+\defaultbibliographystyle{icml2020}

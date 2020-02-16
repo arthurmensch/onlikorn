@@ -439,43 +439,38 @@ hence convergence !
 
 \section{Proofs}
 
-\subsection{A simple "local" convergence proof in the non-noisy case}
+\begin{proof}
 Remark that 
 \begin{align}
-    f_{k+1} &=  - \log (\exp(-f_k) (1 - \eta_k) + \eta_k \exp(-T(g_k, \beta))) \\ 
-    g_{k+1} &=  - \log (\exp(-g_k) (1 - \eta_k) + \eta_k \exp(-T(f_{k+1}, \alpha)))
+    f_{t+1} &=  - \log (\exp(-f_t) (1 - \eta_t) + \eta_t \exp(-T(g_t, \beta))) \\ 
+    g_{t+1} &=  - \log (\exp(-g_t) (1 - \eta_t) + \eta_t \exp(-T(f_{t+1}, \alpha)))
 \end{align}
 Let $(f^\star, g^\star)$ be a coupl of solution. There exists $x \in \Xx$ such that $\Vert
-f_{k+1} - f^\star \Vert_{\var} = |f_{k+1}(x) - f^\star(x)|$. For this~$x$, using
+f_{t+1} - f^\star \Vert_{\var} = |f_{t+1}(x) - f^\star(x)|$. For this~$x$, using
 the convexity of $- \log(x)$ (more or less the mirror map),
 \begin{align}
-    \Vert f_{k+1} - f^\star \Vert_{\var}
+    \Vert f_{t+1} - f^\star \Vert_{\var}
     &=
-     |- \log\big((1 - \eta_k) \exp(f^\star -f_k(x)) 
-     + \eta_k \exp(f^\star-T(g_k, \beta)(x)\big) |  \\
-    &\leq (1 - \eta_k) | f_k(x) - f^\star(x)| + \eta_k | T(g_k,\beta)(x) - f^\star(x)| \\
-    &\leq (1 - \eta_k) \Vert f_k - f^\star \Vert_{\var} + \eta_k
-    \Vert T(g_k,\beta) - T(g^\star, \beta) \Vert_{\var} \\
-    &\leq (1 - \eta_k) \Vert f_k - f^\star \Vert_{\var}
-     + \eta_k \kappa \Vert g_k - g^\star \Vert_{\var}
+     |- \log\big((1 - \eta_t) \exp(f^\star -f_t(x)) 
+     + \eta_t \exp(f^\star-T(g_t, \beta)(x)\big) |  \\
+    &\leq (1 - \eta_t) | f_t(x) - f^\star(x)| + \eta_t | T(g_t,\beta)(x) - f^\star(x)| \\
+    &\leq (1 - \eta_t) \Vert f_t - f^\star \Vert_{\var} + \eta_t
+    \Vert T(g_t,\beta) - T(g^\star, \beta) \Vert_{\var} \\
+    &\leq (1 - \eta_t) \Vert f_t - f^\star \Vert_{\var}
+     + \eta_t \tappa \Vert g_t - g^\star \Vert_{\var}
 \end{align}
 Similarly
 \begin{align}
-    \Vert g_{k+1} - f^\star \Vert_{\var} \leq
-    (1 - \eta_k) \Vert g_k - g^\star \Vert_{\var} +
-     \eta_k \kappa \Vert f_{k+1} - f^\star \Vert_{\var}
+    \Vert g_{t+1} - f^\star \Vert_{\var} \leq
+    (1 - \eta_t) \Vert g_t - g^\star \Vert_{\var} +
+     \eta_t \tappa \Vert f_{t+1} - f^\star \Vert_{\var}
 \end{align}
 Therefore
 \begin{align}
-    \Vert g_{k+1} - g^\star \Vert_{\var} + \Vert f_{k+1} - f^\star \Vert_{\var} \leq
-    (1 - \eta_k + \kappa^2 \eta_k^2)) ( \Vert f_k - f^\star \Vert_{\var} 
-     + \Vert g_k - g^\star \Vert_{\var} ),
+    \Vert g_{t+1} - g^\star \Vert_{\var} + \Vert f_{t+1} - f^\star \Vert_{\var} \leq
+    (1 - \eta_t + \tappa^2 \eta_t^2)) ( \Vert f_t - f^\star \Vert_{\var} 
+     + \Vert g_t - g^\star \Vert_{\var} ),
 \end{align}
-and we still have convergence as long as $\sum \eta_k = \infty$. This shows that
-\begin{equation}
-\frac{f_t + T(g_t,\beta)}{2},
-\frac{g_t + T(f_t, \alpha)}{2} \to f^\star, g^\star.
-\end{equation}
 
 \subsection{An adapted mirror descent convergence proof in the non-noisy case}
 

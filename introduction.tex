@@ -1,19 +1,27 @@
 %!TEX root = article.tex
 
-Optimal transport (OT) distances are fundamental in statistical learning, both as a tool for analyzing the convergence of various algorithms~\cite{canas2012learning,dalalyan2019user}, and as a data-dependent term for tasks as diverse as supervised learning~\cite{frogner2015learning}, unsupervised generative modeling~\cite{arjovsky2017wgan} or domain adaptation~\cite{courty2016optimal}.
+Optimal transport (OT) distances are fundamental in statistical learning, both
+as a tool for analyzing the convergence of various
+algorithms~\citep{canas2012learning,dalalyan2019user}, and as a data-dependent
+term for tasks as diverse as supervised learning~\citep{frogner2015learning},
+unsupervised generative modeling~\citep{arjovsky2017wgan} or domain
+adaptation~\citep{courty2016optimal}.
 %
 OT lifts a given distance over data points living in space $\Xx$ into a distance
-on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$. We refer to the monograph~\cite{santambrogio2015optimal} for a detailed mathematical treatement.
+on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$. We refer to the monograph of~\citet{santambrogio2015optimal} for a detailed mathematical treatment.
 %
 This distance has many favorable geometrical properties. In particular it allows one to compare distributions having disjoint supports. 
 % 
 Computing OT distance is usually performed by sampling once from the input
-distributions and solving a discrete linear program (LP), due to~\citet{Kantorovich42}. This approach is numerically costly and
-statistically unefficient \cite{weed2019sharp}. The optimisation problem depends
-on a fixed sampling of points from the data. It is therefore not adapted to
-machine learning setting where data is resampled continuously (e.g. in GANs), or
+distributions and solving a discrete linear program (LP), due
+to~\citet{Kantorovich42}. This approach is numerically costly and statistically
+inefficient \citep{weed2019sharp}. The optimisation problem depends on a fixed
+sampling of points from the data. It is therefore not adapted to machine
+learning setting where data is resampled continuously (e.g. in GANs), or
 accessed in an online manner. The goal of this paper is to develop an efficient
-online method able to estimate OT distances between continuous distributions. We will use a stream of data to refine an approximate optimal transport solution, adapting the celebrated Sinkhorn algorithm to an online setting.
+online method able to estimate OT distances between continuous distributions. We
+will use a stream of data to refine an approximate optimal transport solution,
+adapting the celebrated Sinkhorn algorithm to an online setting.
   
 
 
@@ -25,7 +33,7 @@ The most successful approach in this direction is to use an entropic barrier pen
 %
 When dealing with discrete distributions, this yields a problem that can be solved
 numerically using Sinkhorn-Knopp's matrix balancing
-algorithm~\cite{Sinkhorn64,sinkhorn1967concerning}.
+algorithm~\citep{Sinkhorn64,sinkhorn1967concerning}.
 %
 This approach was pushed forward for ML applications by
 \citet{cuturi2013sinkhorn}. Sinkhorn distances are smooth and amenable to GPU
@@ -41,7 +49,7 @@ training iteration of an outer algorithm. A cheap fix is to use Sinkhorn over
 mini-batches (see for instance~\citet{2018-Genevay-aistats} for an application
 to GANs). Yet this introduces a strong estimation bias, especially in high
 dimension ---see~\citet{fatras2019learning} for a mathematical analysis. In
-constrast, we use streams of mini-batches to progressively enrich a consistent representation of the
+contrast, we use streams of mini-batches to progressively enrich a consistent representation of the
 transport plan.
 
 \paragraph{Contributions.} Our paper proposes a new take on estimating optimal transport distances between continuous distributions. We make the following contribution
@@ -98,33 +106,34 @@ We review recent work on Sinkhorn distances and on the general problem of estima
 
 \paragraph{Sinkhorn properties.} Sinkhorn algorithm computes $\epsilon$-accurate
 approximations of OT in $O(n^2/\epsilon^3)$ operations for a number $n$ of
-samples~\cite{altschuler2017near} (in contrast to the $O(n^3)$ complexity for an
+samples~\citep{altschuler2017near} (in contrast to the $O(n^3)$ complexity for an
 exact solution). Moreover, these Sinkhorn distances does not suffers from the
-curse of dimensionality~\cite{2019-Genevay-aistats}, since the average error
+curse of dimensionality~\citep{2019-Genevay-aistats}, since the average error
 using $n$ random samples decays like $O(\epsilon^{-d/2}/\sqrt{n})$ in dimension
 $d$, in sharp contrast with the slow $O(1/n^{1/d})$ error decay of
-OT~\cite{dudley_speed_1969,weed2019sharp}. These Sinkhorn distances can furthermore be sharpened
-by entropic debiasing~\cite{2019-Feydy-aistats}. Our work is rather orthogonal to these references, as it focuses on estimating distances between continuous distributions.
+OT~\citep{dudley_speed_1969,weed2019sharp}. These Sinkhorn distances can furthermore be sharpened
+by entropic debiasing~\citep{2019-Feydy-aistats}. Our work is rather orthogonal to these references, as it focuses on estimating distances between continuous distributions.
 
-\paragraph{Continuous optimal transport.} Extending OT computations to arbitrary distributions
-(possibly having continuous densities) without relying on a fixed a priori
-sampling is an emerging topic of interest. A special case is the semi-discrete
-setting, where one of the two distributions is discrete. Without regularization,
-over an Euclidean space, this can be solved efficiently using the computation of
-Voronoi-like diagrams~\cite{merigot2011multiscale}. This idea can be extended to
-entropic-regularized OT~\cite{cuturi2018semidual}, and can also be coupled with
-stochastic optimization method~\cite{2016-genevay-nips} to tackle high
-dimensional problems (see also~\citet{staib2017parallel} for an extension to Wasserstein barycenters). 
+\paragraph{Continuous optimal transport.} Extending OT computations to arbitrary
+distributions (possibly having continuous densities) without relying on a fixed
+a priori sampling is an emerging topic of interest. A special case is the
+semi-discrete setting, where one of the two distributions is discrete. Without
+regularization, over an Euclidean space, this can be solved efficiently using
+the computation of Voronoi-like diagrams~\citep{merigot2011multiscale}. This
+idea can be extended to entropic-regularized OT~\citep{cuturi2018semidual}, and
+can also be coupled with stochastic optimization
+method~\citep{2016-genevay-nips} to tackle high dimensional problems (see
+also~\citet{staib2017parallel} for an extension to Wasserstein barycenters). 
 
 When dealing with arbitrary continuous densities, which are accessed through a
 stream of random samples, the challenge is to approximate  the (continuous) dual
 variables of the regularized Kantorovich LP using parametric or non-parametric
 classes of functions. For application to generative model fitting, one can use
 deep networks, which leads to an alternative formulation of Generative
-Adversarial Networks (GANs)~\cite{arjovsky2017wgan} (see
+Adversarial Networks (GANs)~\citep{arjovsky2017wgan} (see
 also~\citet{seguy2018large} for an extension to the estimation of transportation
 maps). There is however no theoretical guarantees for this type of dual
 approximations, due to the non-convexity of the resulting optimization problem.
 To our knowledge, the only mathematically rigorous algorithm uses reproducing
-Hilbert space representations of potentials~\cite{2016-genevay-nips}. As this
+Hilbert space representations of potentials~\citep{2016-genevay-nips}. As this
 construction is generic to all optimisation problems over functions, the convergence is slow. The representations we introduce outperform RKHS representations (\autoref{sec:compare}).

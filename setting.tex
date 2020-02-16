@@ -16,7 +16,7 @@ distributions over the space $\Xx$.
 
 The Wasserstein cost between two probability distributions $(\alpha, \beta) \in \Pp(\Xx)^2$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
 linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$):
-\begin{equation}\label{eq:wass}
+\begin{equation}\label{eq:wass_0}
     \Ww_{C,0}(\alpha, \beta) \eqdef 
     \min_{\pi \in \Pp(\Xx^2)}
     \enscond{
@@ -30,7 +30,7 @@ $\pi_1 = \int_{y\in \Xx} \d \pi(\cdot, y)$ and $\pi_2 = \int_{x\in \Xx} \d
 When $C=d^p(x,y)$ is the $p^{\text{th}}$ power of the ground distance, with $p
 \geq 1$, then $\Ww_{C,0}^{\frac{1}{p}}$ is itself a distance over $\Pp(\Xx)$, whose
 associated topology is the one of the convergence in
-law~\cite{santambrogio2015optimal}.
+law~\citep{santambrogio2015optimal}.
 
 \paragraph{Entropic regularization and Sinkhorn algorithm.} 
 
@@ -69,7 +69,10 @@ Problem \eqref{eq:dual} can be solved by alternated maximization, which is itsel
     \Ctrans{h}{\mu} \triangleq 
     - \log \int_{y \in \Xx}\!\! \exp(h(y) - C(\cdot, y))\d \mu(y).\label{eq:sinkhorn}
 \end{align}
-The operation $h \mapsto \Ctrans{h}{\mu}$  maps a continuous function to another continuous function, and is a smooth approximation of the celebrated $C$-transform of OT~\cite{santambrogio2015optimal}. We thus refer to it as a \textit{soft C-transform}. 
+The operation $h \mapsto \Ctrans{h}{\mu}$  maps a continuous function to another
+continuous function, and is a smooth approximation of the celebrated
+$C$-transform of OT~\citep{santambrogio2015optimal}. We thus refer to it as a
+\textit{soft C-transform}. 
 %
 The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are
 \textit{functions}. 
@@ -128,7 +131,7 @@ much more than $10^5$. We may wonder wether we can improve the estimation of
 $\Ww_{C,\epsilon}(\alpha,\beta)$ using several sets of samples $(\hat
 \alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of reasonable size to
 allow Sinkhorn estimation, and may for example come from a temporal stream.
-\citet{2018-Genevay-aistats} proposes to use a Monte-Carlo estimate $\hat
+\citet{2018-Genevay-aistats} propose to use a Monte-Carlo estimate $\hat
 \Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t, \beta_t)$.
 However, this yields a biased estimation as the distance $\Ww(\alpha,
 \beta)$ differs from its expectation under sampling $\EE_{\hat \alpha \sim

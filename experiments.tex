@@ -14,7 +14,7 @@ the geometry of the dual, significantly improving the result using SGD with RKHS
 expansions~\citep{2016-genevay-nips}. Numpy and Pytorch code are provided with
 this manuscript.
 
-\subsection{Consistent estimation of Sinkhorn distances}
+\subsection{Consistent estimation of Sinkhorn distances}\label{sec:exp1}
 
 \begin{figure}[t]
     \centering
@@ -73,6 +73,20 @@ the original problem, although this should be further investigated.
      Curves averaged over 5 runs. \label{fig:early_compute}}
 \end{figure}
 
+\begin{figure*}[t]
+    \centering
+    \if\icml0
+    \begin{widepage}
+    \fi
+    \includegraphics[width=\linewidth]{continuous.pdf}
+    \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stages of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$). $\varepsilon = 10^{-2} \max \hat C$.
+    \label{fig:potentials}
+    }
+    \if\icml0
+    \end{widepage}
+    \fi
+\end{figure*}
+
 \subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
 
 The discrete Sinkhorn algorithm requires to compute a full matrix $\hat C \eqdef
@@ -84,14 +98,6 @@ in a discrete setting: online Sinkhorn is run with batch-size $n$ during the fir
 observing each sample of $[1,N]$, i.e. until the cost matrix $C$ is completely evaluated.
 At this point (iteration $t$), online Sinkhorn provides the estimates $f_{t},
 g_{t}$. From then, the algorithm only performs full Sinkhorn updates.
-
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=\linewidth]{continuous.pdf}
-    \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stages of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$). $\varepsilon = 10^{-2} \max \hat C$.}
-
-    \label{fig:potentials}
-\end{figure*}
 
 
 \paragraph{Results.} We report convergence curves in
@@ -129,9 +135,9 @@ final plan is undistinguishable from the true transportation plan. Quantitative
 values (distance to true potentials, error in Sinkhorn distance estimation) converge as in
 \autoref{fig:convergence}.
 
-\paragraph{Comparison to concurrent approach.}\label{sec:compare}Finally, we compare online
+\paragraph{Comparison to concurrent approaches.}\label{sec:compare}Finally, we compare online
 Sinkhorn to constructing representations of Sinkhorn potentials using universal
-RKHS~\cite{2016-genevay-nips}. This competing approach sets $f_t(\cdot) =
+RKHS \citep{2016-genevay-nips}. This competing approach sets $f_t(\cdot) =
 \sum_{i=1}^{n_t} \alpha_t \kappa(\cdot, x_i)$ (and similarly for $g_t$), where $\kappa$ is
 a reproducing kernel (typically a Gaussian). This differs significantly from the
 representations that we propose, for which $\exp(-f_t)$, and not $f_t$, is

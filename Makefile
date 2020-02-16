@@ -45,11 +45,9 @@ extracted.bib: $(MAIN).pdf
 hal.zip:
 	bash tools/make_hal.sh
 
-# paper.pdf supp/supp.pdf: $(MAIN).pdf
-# 	pdftk $(MAIN).pdf cat 1-10 output paper_.pdf
-# 	pdftk paper_.pdf update_info paper.info output paper.pdf
-# 	rm paper_.pdf
-# 	pdftk $(MAIN).pdf cat 11-end output supp/supp.pdf
+paper.pdf supp/supp.pdf: $(MAIN).pdf
+	pdftk $(MAIN).pdf cat 1-10 output main.pdf
+	pdftk $(MAIN).pdf cat 11-end output supp/supp.pdf
 
 watch: $(MAIN).tex $(SOURCES)
 	$(LATEXMK) $(LATEXMKOPT) -pdflatex="$(LATEX) $(LATEXOPT) %O %S" $(MAIN)
@@ -58,7 +56,6 @@ split: paper.pdf supp/supp.pdf
 
 supp.zip: supp/supp.pdf
 	cd supp && zip -r -D ../supp.zip *
-
 
 count: 
 	texcount $(MAIN).tex
