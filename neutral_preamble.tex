@@ -1,0 +1,38 @@
+\usepackage{natbib}
+\setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
+
+\makeatletter
+\providecommand{\@maketitle}{}
+\renewcommand{\@maketitle}{%
+  \vbox{%
+    \hsize\textwidth
+    \linewidth\hsize
+    \vskip 0.1in
+    \centering
+    {\LARGE\bf \@title\par}
+      \def\And{%
+        \end{tabular}\hfil\linebreak[0]\hfil%
+        \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\ignorespaces%
+      }
+      \def\AND{%
+        \end{tabular}\hfil\linebreak[4]\hfil%
+        \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\ignorespaces%
+      }
+      \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\@author\end{tabular}%
+    \vskip 0.3in \@minus 0.1in
+  }
+}
+\makeatother
+
+\author{%
+   Arthur Mensch\\
+   ENS, DMA\\
+   Paris, France\\
+%    \texttt{arthur.mensch@m4x.org} \\
+   \And
+   Gabriel Peyré\\
+   ENS, DMA\\
+   Paris, France\\
+%    \texttt{gabriel.peyre@ens.fr} \\
+}
+\title{Online Sinkhorn: optimal transportation distances from sample streams}
