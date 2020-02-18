@@ -9,12 +9,12 @@ We prove the propositions in their order of appearance.
 
 \subsection{Proof of \autoref{prop:markov}}
 
-\begin{proof}
+\begin{proof}\todo{Why using $\infty$-norm and not the variation one?}
     We use Theorem 1 from \citet{diaconis_iterated}. For this, we simply note
     that the space $\Cc(\Xx) \times \Cc(\Xx)$ in which the chain ${x_t
     \triangleq (f_t, g_t)}_t$, endowed with the metric $\rho((f_1, g_1), (f_2,
     g_2)) = \Vert f_1 - f_2 \Vert_{\infty} + \Vert g_1 - g_2 \Vert_{\infty}$, is
-    complete and separable (The countable set of polynomial functions are dense in this space, for example).
+    complete and separable (the countable set of polynomial functions are dense in this space, for example).
     We consider the operator $A_{\theta} \triangleq \Ctrans{\Ctrans{\cdot}{\hat
     \alpha}}{\hat \beta}$. $\theta \triangleq (\hat \alpha, \hat \beta)$ denotes
     the random variable that is sampled at each iteration. We have the following
@@ -25,7 +25,7 @@ We prove the propositions in their order of appearance.
     
     For all $\hat \alpha \in \Pp(\Xx)$, $\hat \beta \in \Pp(\Xx)$, $A_{\theta}$
     with $\theta = (\hat \alpha, \hat \beta)$ is contracting, with module
-    $\kappa_\theta < 1$ \citep{peyre2019computational}. Therefore
+    $\kappa_\theta < 1$ \citep{peyre2019computational} \todo{I have the impression $\kappa_\th<1$ should be made independend of $\theta$, which is true actually}. Therefore
     \begin{equation}
         \int_{\theta} \kappa_\theta \d \mu(\theta) < 1, \qquad \int_{\theta}
          \log \kappa_\theta \d \mu(\theta) < 0.
@@ -50,10 +50,11 @@ The \enquote{slowed-down} Sinkhorn iterations converge toward an optimal
 potential couple, up to a constant factor: this stems from the fact that we
 apply contractions in the space $(\Cc(\Xx), \Vert\cdot\Vert_{\var})$ with a
 contraction factor that decreases sufficiently slowly.
+
 \begin{proof}
     We write ${(f_t, g_t)}_t$ the sequence of iterates. Given a pair of optimal potentials 
     $(f^\star, g^\star)$, we write $u_t \triangleq f_t - f^\star$, $v_t \triangleq g_t - g^\star$,
-    $u_t^C = \Ctrans{f_t}{\alpha} - g^\star$ et $v_t^C = \Ctrans{g_t}{\alpha} - f^\star$
+    $u_t^C \triangleq \Ctrans{f_t}{\alpha} - g^\star$ and $v_t^C \triangleq \Ctrans{g_t}{\alpha} - f^\star$
     For all $t > 0$, we observe that 
     \begin{align}
         \max u_{t+1} &= - \log \min \exp(-u_{t+1}) \\
@@ -70,7 +71,7 @@ contraction factor that decreases sufficiently slowly.
     \begin{equation}
         \min u_{t+1} \geq (1 - \eta_t) \min u_t  + \eta_t \min v_t^C,
     \end{equation}
-    and mirror inequalities hold for $v_t$. Summing the four inequality, we obtain
+    and mirror inequalities hold for $v_t$. Summing the four inequalities, we obtain
     \begin{align}\label{eq:et}
         e_{t+1} \triangleq \Vert u_{t+1} \Vert_{\var} + \Vert v_{t+1} \Vert_{\var} 
         &= \max u_{t+1} - \min u_{t+1} + \max v_{t+1} - \min v_{t+1} \\
@@ -81,7 +82,7 @@ contraction factor that decreases sufficiently slowly.
         (1 - \eta_t) ( \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var})
         + \eta_t \kappa ( \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var}),
     \end{align}
-    where we use the contractance of the soft-C-transform, that guarantees that
+    where we use the contractance of the soft-$C$-transform, that guarantees that
     there exists $\kappa < 1$ such that $\Vert v_t^C\Vert_{\var} \leq \kappa \Vert
     v_t\Vert_{\var}$ and $\Vert u_t^C\Vert_{\var} \leq \kappa \Vert
     u_t\Vert_{\var}$ \citep{peyre2019computational}.
@@ -114,11 +115,11 @@ We make the following classic assumptions on the cost regularity and distributio
 As a recall, we make the following Robbins-Monroe assumptions on weights:
 \begin{assumption}\label{ass:weights}
     The weight sequence ${(\eta_t)}_t$ is square summable but not summable: 
-    $\sum \eta_t = \infty$ \qquad $\sum \eta_t^2 < \infty$.
+    $\sum \eta_t = \infty$ and $\sum \eta_t^2 < \infty$.
 \end{assumption}
 Finally, we recall that
 \begin{equation}
-    \Vert f \Vert_{\var} = \sup_{x \in \Xx} f(x) - f(y).
+    \Vert f \Vert_{\var} \triangleq \sup_{x \in \Xx} f(x) - \inf_{y \in \Xx} f(y).
 \end{equation}
 
 After submitting the manuscript and checking our proofs, it became apparent that a slight modification of the online Sinkhorn algorithm was needed to achieve convergence: the number of realizations used at $t$ has to be slightly increasing. We prove the following modified proposition, which establishes approximate convergence of the online Sinkhorn algorithm.
@@ -135,7 +136,7 @@ After submitting the manuscript and checking our proofs, it became apparent that
 \end{proposition}
 
 \begin{proof}
-For discrete realizations $\hat \alpha_t$ and $\hat \beta_t$, we define the perturbation terms
+For discrete realizations $\hat \alpha_t$ and $\hat \beta_t$, we define the perturbation terms \todo{$\hat \alpha$ should be $\hat \alpha_t$ below?}
 \begin{equation}
     \epsilon_{\hat \beta}(\cdot) \triangleq
     f^\star - \Ctrans{g^\star}{\hat \beta} ,\qquad
@@ -316,7 +317,7 @@ $\Oo(\frac{t n^2}{w_t^2})$.
 
 \paragraph{Examples of weights.}
 
-Online Sinkhorn thus works for $\eta_t = \frac{1}{n^\alpha}$ with $\alpha \in
+Online Sinkhorn thus works for \todo{notation clash} $\eta_t = \frac{1}{n^\alpha}$ with $\alpha \in
 [0, 1]$, provided we use batch-sizes of size $1 / t^{2\beta}$, with $\beta
 > 1 - \alpha$. The slowing-down of Sinkhorn iterations permits to contain the
 increase in the number of samples required for convergence. In particular
@@ -338,10 +339,10 @@ distributions of the same size for the sake of simplicity. In this case, we eval
     f_t(x) &= - \log \sum_{j=1}^n \exp(q_j - C(x, y_j)). \\
 \end{align}
 Note that the computations derived in \autoref{alg:discrete_online} are proposed
-in log-space so as to prevent digital overflows. The sets $|I|$ and $|J|$ can
-have varying size along the algorithm, which allows for example to speed-up the
+in log-space so as to prevent numerical overflows. The sets $|I|$ and $|J|$ can
+have varying sizes along the algorithm, which allows for example to speed-up the
 initial Sinkhorn iteration (\autoref{sec:accelerating}). In such case, the
-matrix $C$ should be filled along the iterations.
+cost matrix $(C(x_i,y_j))_{i,j}$ is progressively computed along the iterations.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
@@ -377,11 +378,11 @@ matrix $C$ should be filled along the iterations.
 
 We report the performance of online+full Sinkhorn for $\epsilon \sim 10^{-4}
 \max C$ in \autoref{fig:early_compute_low_eps}. Although the gains are less
-marked than with higher $\varepsilon$, they remain significant in this low
+important than with higher $\varepsilon$, they remain significant in this low
 regularization regime.
 
 \paragraph{Grids in \autoref{sec:exp1}.} We run the online Sinkhorn algorithm
-with step-sizes $\eta_t = \frac{1}{t^\alpha}$, $\alpha \in \{ \frac{1}{2}, 1 \}$
+with step-sizes \todo{notation clash} $\eta_t = \frac{1}{t^\alpha}$, $\alpha \in \{ \frac{1}{2}, 1 \}$
 and $w_t = \frac{1}{{t^\beta}}$, $\beta \in \{ \frac{1}{2}, 1 \}$. In all
 experiments, $\alpha = \beta = \frac{1}{2}$ turned out to perform best.
 
