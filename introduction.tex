@@ -71,35 +71,6 @@ Radon-Nikodym derivative of measure $\mu$ with respect to measure $\alpha$. We
 write $(i, j]$ the sequence $[i+1, \dots, j]$.
 
 
-% In this paper, we show how mingling together the sampling and the optimization phases can be beneficial
-% to quickly estimate OT distances for ML problems.  
-% %
-% Our approach relies on three observations. First,
-% Sinkhorn iterations can be rewritten as a block convex mirror descent on the
-% space of positive distributions. This formulation is valid in the discrete and
-% continuous setting. Second, we can modify these iterations to rely on
-% realizations $\hat \alpha_t$, $\hat \beta_t$ of the input distributions $\alpha$
-% and $\beta$, renewed at each iteration $t$. Finally, we can represent the
-% iterates produced by such approximations in a space of mixtures of simple
-% functions. Those iterates are a simple transformation of the potentials in the
-% Sinkhorn optimization problem.
-% %
-% This corresponds to the following contributions:
-% \begin{itemize}
-%     \item We introduce a new \textit{online Sinkhorn} algorithm. It produces a sequence of
-%     estimates $(\hat w_t)_t \in \RR$ and of transportation plans $\hat \pi_t \in
-%     \Pp(\Xx \times \Xx)$ \todo{need to introduce this}, using two stream of renewed samples $\hat \alpha_t =
-%     \sum_{i=1}^n \delta_{x^t_i}$, $\hat \beta_t = \sum_{i=1}^n \delta_{y^t_i}$,
-%     where $x^t_i$ and $y^t_i$ are sampled from $\alpha$ and $\beta$.
-%     \item We show that those estimations are consistent, in the sense that $\hat
-%     w_t \to \Ww_{C,\varepsilon}(\alpha, \beta)$, and $\hat \pi_t \to \pi^\star$ \todo{weak convergence?}.
-%     \item We empirically demonstrate that our algorithm permits a faster
-%     estimation of optimal transportation distances for discrete distributions,
-%     and a convincing estimation of OT distances between \textit{continous} distributions.
-% \end{itemize}
-
-% % We show how to estimate the true regularized optimal transport distance through repeated experiments.
-
 \section{Related work}\label{sec:related}
 
 We review recent work on Sinkhorn distances and on the general problem of estimating optimal transport distances. 

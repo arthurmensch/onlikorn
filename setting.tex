@@ -145,17 +145,3 @@ optimal potential under sampling $\EE_{\hat \alpha_n \sim \alpha, \hat \beta_n
 \sim \beta}[f^\star(\hat \alpha_n, \hat \beta_n)]$. Our algorithm estimates the
 true continuous potential functions (up to a constant) and overcomes the sampling
 bias.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \paragraph{Gradient estimations.}\label{sec:gradient} 
-
-% OT distances $\Ww(\alpha, \beta)$ are frequently used a loss function in
-% supervised learning or unsupervised density fitting. This is the case for
-% instance in generative modeling~\cite{arjovsky2017wgan}, when we parametrize
-% $\alpha=\alpha_\th$ as the push-forward of some noise distribution $\mu$ through
-% a neural network $g_\theta$, which means that a sample $X$ from $\al$ is
-% computed as $g_\th(Y)$ where $Y$ is sampled from $\mu$. A similar situation
-% occurs for instance when computing Wasserstein barycenters
-% \cite{staib2017parallel}. The gradient of $\Ee(\th) \eqdef \Ww(\alpha_\th,
-% \beta)$ only depends on $\nabla_x f^\star$, i.e. the spatial gradient of the
-% optimal solution to~\eqref{eq:dual}~\cite{peyre2019computational}. 

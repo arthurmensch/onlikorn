@@ -1,19 +1,31 @@
 %!TEX root = article.tex
 We report the proofs of the different propositions (\autoref{sec:proofs}), an instantiation of online Sinkhorn for discrete measures (\autoref{sec:sinkhorn_discrete}), and a supplementary experiment (\autoref{sec:supp_exp}).
 
-We advise the reader that we provide and prove a slightly modified version of \autoref{prop:convergence}. As is, the online Sinkhorn algorithm only converges approximately, as became apparent after carefully checking our derivations. \autoref{prop:convergence} will therefore be replaced by \autoref{prop:convergence_bis} in future revisions. We provide a slight modification of the online Sinkhorn algorithm that does converge (\autoref{prop:convergence_true}). This result will be integrated to the main text in future revisions.
+We advise the reader that we provide and prove a slightly modified version of \autoref{prop:convergence}. As is, the online Sinkhorn algorithm only converges approximately, as became apparent after carefully checking our derivations.
+
+\begin{itemize}
+    \item \autoref{prop:convergence} will therefore be replaced by
+    \autoref{prop:convergence_bis} in future revisions. \autoref{prop:convergence_bis} is an approximate (but global) convergence result.
+    \item We describe a slight modification of the online Sinkhorn algorithm that
+    does converge (\autoref{prop:convergence_true}). This result will be
+    integrated to the main text in future revisions.
+\end{itemize}
 
 \section{Proofs}\label{sec:proofs}
 
-We prove the propositions in their order of appearance.
+We prove the propositions in their order of appearance. We make the following classic assumptions on the cost regularity and distribution compactness.
+
+\begin{assumption}\label{ass:lip}
+    The cost $C: \Xx \times \Xx \to \RR$ is $L$-lipschitz, and $\Xx$ is assumed to be compact.
+\end{assumption}
 
 \subsection{Proof of \autoref{prop:markov}}
 
-\begin{proof}\todo{Why using $\infty$-norm and not the variation one?}
+\begin{proof}
     We use Theorem 1 from \citet{diaconis_iterated}. For this, we simply note
     that the space $\Cc(\Xx) \times \Cc(\Xx)$ in which the chain ${x_t
     \triangleq (f_t, g_t)}_t$, endowed with the metric $\rho((f_1, g_1), (f_2,
-    g_2)) = \Vert f_1 - f_2 \Vert_{\infty} + \Vert g_1 - g_2 \Vert_{\infty}$, is
+    g_2)) = \Vert f_1 - f_2 \Vert_{\var} + \Vert g_1 - g_2 \Vert_{\var}$, is
     complete and separable (the countable set of polynomial functions are dense in this space, for example).
     We consider the operator $A_{\theta} \triangleq \Ctrans{\Ctrans{\cdot}{\hat
     \alpha}}{\hat \beta}$. $\theta \triangleq (\hat \alpha, \hat \beta)$ denotes
@@ -25,7 +37,9 @@ We prove the propositions in their order of appearance.
     
     For all $\hat \alpha \in \Pp(\Xx)$, $\hat \beta \in \Pp(\Xx)$, $A_{\theta}$
     with $\theta = (\hat \alpha, \hat \beta)$ is contracting, with module
-    $\kappa_\theta < 1$ \citep{peyre2019computational} \todo{I have the impression $\kappa_\th<1$ should be made independend of $\theta$, which is true actually}. Therefore
+    $\kappa_\theta < \kappa < 1$ (see for instance Proposition 19
+    from \citet{vialard2019elementary}), as we assume $\Xx$ to be compact
+    (\autoref{ass:lip}). Therefore
     \begin{equation}
         \int_{\theta} \kappa_\theta \d \mu(\theta) < 1, \qquad \int_{\theta}
          \log \kappa_\theta \d \mu(\theta) < 0.
@@ -37,9 +51,11 @@ We prove the propositions in their order of appearance.
     \end{equation}
     therefore $\rho(A_\theta(x_0), x_0) \leq 2 \Vert x_0 \Vert_\infty + 2
     \max_{x,y \in \Xx} C(x, y)$ for all $\theta \ (\hat \alpha, \hat \beta)$.
-    The regularity condition of the theorem are therefore met. The induced Markov chains ${(f_{2t},
-    g_{2t})}_t$ and ${(f_{2t + 1}, g_{2t + 1})}_t$ each have a unique stationary
-    distribution. These stationary distributions are the same: the stationary distribution is independent of the initialisation and both sequences differs only by their initialisation.
+    The regularity condition of the theorem are therefore met. Each of the
+    induced Markov chains ${(f_{2t}, g_{2t})}_t$ and ${(f_{2t + 1}, g_{2t +
+    1})}_t$ has a unique stationary distribution. These stationary distributions
+    are the same: the stationary distribution is independent of the
+    initialisation and both sequences differs only by their initialisation.
     Therefore ${(f_{t}, g_{t})}_t$ have a unique stationary distribution
     $(F_\infty, G_\infty)$.
 \end{proof}
@@ -106,13 +122,7 @@ contraction factor that decreases sufficiently slowly.
   }
 \makeatother
 
-
-We make the following classic assumptions on the cost regularity and distribution compactness.
-
-\begin{assumption}\label{ass:lip}
-    The cost $C: \Xx \times \Xx \to \RR$ is $L$-lipschitz, and $\Xx$ is assumed to be compact.
-\end{assumption}
-As a recall, we make the following Robbins-Monroe assumptions on weights:
+We make the following Robbins-Monroe assumptions on weights.
 \begin{assumption}\label{ass:weights}
     The weight sequence ${(\eta_t)}_t$ is square summable but not summable: 
     $\sum \eta_t = \infty$ and $\sum \eta_t^2 < \infty$.
@@ -122,7 +132,8 @@ Finally, we recall that
     \Vert f \Vert_{\var} \triangleq \sup_{x \in \Xx} f(x) - \inf_{y \in \Xx} f(y).
 \end{equation}
 
-After submitting the manuscript and checking our proofs, it became apparent that a slight modification of the online Sinkhorn algorithm was needed to achieve convergence: the number of realizations used at $t$ has to be slightly increasing. We prove the following modified proposition, which establishes approximate convergence of the online Sinkhorn algorithm.
+We prove the following modified proposition, which establishes approximate
+convergence of the online Sinkhorn algorithm.
 
 \setpropositiontag{4 bis}
 \begin{proposition}\label{prop:convergence_bis}
@@ -136,7 +147,7 @@ After submitting the manuscript and checking our proofs, it became apparent that
 \end{proposition}
 
 \begin{proof}
-For discrete realizations $\hat \alpha_t$ and $\hat \beta_t$, we define the perturbation terms \todo{$\hat \alpha$ should be $\hat \alpha_t$ below?}
+For discrete realizations $\hat \alpha$ and $\hat \beta$, we define the perturbation terms
 \begin{equation}
     \epsilon_{\hat \beta}(\cdot) \triangleq
     f^\star - \Ctrans{g^\star}{\hat \beta} ,\qquad
@@ -219,7 +230,7 @@ a uniform law of large number result on parametric functions. We indeed have, by
       - \EE_{Y \sim \beta}[\exp(g^\star(Y)) - C(x, Y)] | \\
       &= \EE \sup_{x \in \Xx} | \frac{1}{n} \sum_{i=1}^n f_i(x) - f(x) | ,
 \end{align}
-where we have defined $f_i: x \to \exp(g^\star(Y_i - C(x, Y_i))$ and $f$ the
+where we have defined $f_i: x \to \exp(g^\star(Y_i - C(x, Y_i))$ and set $f$ to be the
 expected value of each $f_i$. The compactness of $\Xx$ ensures that the
 functions  are square integrable and uniformly bounded. From Example 19.7 and
 Lemma 19.36 of \citet{van_der_vaart_asymptotic_2000} (see also Lemma B.6 from
@@ -230,38 +241,40 @@ Lemma 19.36 of \citet{van_der_vaart_asymptotic_2000} (see also Lemma B.6 from
 A similar results holds for $\Vert \iota_\alpha \Vert_{\var}$. The result follows by a simple comparison of sequence.
 \end{proof}
 
-\paragraph{Remark on rates.} The online Sinkhorn algorithm thus exhibits a sample complexity in
-$\Oo(\frac{1}{\sqrt{n}})$ for the potential estimation. This is similar to the
-batch Sinkhorn algorithm \citep{2019-Genevay-aistats}---the proof is simpler in our case, but we
-assume repeated sampling.
-We show in the experiment section $(\autoref{sec:exps})$ that online Sinkhorn
-strongly outperforms sub-sampled Sinkhorn thanks to repeated sampling. This suggest that the constants appearing in the sample complexity bounds of online Sinkhorn are much better.
+\paragraph{Dependency on the mini-batch size.} The online Sinkhorn algorithm thus
+exhibits a rate of error in $\Oo(\frac{1}{\sqrt{n}})$ for estimating
+potentials. This is similar to the regular Sinkhorn algorithm
+\citep{2019-Genevay-aistats}, whose sample complexity is also in
+$\Oo(\frac{1}{\sqrt{n}})$. The proof is simpler in our case, but we assume
+repeated sampling. We show in the experiment section $(\autoref{sec:exps})$ that
+online Sinkhorn strongly outperforms the regular Sinkhorn algorithm thanks to repeated
+sampling. This suggests that the constants appearing in the bounds of online
+Sinkhorn are much better than the ones appearing in the sample complexity of the regular Sinkhorn algorithm.
 
 \subsection{Convergence of online Sinhkorn}
 
-Examining the proof of \autoref{prop:convergence_bis} and in particular Eq. \eqref{eq:ineq_var}, the term that prevents the convergence of $e_t$ is the term
+In the proof of \autoref{prop:convergence_bis} and in particular Eq. \eqref{eq:ineq_var}, the term that prevents the convergence of $e_t$ is the term
 \begin{equation}
     \eta_t ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}),
 \end{equation}
-which is not summable in general.
-We can control this term by increasing the  size of $\hat \alpha_t$ and $\hat
- \beta_t$ with time, at a sufficient rate. This rate will be controlled by a second
- sequence ${(w_t)}_t$. Setting $n \in \NN^*$, we
- make the following assumption on the batch-sizes.
+which is not summable in general. We can control this term by increasing the
+ size of $\hat \alpha_t$ and $\hat \beta_t$ with time, at a sufficient rate.
+ This rate will be controlled by a second sequence ${(w_t)}_t$. We set a
+ reference batch-size $n \in \NN^*$, and denote $n(t)$ the batch size at
+ time $t$. We assume that it is increasing sufficiently fast.
 
 \begin{assumption}\label{ass:double_weights}
-    For all $t > 0$, $\frac{n}{w_t^2}$ is an integer and the realizations
+    For all $t > 0$, $n(t) = \frac{n}{w_t^2}$ is an integer and the realizations
     $\hat \alpha_t$ and $\hat \beta_t$ are defined as
     \begin{equation}
-         \hat \alpha_t \triangleq \frac{1}{n_{t+1} - n_t} \sum_{i=n_t}^{n_{t+1}} \delta_{x_i},
+         \hat \alpha_t \triangleq \frac{1}{n(t)} \sum_{i=1}{n(t)} \delta_{x_i^t},
          \quad
-         \hat \beta_t \triangleq \frac{1}{n_{t+1} - n_t} \sum_{i=n_t}^{n_{t+1}} \delta_{y_i},
+         \hat \beta_t \triangleq \frac{1}{n(t)} \sum_{i=1}{n(t)} \delta_{y_i^t}
     \end{equation}
-where $(x_i)_i$ and $(y_i)_i$ are i.i.d samples of $\alpha$ and $\beta$ and
+where $(x_i^t)_i$ and $(y_i^t)_i$ are i.i.d samples of $\alpha$ and $\beta$ and
 \begin{equation}
-    n_{t+1} \triangleq n_t + \frac{n}{w_t^2}\quad\text{and}\quad \sum w_t
-     \eta_t < \infty,\quad\text{as well as}\quad \sum \eta_t = \infty.
+    \sum w_t \eta_t < \infty,\quad\text{as well as}\quad \sum \eta_t = \infty.
 \end{equation}
 \end{assumption}
 
@@ -289,7 +302,7 @@ From \eqref{eq:ineq_var}, for all $t > 0$, we have
 Taking the expectation and using the uniform law of 
 large number \eqref{eq:vdv}, there exists $C, C' > 0$ such that
 \begin{align}
-    \EE e_{t+1} &\leq (1 - \tilde \eta_t) \EE e_t + \tilde \eta_t \frac{C}{\sqrt{n_{t+1} - n_t}} \\
+    \EE e_{t+1} &\leq (1 - \tilde \eta_t) \EE e_t + \tilde \eta_t \frac{C}{\sqrt{n(t)}} \\
     &\leq (1 - \tilde \eta_t) \EE e_t + C' \tilde \eta_t w_t.
 \end{align}
 Writing $E_t = \EE e_t$, for all $t > 0$, $E_{t+1} - E_t \leq C' \tilde \eta_t w_t$. 
@@ -303,31 +316,34 @@ e_t \to_{t \to \infty} 0$. Since $e_t \geq 0$ for all $t > 0$, this implies that
 $e_t \to_{t \to \infty} 0$ almost surely.
 \end{proof}
 
+\paragraph{Choosing appropriate weights.}
 
-\paragraph{Reusing past samples.}
-We remark that we may also construct $\hat \alpha_t$ and $\hat \beta_t$ from $n$
-fresh samples and $n (\frac{1}{w_t^2} - 1)$ previously observed samples,
-without breaking the convergence proof. In this case, we still consider a stream
-of samples of fixed size $(\hat \alpha_t')_t$, $(\hat \beta_t')_t$, with $n_t =
-n t$, and we use it to construct $(\hat \alpha_t)_t$ and $(\hat \beta_t)_t$.
+Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
+provided we use batch-sizes of size $n\, t^{2b}$, with $b > 1 - a$.
+Slowing down Sinkhorn iterations permits to work with batches whose size
+increases more slowly. The limit case when $a = 1$ requires only $b > 0$, i.e.
+batch-sizes growing arbitrarily slowly. With these simple weights, the complexity of the
+iteration $t$ of the algorithm is then $\Oo(\frac{n^2}{t^{1 + 2b}})$.
 
-In term of algorithm, reusing samples from the past amounts to correct a fraction of the weights
-$(p_i)_i$ and $(q_i)_i$ at each iteration. It is feasible provided that $\frac{1}{w_t^2} \in \Oo(t)$. The iteration complexity of the algorithm is then
-$\Oo(\frac{t n^2}{w_t^2})$.
+\paragraph{Reusing samples from the past.} The distributions $\alpha_t$ and
+$\beta_t$ do not have to contain only new samples: they may contained already
+seen ones. This allows to reuse memorized costs $C(x_i, y_j)$. We consider as
+in the main text a stream of batches of size $n$ of constant step sizes. We set
+$n_t = n\,t$ and index samples of batch $t$ as ${(x_i)}_{(n_t,n_{t+1}]}$. At
+each iteration, we can set the empirical distribution of size $n(t)$ to be
+\begin{equation}
+    \hat \alpha_t = \frac{1}{n(t)} \Big( \sum_{i=n_t}^{n_{t+1}} \delta_{x_i}) + 
+    \sum_{i=n_t - n (\frac{1}{w_t^2} - 1)}^{n_t} \delta_{x_i} \Big),
+\end{equation}
+and similarly for $\hat \beta_t$. The past starting point $i=n_t - n
+(\frac{1}{w_t^2} - 1)$ remains positive provided that $w_t =
+\Oo(\frac{1}{t^{1/2}})$, which is compatible with \autoref{ass:double_weights}
+whenever $\eta_t = \frac{1}{n^a}$, $a \in (\frac{1}{2}, 1]$. Using samples from
+the past is thus possible within the range of weights meeting \autoref{ass:weights}, i.e. in the setting of \autoref{prop:convergence_bis}.
 
-\paragraph{Examples of weights.}
-
-Online Sinkhorn thus works for \todo{notation clash} $\eta_t = \frac{1}{n^\alpha}$ with $\alpha \in
-[0, 1]$, provided we use batch-sizes of size $1 / t^{2\beta}$, with $\beta
-> 1 - \alpha$. The slowing-down of Sinkhorn iterations permits to contain the
-increase in the number of samples required for convergence. In particular
-\begin{itemize}
-    \item Setting $\eta_t = \frac{1}{t}$, the batch size can grow arbitrarily slowly ($2
-    \beta > 0$ is sufficient) without breaking convergence. 
-    \item Setting $\alpha = \frac{1}{2}$, the batch-size should grow linearly
-    ($2 \beta = 1$) to ensure convergence. This is the limit case in which past
-    samples may be reused to construct $\hat \alpha_t$ and $\hat \beta_t$.
-\end{itemize}
+Concretely, reusing samples
+from the past amounts to correct a fraction of the weights ${(p_i)}_i$ and
+${(q_i)}_i$ at each iteration.
 
 \section{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
 
@@ -382,13 +398,13 @@ important than with higher $\varepsilon$, they remain significant in this low
 regularization regime.
 
 \paragraph{Grids in \autoref{sec:exp1}.} We run the online Sinkhorn algorithm
-with step-sizes \todo{notation clash} $\eta_t = \frac{1}{t^\alpha}$, $\alpha \in \{ \frac{1}{2}, 1 \}$
-and $w_t = \frac{1}{{t^\beta}}$, $\beta \in \{ \frac{1}{2}, 1 \}$. In all
-experiments, $\alpha = \beta = \frac{1}{2}$ turned out to perform best.
+with step-sizes $\eta_t = \frac{1}{t^a}$, $a \in \{ \frac{1}{2}, 1 \}$
+and $w_t = \frac{1}{{t^b}}$, $b \in \{ \frac{1}{2}, 1 \}$. In all
+experiments, $a = b = \frac{1}{2}$ turned out to perform best.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=.6\textwidth]{early_compute_low_eps.pdf}
+    \includegraphics[width=.8\textwidth]{early_compute_low_eps.pdf}
     \caption{Online Sinkhorn accelerates the first Sinkhorn iterations even for low regularization. $\varepsilon = 10^{-4} \max C$.}
     \label{fig:early_compute_low_eps}
 \end{figure}
