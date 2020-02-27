@@ -4,15 +4,19 @@
 \section{Convergence analysis}
 
 We give three kind of convergence analysis: (i) a stationary distribution convergence property for the random Sinkhorn
-algorithm ; (ii) a global convergence property for the online Sinkhorn algorithm without noise ; (iii) a high-probability convergence result for the full online Sinkhorn algorithm.
+algorithm ; (ii) a global convergence property for the online Sinkhorn algorithm without noise ; (iii) a high-probability convergence result for the full online Sinkhorn algorithm. We make the following classic assumptions on the cost regularity and distribution compactness.
 
-\paragraph{Randomized Sinkhorn.}
+\begin{assumption}\label{ass:lip}
+    The cost $C: \Xx \times \Xx \to \RR$ is $L$-lipschitz, and $\Xx$ is  compact.
+\end{assumption}
+
+\subsection{Randomized Sinkhorn}
 
 We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:updates}, which corresponds to
 \autoref{alg:online_sinkhorn} with step-size $\eta_t = 1$.
 
 \begin{proposition}\label{prop:markov}
-    The random Sinkhorn algorithm \eqref{eq:updates} yields a time-homogeneous
+    Under \autoref{ass:lip}, the randomized Sinkhorn algorithm \eqref{eq:updates} yields a time-homogeneous
     Markov chain ${(f_t, g_t)}_t$ which is $(\hat \alpha_s, \hat \beta_s)_{s \leq
     t}$ measurable, and converges in law towards a stationary distribution
     $(F_\infty, G_\infty) \in \Pp(\Cc(\Xx)^2)$ independent of the initialization
@@ -22,15 +26,15 @@ We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:u
 This result follows from \citet{diaconis_iterated} convergence theorem on
 iterated random functions which are contracting on average. We simply use the
 fact that $\Ctrans{\cdot}{\hat \beta}$ and $\Ctrans{\cdot}{\hat \alpha}$ are
-\textit{always} contracting, independent of the distributions $\hat \alpha$ and
+\textit{always} contracting, independently of the distributions $\hat \alpha$ and
 $\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$.
 
-Note that using the law of large number for Markov chains
-\citep{breiman_strong_1960}, the out-of-loop averages $\exp(-\bar f_t)$ for
+\paragraph{Out-of-loop averages.} Note that using the law of large number for Markov chains
+\citep{breiman_strong_1960}, the out-of-loop averages $\exp(-\bar f_t)$
 converge to $\EE[\exp(-F_\infty)] \in \Cc(\Xx)$ for $\gamma_t = \frac{1}{t}$. This expectation verifies the following fixed point equations
 \begin{align}
     \EE[\exp(-F_\infty)] &=
-     \dotp{\beta}{\EE[\exp(G_\infty)] \exp(-C)} \\
+     \dotp{\beta}{\EE[\exp(G_\infty)] \exp(-C)}, \\
     \EE[\exp(-G_\infty)] &=
      \dotp{\alpha}{\EE[\exp(F_\infty)] \exp(-C)}.
 \end{align}
@@ -43,21 +47,21 @@ However, it defines an approximate solution of the original problem whose accura
 We leave the quantification of this approximation for future work.
 
 %%%
-\paragraph{Noise-free online Sinkhorn.}
+\subsection{Noise-free online Sinkhorn.}
 
 Variance reduction is therefore necessary, to ensure that the limit stationary
 distribution is deterministic. The following proposition shows that the modified "slowed-down" online Sinkhorn algorithm converges in the absence of noise.
 
 \begin{proposition}\label{eq:deterministic}
     We suppose that $\hat \alpha_t = \alpha$, $\hat \beta_t = \beta$ for all
-    $t$. Then the updates \eqref{eq:updates} yields a sequence $(f_t, g_t)_t$ such
+    $t$. Then the updates \eqref{eq:updates} yields a (deterministic) sequence $(f_t, g_t)_t$ such
     that 
     \begin{gather}
         \Vert f_t - f^\star \Vert_{\text{var}} 
-        + \Vert g_t - g^\star \Vert_{\text{var}} \to 0 \\
+        + \Vert g_t - g^\star \Vert_{\text{var}} \to 0,\quad\text{and} \\
         \frac{1}{2} \dotp{\alpha}{f_t + \Ctrans{g_t}{\alpha}} + \dotp{\beta}{g_t + \Ctrans{f_t}{\beta}} 
          \to \Ww(\alpha, \beta).
-    \end{gather}
+    \end{gather}robbins1951stochastic
 \end{proposition}
 Note that, due to the fact that we perform simultaneous updates, we only obtain
 the convergence of $f_t \to f^\star + A$, and $g_t \to g^\star$, where $f^\star$
@@ -70,21 +74,64 @@ purposes, e.g. for generative modeling or barycenter estimation as in
 relies only on the gradients of the potentials $\nabla_x f^\star(\cdot)$,
 $\nabla_y g^\star(\cdot)$ \citep[e.g.][]{cuturi2018semidual}.
 %%%
-\paragraph{Online Sinkhorn.}
+\subsection{Online Sinkhorn}
 
-Finally, we state a result on the complete online Sinkhorn algorithm, which converges with high probability.
-\begin{proposition}\label{prop:convergence}
-    Assume that $\Vert f_0 - f^\star \Vert_{\text{var}} \leq 1$ and $\Vert g_0 -
-    g^\star \Vert_{\text{var}} \leq 1$, $\sum_t \eta_t = \infty$ and $\sum_t
-    \eta_t^2 < \infty$ and fix a level of confidence $\delta$. Then, with
-    probability $1- \delta$, provided that $\eta_t$ is small enough,
-    \begin{gather}
-        \Vert f_t - f^\star \Vert_{\text{var}} + \Vert g_t - 
-        g^\star \Vert_{\text{var}} \to 0 \\
-        \Ww_t =\frac{1}{2} \dotp{\alpha}{f_t + \Ctrans{g_t}{\alpha}} + \dotp{\beta}{g_t + \Ctrans{f_t}{\beta}} 
-        \to \Ww(\alpha, \beta).
-    \end{gather}
+We make the following \citet{robbins1951stochastic} assumption on the weight sequence
+
+\begin{assumption}\label{ass:weights}
+    The weight sequence ${(\eta_t)}_t$ is square summable but not summable: 
+    $\sum \eta_t = \infty$ and $\sum \eta_t^2 < \infty$.
+\end{assumption}
+
+
+We first state an approximate convergence result for the online Sinkhorn algorithm with fixed batch-size.
+
+\begin{proposition}\label{prop:convergence_bis}
+    We assume \autoref{ass:lip} and \ref{ass:weights}. The online Sinkhorn algorithm (\autoref{alg:online_sinkhorn}) yields a sequence $(f_t, g_t)$ that reaches a
+    ball centered around $f^\star, g^\star$ for the variational norm $\Vert
+    \cdot \Vert_{\var}$.
+     Namely, there exists $T > 0$, $C > 0$ such that for all $t > T$, almost surely
+    \begin{equation}
+        \Vert f_t - f^\star \Vert_{\var}
+        + \Vert g_t - g^\star \Vert_{\var} 
+        \leq \frac{C}{\sqrt{n}} 
+    \end{equation}
 \end{proposition}
-This result relies on Theorem 5.2 from~\citet{zhou2017convergence}, that establishes convergence with
-high probability of stochastic mirror descent applied to non-convex but locally coherent objectives. In particular, the proof of this results does not rely on the finite dimension of the ambiant space.
+We cannot state an exact convergence result in this case because the noise due
+to replacing $\alpha$ and $\beta$ with $\hat \alpha$ and $\hat \beta$ in the
+$C$-transform does not decrease with time --- slowing down the Sinkhorn
+iterations is not enough at we must ensure that $\sum \eta_t = \infty$. On the
+other hand, slowing-down iterations allows to obtain an approximation (in
+$\Oo(\frac{1}{\sqrt{n}}$)). This is comparable to the size of the error made by
+performing Sinkhorn without resampling \citep{2019-Genevay-aistats}.  We show in
+the experiment section $(\autoref{sec:exps})$ that online Sinkhorn strongly
+outperforms the regular Sinkhorn algorithm thanks to repeated sampling. This
+suggests that the constants appearing in the bounds of online Sinkhorn are much
+better than the ones appearing in the sample complexity of the regular Sinkhorn
+algorithm.
 
+Finally, we show the almost sure convergence of the online Sinkhorn algorithm with slightly increasing batch-size $n(t)$, as specified in the following assumption.
+
+\begin{assumption}\label{ass:double_weights}
+    For all $t > 0$, $n(t) = \frac{n}{w_t^2}$ is an integer. ${(\eta_t)_t}_t$ is
+    not summable and ${(w_t \eta_t)_t}_t$ is summable: $\sum w_t \eta_t <
+    \infty$ and $\sum \eta_t = \infty$.
+\end{assumption}
+We then have the following result of global convergence.
+
+\begin{proposition}\label{prop:convergence_true}
+    We assume \autoref{ass:lip}, and
+    \ref{ass:double_weights}. Almost surely, the iterates of online Sinkhorn
+    (\autoref{alg:online_sinkhorn}) converge, and we have
+    \begin{equation}
+        \Vert f_t - f^\star \Vert_{\var} + \Vert g_t - g^\star \Vert_{\var} \to 0.
+    \end{equation}
+\end{proposition}
+
+\paragraph{Choosing weights.}
+
+Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
+provided we use batch-sizes of size $n(t) = n\, t^{2b}$, with $b > 1 - a$.
+Slowing down Sinkhorn iterations permits to work with batches whose size
+increases more slowly. The limit case when $a = 1$ requires only $b > 0$, i.e.
+batch-sizes growing arbitrarily slowly.

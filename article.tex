@@ -13,8 +13,6 @@
 
 \begin{document}
 
-\begin{bibunit}
-
 
 \if\icml1
 \input{icml_heading.tex}
@@ -45,21 +43,16 @@
 \if\icml0
 \section{Acknowledgements}
 This work was supported by the European Research Council (ERC project NORIA). A.M thanks Anna Korba for helpful discussions on mirror descent algorithms, and Thibault Séjourné for suggesting relevant references.
+\vfill\pagebreak
 \fi
 
-\putbib
-\end{bibunit}
+\bibliographystyle{icml2020}
+\bibliography{biblio}
 
 \appendix
-
-\begin{bibunit}
 
 \onecolumn
 
 \input{appendix.tex}
-
-\putbib
-
-\end{bibunit}
 
 \end{document}

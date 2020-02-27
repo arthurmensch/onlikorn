@@ -4,11 +4,16 @@
 
 We introduce an online adaptation of the Sinkhorn algorithm, the major
 contribution of this paper. We construct an estimator of $f^\star$, $g^\star$
-and $\Ww(\alpha,\beta)$ using successive sets of samples ${(\hat \alpha_t)}_t =
-\frac{1}{n} \sum_{i=n_t + 1}^{n_{t+1}} \delta_{x_i}$ and ${(\hat \beta_t)}_t$,
-where we set $n_t = nt$. $(\hat \alpha_t)_t$ and $(\hat \beta_t)_t$ may be seen
-as mini-batches of size $n$ within a training procedure, or as a temporal stream
-of samples.
+and $\Ww(\alpha,\beta)$ using successive sets of samples ${(\hat \alpha_t)}_t$
+and ${(\hat \beta_t)}_t$, where $\alpha_t = \frac{1}{n} \sum_{i=n_t +
+1}^{n_{t+1}} \delta_{x_i}$, and we set  $n_0 = 0$ and $n_{t+1} = n_{t} +
+n$. The size of the mini-batch $n$ may potentially depends on $t$---in
+particular, $n$ must increases slightly to ensure convergence (see
+\autoref{prop:convergence_true}). We write $n = n(t)$ for simplicity.
+
+${(\hat \alpha_t)}_t$ and ${(\hat \beta_t)}_t$ may be
+seen as mini-batches of size $n$ within a training procedure, or as a temporal
+stream of samples.
 %
 Our estimator progressively enriches a representation of the
 solution of~\eqref{eq:dual}, that may be arbitrary complex. 
@@ -28,7 +33,7 @@ always the negative logarithm of an infinite mixture of kernel functions
 $\kappa_y(x) \eqdef \exp(-C(\cdot, y))$:
 \begin{equation*}
     \exp(-\bar f_t(\cdot)) = 
-    \int_{\y \in \Xx} \exp(\bar g_t(y))  \kappa_y  \d \beta(y),
+    \int_{y \in \Xx} \exp(\bar g_t(y))  \kappa_y  \d \beta(y),
 \end{equation*}
 and similarly for $\bar g_t$. Our algorithm constructs a sequence of non-parametric
 potentials $(f_t, g_t)_t$ that behaves as $(\bar f_t, \bar g_t)$. The strong
@@ -131,7 +136,7 @@ and $\bar \beta_t$ gather previously observed samples.
 
 The pseudo-code of online Sinkhorn is detailed in \autoref{alg:online_sinkhorn}.
 We perform the updates for $q_i$ and $p_i$ in log-space, for numerical stability reasons.
-Each iteration has complexity $\Oo(t\,n^2)$, due to the evaluation of the
+Each iteration has complexity $\Oo(n_t\,n)$, due to the evaluation of the
 distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$, $(y_i)_{(n_t, n_{t+1}]}$
 and to the computation of the
 soft $C$-transforms. Online Sinkhorn estimates and records a distance matrix
@@ -276,7 +281,7 @@ their associated potentials $f_t$ and $g_t$ are parametrized as
 \eqref{eq:param}. In particular, $\mu_t$ and $\nu_t$ remains absolutely
 continuous with respect to $\alpha$ and $\beta$ respectively, so that the
 Kullbach-Leibler divergence terms are always finite. Note that the mirror descent
-we consider operates in an infinite-dimensional space, which is valid under mild conditions \citep{hsieh2018finding}.
+we consider operates in an infinite-dimensional space, as in \citet{hsieh2018finding}.
 
 Finally, we mention that  when computing exact gradient (in the absence of noise) and when using constant step-size of
 $\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variable. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\citep{mishchenko2019sinkhorn}. 

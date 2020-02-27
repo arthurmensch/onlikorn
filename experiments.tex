@@ -14,7 +14,7 @@ the geometry of the dual, significantly improving the result using SGD with RKHS
 expansions~\citep{2016-genevay-nips}. Numpy and Pytorch code are provided with
 this manuscript.
 
-\subsection{Consistent estimation of Sinkhorn distances}\label{sec:exp1}
+\subsection{Better estimation of Sinkhorn distances}\label{sec:exp1}
 
 \begin{figure}[t]
     \centering
@@ -37,14 +37,15 @@ Sinkhorn. We choose $\alpha$ and $\beta$ to be two discrete 1-D distributions,
 $\Xx=\RR$, sampled from the continuous densities displayed in
 \autoref{fig:potentials}. We set $\varepsilon = 10^{-2} \max_{x,y}
 C(x,y)$, where we use the squared Euclidean loss (regularized $\Ww_2$
-setting)---the distributions $\alpha$ and $\beta$ have bounded support. We use $\eta_t =
-\frac{1}{\sqrt{t}}$ for online Sinkhorn, in all experiments. We compare the
-performance of Sinkhorn, online Sinkhorn and random Sinkhorn, measuring $\Vert f
-- f^\star \Vert_{\text{var}} + \Vert g - g^\star \Vert_{\text{var}}$ and the
-absolute error $| \Ww_t - \Ww |$ versus the number of computations performed---
-the evaluation of $C(x_i, y_i)$ and the computation of each addition in the
-$C$-transform being considered as elementary computation units. We further
-report the performance of using out-of-loop averaging with $\gamma_t = \frac{1}{\sqrt{t}}$.
+setting)---the distributions $\alpha$ and $\beta$ have bounded support. We use
+$\eta_t = \frac{1}{\sqrt{t}}$ for online Sinkhorn and a fixed batch-size $n$, in
+all experiments. We compare the performance of Sinkhorn, online Sinkhorn and
+random Sinkhorn, measuring $\Vert f - f^\star \Vert_{\text{var}} + \Vert g -
+g^\star \Vert_{\text{var}}$ and the absolute error $| \Ww_t - \Ww |$ versus the
+number of computations performed--- the evaluation of $C(x_i, y_i)$ and the
+computation of each addition in the $C$-transform being considered as elementary
+computation units. We further report the performance of using out-of-loop
+averaging with $\gamma_t = \frac{1}{\sqrt{t}}$.
 
 \paragraph{Results.} We report convergence curves in \autoref{fig:convergence}.
 Compared to the subsampled Sinkhorn algorithm that computes a biased estimate of

@@ -1,23 +1,9 @@
 %!TEX root = article.tex
 We report the proofs of the different propositions (\autoref{sec:proofs}), an instantiation of online Sinkhorn for discrete measures (\autoref{sec:sinkhorn_discrete}), and a supplementary experiment (\autoref{sec:supp_exp}).
 
-We advise the reader that we provide and prove a slightly modified version of \autoref{prop:convergence}. As is, the online Sinkhorn algorithm only converges approximately, as became apparent after carefully checking our derivations.
-
-\begin{itemize}
-    \item \autoref{prop:convergence} will therefore be replaced by
-    \autoref{prop:convergence_bis} in future revisions. \autoref{prop:convergence_bis} is an approximate (but global) convergence result.
-    \item We describe a slight modification of the online Sinkhorn algorithm that
-    does converge (\autoref{prop:convergence_true}). This result will be
-    integrated to the main text in future revisions.
-\end{itemize}
-
 \section{Proofs}\label{sec:proofs}
 
-We prove the propositions in their order of appearance. We make the following classic assumptions on the cost regularity and distribution compactness.
-
-\begin{assumption}\label{ass:lip}
-    The cost $C: \Xx \times \Xx \to \RR$ is $L$-lipschitz, and $\Xx$ is assumed to be compact.
-\end{assumption}
+We prove the propositions in their order of appearance.
 
 \subsection{Proof of \autoref{prop:markov}}
 
@@ -64,7 +50,7 @@ We prove the propositions in their order of appearance. We make the following cl
 
 The \enquote{slowed-down} Sinkhorn iterations converge toward an optimal
 potential couple, up to a constant factor: this stems from the fact that we
-apply contractions in the space $(\Cc(\Xx), \Vert\cdot\Vert_{\var})$ with a
+apply contractions in the space $(\Cc(\Xx), {\Vert\cdot\Vert}_{\var})$ with a
 contraction factor that decreases sufficiently slowly.
 
 \begin{proof}
@@ -110,41 +96,7 @@ contraction factor that decreases sufficiently slowly.
     provided that $\sum \eta_t = \infty$. The proposition follows.
 \end{proof}
 
-\subsection{Corrected version and proof of \autoref{prop:convergence}}
-
-\makeatletter
-\newcommand{\setpropositiontag}[1]{% \setpropositiontag{<tag>}
-  \let\oldtheproposition\theproposition% Store \theproposition
-  \renewcommand{\theproposition}{#1}% Redefine it to a fixed value
-  \g@addto@macro\endproposition{% At \end{proposition}, ...
-    \addtocounter{proposition}{-1}% ...restore proposition counter value and...
-    \global\let\theproposition\oldtheproposition}% ...restore \thetheorem
-  }
-\makeatother
-
-We make the following Robbins-Monroe assumptions on weights.
-\begin{assumption}\label{ass:weights}
-    The weight sequence ${(\eta_t)}_t$ is square summable but not summable: 
-    $\sum \eta_t = \infty$ and $\sum \eta_t^2 < \infty$.
-\end{assumption}
-Finally, we recall that
-\begin{equation}
-    \Vert f \Vert_{\var} \triangleq \sup_{x \in \Xx} f(x) - \inf_{y \in \Xx} f(y).
-\end{equation}
-
-We prove the following modified proposition, which establishes approximate
-convergence of the online Sinkhorn algorithm.
-
-\setpropositiontag{4 bis}
-\begin{proposition}\label{prop:convergence_bis}
-    We assume \autoref{ass:lip} and \ref{ass:weights}. The online Sinkhorn algorithm (\autoref{alg:online_sinkhorn}) yields a sequence $(f_t, g_t)$ that reaches a
-    ball centered around $f^\star, g^\star$ for the variational norm $\Vert
-    \cdot \Vert_{\var}$. Namely, there exists $T > 0$, $C > 0$ such that for all $t > T$,
-    \begin{equation}
-        \Vert f_t - f^\star \Vert_{\var}
-        + \Vert g_t - g^\star \Vert_{\var} \leq \frac{C}{\sqrt{n}} 
-    \end{equation}
-\end{proposition}
+\subsection{Proof of \autoref{prop:convergence_bis}}
 
 \begin{proof}
 For discrete realizations $\hat \alpha$ and $\hat \beta$, we define the perturbation terms
@@ -200,34 +152,34 @@ $1 - e^{- L\text{diam}(\Xx)}$, thanks to \autoref{ass:lip} and according to Prop
 The realizations $\hat \beta_t$ and $\hat \alpha_t$
 are sampled according to the same distribution $\hat \alpha$ and $\hat \beta$. We
 define the sequence $r_t$ to be the running average of the variational norm of the
-functional error terms
+(functional) error term:
 \begin{equation}
-    r_{t+1} = (1 - \tilde \eta_t) r_t + \tilde \eta_t 
+    r_{t+1} \triangleq (1 - \tilde \eta_t) r_t + \tilde \eta_t 
     ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
-    {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}),
+    {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}).
 \end{equation}
-so that we have, for all $t > 0$, $e_t \leq r_t$.
-Using Lemma B.7 of
-\citet{mairal_stochastic_2013} on running averages, this sequence converges towards the scalar expected value
+We thus have, for all $t > 0$, $e_t \leq r_t$. Using Lemma B.7 of
+\citet{mairal_stochastic_2013} on running averages, the sequence $(r_t)_t$
+converges towards the scalar expected value
 \begin{equation}
-    R = \EE_{\hat \alpha, \hat \beta}[{\Vert \epsilon_{\hat \beta} \Vert}_{\var}
+    r_\infty \triangleq \EE_{\hat \alpha, \hat \beta}[{\Vert \epsilon_{\hat \beta} \Vert}_{\var}
     + {\Vert \iota_{\hat \alpha} \Vert}_{\var}] > 0.
 \end{equation}
 % The convergence occurs at the following speed: for all $t > 0$,
 % \begin{equation}
 %     | w_t - R | \leq C' \eta_t \sqrt{t}
 % \end{equation}
-We now relate $R$ to the number of samples $n$ using
+We now relate $r_\infty$ to the number of samples $n$ using
 a uniform law of large number result on parametric functions. We indeed have, by definition
-\begin{align}\label{eq:vdv}
+\begin{align}
     \EE_{\hat \beta} {\Vert \epsilon_{\hat \beta} \Vert}_{\var} 
     &\leq
     \EE_{\hat \beta} {\Vert \Ctrans{g^\star}{\beta} 
     - \Ctrans{g^\star}{\hat \beta} \Vert}_{\infty} \\
     &= \EE_{Y_1, \dots Y_n \sim \beta} 
     \sup_{x \in \Xx}
-     | \frac{1}{n} \sum_{i=1}^n \exp(g^\star(Y_i)) - C(x, Y_i))
-      - \EE_{Y \sim \beta}[\exp(g^\star(Y)) - C(x, Y)] | \\
+     \Big| \frac{1}{n} \sum_{i=1}^n \exp(g^\star(Y_i)) - C(x, Y_i)) \\
+      &\phantom{=}\qquad\qquad\qquad\quad- \EE_{Y \sim \beta}[\exp(g^\star(Y)) - C(x, Y)] \Big| \\
       &= \EE \sup_{x \in \Xx} | \frac{1}{n} \sum_{i=1}^n f_i(x) - f(x) | ,
 \end{align}
 where we have defined $f_i: x \to \exp(g^\star(Y_i - C(x, Y_i))$ and set $f$ to be the
@@ -235,23 +187,17 @@ expected value of each $f_i$. The compactness of $\Xx$ ensures that the
 functions  are square integrable and uniformly bounded. From Example 19.7 and
 Lemma 19.36 of \citet{van_der_vaart_asymptotic_2000} (see also Lemma B.6 from
 \citet{mairal_stochastic_2013}), there exists $C$ (that depends only on $\alpha$ and $\beta$) such that
-\begin{equation}
+\begin{equation}\label{eq:vdv}
     \EE_{\hat \beta} {\Vert \epsilon_{\hat \beta} \Vert}_{\var}  \leq \frac{C}{\sqrt{n}}.
 \end{equation}
-A similar results holds for $\Vert \iota_\alpha \Vert_{\var}$. The result follows by a simple comparison of sequence.
+A similar results holds for $\Vert \iota_\alpha \Vert_{\var}$. Therefore, there exists $C' > 0$ such that
+\begin{equation}
+    e_t \leq r_t \to_{t\to \infty} \frac{C'}{\sqrt{n}}
+\end{equation}
+The result follows by a simple comparison of sequences.
 \end{proof}
 
-\paragraph{Dependency on the mini-batch size.} The online Sinkhorn algorithm thus
-exhibits a rate of error in $\Oo(\frac{1}{\sqrt{n}})$ for estimating
-potentials. This is similar to the regular Sinkhorn algorithm
-\citep{2019-Genevay-aistats}, whose sample complexity is also in
-$\Oo(\frac{1}{\sqrt{n}})$. The proof is simpler in our case, but we assume
-repeated sampling. We show in the experiment section $(\autoref{sec:exps})$ that
-online Sinkhorn strongly outperforms the regular Sinkhorn algorithm thanks to repeated
-sampling. This suggests that the constants appearing in the bounds of online
-Sinkhorn are much better than the ones appearing in the sample complexity of the regular Sinkhorn algorithm.
-
-\subsection{Convergence of online Sinhkorn}
+\subsection{Proof of \autoref{prop:convergence_true}}
 
 In the proof of \autoref{prop:convergence_bis} and in particular Eq. \eqref{eq:ineq_var}, the term that prevents the convergence of $e_t$ is the term
 \begin{equation}
@@ -259,41 +205,12 @@ In the proof of \autoref{prop:convergence_bis} and in particular Eq. \eqref{eq:i
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}),
 \end{equation}
 which is not summable in general. We can control this term by increasing the
- size of $\hat \alpha_t$ and $\hat \beta_t$ with time, at a sufficient rate.
- This rate will be controlled by a second sequence ${(w_t)}_t$. We set a
- reference batch-size $n \in \NN^*$, and denote $n(t)$ the batch size at
- time $t$. We assume that it is increasing sufficiently fast.
-
-\begin{assumption}\label{ass:double_weights}
-    For all $t > 0$, $n(t) = \frac{n}{w_t^2}$ is an integer and the realizations
-    $\hat \alpha_t$ and $\hat \beta_t$ are defined as
-    \begin{equation}
-         \hat \alpha_t \triangleq \frac{1}{n(t)} \sum_{i=1}{n(t)} \delta_{x_i^t},
-         \quad
-         \hat \beta_t \triangleq \frac{1}{n(t)} \sum_{i=1}{n(t)} \delta_{y_i^t}
-    \end{equation}
-where $(x_i^t)_i$ and $(y_i^t)_i$ are i.i.d samples of $\alpha$ and $\beta$ and
-\begin{equation}
-    \sum w_t \eta_t < \infty,\quad\text{as well as}\quad \sum \eta_t = \infty.
-\end{equation}
-\end{assumption}
-
-We then have the following result of global convergence.
-
-\begin{proposition}\label{prop:convergence_true}
-    We assume \autoref{ass:lip}, and
-    \ref{ass:double_weights}. Almost surely, the iterates of online Sinkhorn
-    (\autoref{alg:online_sinkhorn}) converge, and we have
-    \begin{equation}
-        \Vert f_t - f^\star \Vert_{\var} + \Vert g_t - g^\star \Vert_{\var} \to 0.
-    \end{equation}
-\end{proposition}
-
+ size of $\hat \alpha_t$ and $\hat \beta_t$ with time, at a sufficient rate: this is what \autoref{ass:double_weights} ensures.
 
 \begin{proof}
-From \eqref{eq:ineq_var}, for all $t > 0$, we have
-\begin{equation}
-    e_{t+1} \leq 
+From Eq. \eqref{eq:ineq_var}, for all $t > 0$, we have
+\begin{equation}\label{eq:Et_rec}
+    0 \leq e_{t+1} \leq 
     (1 - \tilde \eta_t) e_t
     + \tilde \eta_t
     ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
@@ -303,47 +220,48 @@ Taking the expectation and using the uniform law of
 large number \eqref{eq:vdv}, there exists $C, C' > 0$ such that
 \begin{align}
     \EE e_{t+1} &\leq (1 - \tilde \eta_t) \EE e_t + \tilde \eta_t \frac{C}{\sqrt{n(t)}} \\
-    &\leq (1 - \tilde \eta_t) \EE e_t + C' \tilde \eta_t w_t.
+    &\leq (1 - \tilde \eta_t) \EE e_t + C' \eta_t w_t,
 \end{align}
-Writing $E_t = \EE e_t$, for all $t > 0$, $E_{t+1} - E_t \leq C' \tilde \eta_t w_t$. 
-From \autoref{ass:double_weights}, ${(E_{t+1} - E_t)}_t$ is summable and $E_t \to_{t
-\to \infty} \ell \geq 0$. Finally, we write
-\begin{equation}
-    E_T \leq E_1 - \sum_{s=1} \tilde \eta_s E_s + C\sum_{s=1} \tilde \eta_s w_s.
+where we have used the definition of $n(t)$ from \autoref{ass:double_weights} in the last line.
+
+The proof follows from a simple asymptotic analysis of the sequence ${(\EE e_t)}_t$.
+For all $t > 0$, 
+\begin{equation}\label{eq:Et_rec2}
+    \EE e_{t+1} - \EE e_t = - \eta_t \EE e_t + C' \eta_t w_t \leq C' \eta_t w_t
 \end{equation}
-Assuming $\ell > 0$ leads to $E_t \to -\infty$ which is absurd. Therefore $\EE
-e_t \to_{t \to \infty} 0$. Since $e_t \geq 0$ for all $t > 0$, this implies that
-$e_t \to_{t \to \infty} 0$ almost surely.
+Therefore, from \autoref{ass:double_weights}, ${(\EE e_{t+1} - \EE e_t)}_t$ is
+summable and $\EE e_t \to_{t \to \infty} \ell \geq 0$. Let's assume $\ell > 0$.
+Summing \eqref{eq:Et_rec2} over $t$, we obtain
+\begin{equation}
+    \EE e_t \leq \EE e_1 - \sum_{s=1}^{t-1} \tilde \eta_s \EE_s 
+    + C\sum_{s=1}^{t-1} \tilde \eta_s w_s \to_{t \to \infty} - \infty,
+\end{equation}
+which leads to a contradiction. Therefore $\EE e_t \to_{t \to \infty} 0$. 
+
+As
+$e_t \geq 0$ for all $t > 0$, this implies that $e_t \to_{t \to \infty} 0$
+almost surely.
 \end{proof}
 
-\paragraph{Choosing appropriate weights.}
 
-Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
-provided we use batch-sizes of size $n\, t^{2b}$, with $b > 1 - a$.
-Slowing down Sinkhorn iterations permits to work with batches whose size
-increases more slowly. The limit case when $a = 1$ requires only $b > 0$, i.e.
-batch-sizes growing arbitrarily slowly. With these simple weights, the complexity of the
-iteration $t$ of the algorithm is then $\Oo(\frac{n^2}{t^{1 + 2b}})$.
+% \paragraph{Reusing samples from the past.} The distributions $\alpha_t$ and
+% $\beta_t$ do not have to contain only new samples: they may contained already
+% seen ones. This allows to reuse memorized costs $C(x_i, y_j)$. We consider as
+% in the main text a stream of batches of size $n$ of constant step sizes. We
+% set $n_t = n\,t$ and index samples of batch $t$ as ${(x_i)}_{(n_t,n_{t+1}]}$.
+% At each iteration, we can set the empirical distribution of size $n(t)$ to be
+% \begin{equation} \hat \alpha_t = \frac{1}{n(t)} \Big( \sum_{i=n_t}^{n_{t+1}}
+% \delta_{x_i}) + \sum_{i=n_t - n (\frac{1}{w_t^2} - 1)}^{n_t} \delta_{x_i}
+% \Big), \end{equation} and similarly for $\hat \beta_t$. The past starting
+% point $i=n_t - n (\frac{1}{w_t^2} - 1)$ remains positive provided that $w_t =
+% \Oo(\frac{1}{t^{1/2}})$, which is compatible with \autoref{ass:double_weights}
+% whenever $\eta_t = \frac{1}{n^a}$, $a \in (\frac{1}{2}, 1]$. Using samples
+% from the past is thus possible within the range of weights meeting
+% \autoref{ass:weights}, i.e. in the setting of \autoref{prop:convergence_bis}.
 
-\paragraph{Reusing samples from the past.} The distributions $\alpha_t$ and
-$\beta_t$ do not have to contain only new samples: they may contained already
-seen ones. This allows to reuse memorized costs $C(x_i, y_j)$. We consider as
-in the main text a stream of batches of size $n$ of constant step sizes. We set
-$n_t = n\,t$ and index samples of batch $t$ as ${(x_i)}_{(n_t,n_{t+1}]}$. At
-each iteration, we can set the empirical distribution of size $n(t)$ to be
-\begin{equation}
-    \hat \alpha_t = \frac{1}{n(t)} \Big( \sum_{i=n_t}^{n_{t+1}} \delta_{x_i}) + 
-    \sum_{i=n_t - n (\frac{1}{w_t^2} - 1)}^{n_t} \delta_{x_i} \Big),
-\end{equation}
-and similarly for $\hat \beta_t$. The past starting point $i=n_t - n
-(\frac{1}{w_t^2} - 1)$ remains positive provided that $w_t =
-\Oo(\frac{1}{t^{1/2}})$, which is compatible with \autoref{ass:double_weights}
-whenever $\eta_t = \frac{1}{n^a}$, $a \in (\frac{1}{2}, 1]$. Using samples from
-the past is thus possible within the range of weights meeting \autoref{ass:weights}, i.e. in the setting of \autoref{prop:convergence_bis}.
-
-Concretely, reusing samples
-from the past amounts to correct a fraction of the weights ${(p_i)}_i$ and
-${(q_i)}_i$ at each iteration.
+% Concretely, reusing samples
+% from the past amounts to correct a fraction of the weights ${(p_i)}_i$ and
+% ${(q_i)}_i$ at each iteration.
 
 \section{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
 
