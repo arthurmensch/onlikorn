@@ -3,7 +3,51 @@ We report the proofs of the different propositions (\autoref{sec:proofs}), an in
 
 \section{Proofs}\label{sec:proofs}
 
-We prove the propositions in their order of appearance.
+We first introduce two useful known lemmas, and prove the propositions in their order of appearance.
+
+\subsection{Useful lemmas}
+
+First, under \autoref{ass:lip}, we note that the soft $C$-transforms are
+ uniformly contracting on the distribution space $\Pp(\Xx)$. This is clarified
+ in the following lemma, extracted from \citet{vialard2019elementary},
+ Proposition 19.
+
+\begin{lemma}\label{lemma:contractance}
+    Assume that \autoref{ass:lip} holds, and set $\kappa = 1 - \exp(-L
+    \textnormal{diam}(\Xx))$. For all $\hat \alpha \in \Pp(\Xx)$ and $\hat \beta \in
+    \Pp(\Xx)$, for all $f, f', g, g' \in \Cc(\Xx)$,
+    \begin{equation}
+        {\Vert \Ctrans{f'}{\hat \alpha} - 
+        \Ctrans{f'}{\hat \alpha} \Vert}_{\var} \leq \kappa {\Vert f - f' \Vert}_{\var},
+        \quad
+        {\Vert \Ctrans{g}{\hat \beta} - 
+        \Ctrans{g'}{\hat \beta} \Vert}_{\var} \leq \kappa {\Vert g - g' \Vert}_{\var}.
+    \end{equation}
+\end{lemma}
+
+We will also need a uniform law of large numbers for functions. The following lemma is a consequence of Example 19.7 and
+Lemma 19.36 of \citet{van_der_vaart_asymptotic_2000}, and is copied in Lemma B.6 from \citet{mairal_stochastic_2013}.
+
+\begin{lemma}\label{lemma:lln}
+    Assume \autoref{ass:lip}. Let $(f_t)_t$ be an i.i.d sequence in $\Cc(\Xx)$,
+    such that $\EE[f_0] = f \in \Cc(\Xx)$. Then there exists $C > 0$ such that
+    \begin{equation}
+        \EE \sup_{x \in \Xx} | \frac{1}{n} \sum_{i=1}^n f_i(x) - f(x) |
+        \leq \frac{C}{\sqrt{n}}.
+    \end{equation}
+\end{lemma}
+Finally, we need a result on running averages using the sequence ${(\eta_t)}_t$. The following result stems from a simple Abel transform of the law of large number, and is established by \citet{mairal_stochastic_2013}, Lemma B.7.
+
+\begin{lemma}\label{lemma:running}
+    Let $(\eta_t)_t$ be a sequence of weights meeting \autoref{ass:weights}. Let
+    $(X_t)_t$ be an i.i.d sequence of real-valued random variables with existing
+    first moment $\EE[X_0]$. We consider the sequence ${(\bar X_t)}_t$ defined
+    by $\bar X_0 \triangleq X_0$ and 
+    \begin{equation}
+        \bar X_t \triangleq (1 - \eta_t) \bar X_{t-1} + \eta_t X_t.
+    \end{equation}
+    Then $\bar X_t \to_{t \to \infty} \EE[X_0]$.
+\end{lemma}
 
 \subsection{Proof of \autoref{prop:markov}}
 
@@ -21,11 +65,9 @@ We prove the propositions in their order of appearance.
         x_{t+2} = A_{\theta_t}(x_t).
     \end{equation}
     
-    For all $\hat \alpha \in \Pp(\Xx)$, $\hat \beta \in \Pp(\Xx)$, $A_{\theta}$
+    From \autoref{lemma:contractance}, for all $\hat \alpha \in \Pp(\Xx)$, $\hat \beta \in \Pp(\Xx)$, $A_{\theta}$
     with $\theta = (\hat \alpha, \hat \beta)$ is contracting, with module
-    $\kappa_\theta < \kappa < 1$ (see for instance Proposition 19
-    from \citet{vialard2019elementary}), as we assume $\Xx$ to be compact
-    (\autoref{ass:lip}). Therefore
+    $\kappa_\theta < \kappa < 1$. Therefore
     \begin{equation}
         \int_{\theta} \kappa_\theta \d \mu(\theta) < 1, \qquad \int_{\theta}
          \log \kappa_\theta \d \mu(\theta) < 0.
@@ -147,7 +189,7 @@ where we set $e_t \triangleq \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var}$,
 $\tilde \eta_t = \frac{\eta_t}{1-\kappa}$ and $\kappa$ is set to be the minimum
 of the contraction factor over all empirical realizations $\hat \alpha_t$, $\hat
 \beta_t$ of the distributions $\alpha$ and $\beta$. It is upper bounded by
-$1 - e^{- L\text{diam}(\Xx)}$, thanks to \autoref{ass:lip} and according to Proposition 19 in \citet{vialard2019elementary}.
+$1 - e^{- L\text{diam}(\Xx)}$, thanks to \autoref{ass:lip} and \autoref{lemma:contractance}.
 
 The realizations $\hat \beta_t$ and $\hat \alpha_t$
 are sampled according to the same distribution $\hat \alpha$ and $\hat \beta$. We
@@ -158,10 +200,9 @@ define the sequence $r_t$ to be the running average of the variational norm of t
     ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}).
 \end{equation}
-We thus have, for all $t > 0$, $e_t \leq r_t$. Using Lemma B.7 of
-\citet{mairal_stochastic_2013} on running averages, the sequence $(r_t)_t$
+We thus have, for all $t > 0$, $e_t \leq r_t$. Using \autoref{lemma:running}, the sequence $(r_t)_t$
 converges towards the scalar expected value
-\begin{equation}
+\begin{equation}\label{eq:r_infty}
     r_\infty \triangleq \EE_{\hat \alpha, \hat \beta}[{\Vert \epsilon_{\hat \beta} \Vert}_{\var}
     + {\Vert \iota_{\hat \alpha} \Vert}_{\var}] > 0.
 \end{equation}
@@ -184,9 +225,7 @@ a uniform law of large number result on parametric functions. We indeed have, by
 \end{align}
 where we have defined $f_i: x \to \exp(g^\star(Y_i - C(x, Y_i))$ and set $f$ to be the
 expected value of each $f_i$. The compactness of $\Xx$ ensures that the
-functions  are square integrable and uniformly bounded. From Example 19.7 and
-Lemma 19.36 of \citet{van_der_vaart_asymptotic_2000} (see also Lemma B.6 from
-\citet{mairal_stochastic_2013}), there exists $C$ (that depends only on $\alpha$ and $\beta$) such that
+functions  are square integrable and uniformly bounded. \autoref{lemma:lln} ensures that there exists $C$ (that depends only on $\alpha$ and $\beta$) such that
 \begin{equation}\label{eq:vdv}
     \EE_{\hat \beta} {\Vert \epsilon_{\hat \beta} \Vert}_{\var}  \leq \frac{C}{\sqrt{n}}.
 \end{equation}
@@ -194,6 +233,8 @@ A similar results holds for $\Vert \iota_\alpha \Vert_{\var}$. Therefore, there 
 \begin{equation}
     e_t \leq r_t \to_{t\to \infty} \frac{C'}{\sqrt{n}}
 \end{equation}
+
+Note that we have used twice a corollary of the law of large numbers: once when averaging over $t$ (Eq. \eqref{eq:r_infty}), and once when averaging over $n$ (Eq. \eqref{eq:vdv}).
 The result follows by a simple comparison of sequences.
 \end{proof}
 
@@ -266,17 +307,19 @@ almost surely.
 \section{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
 
 The online Sinkhorn algorithm takes a simpler form when dealing with discrete
-distributions. We derive it in \autoref{alg:discrete_online}. We take two
-distributions of the same size for the sake of simplicity. In this case, we evaluate the potentials as
+distributions. We derive it in \autoref{alg:discrete_online}. We set $\alpha$
+and $\beta$ to have size $N$ and $M$, respectively. In this case, we evaluate
+the potentials as
 \begin{align}
-    g_t(y) &= - \log \sum_{j=1}^n \exp(p_j - C(x_j, y)) \\
-    f_t(x) &= - \log \sum_{j=1}^n \exp(q_j - C(x, y_j)). \\
+    g_t(y) &= - \log \sum_{j=1}^N \exp(p_j - C(x_j, y)) \\
+    f_t(x) &= - \log \sum_{j=1}^M \exp(q_j - C(x, y_j)), \\
 \end{align}
+where $(p_j)_{J \in [1, N]}$ and $(q_j)_{J \in [1, M]}$ are fixed-size vectors.
 Note that the computations derived in \autoref{alg:discrete_online} are proposed
 in log-space so as to prevent numerical overflows. The sets $|I|$ and $|J|$ can
 have varying sizes along the algorithm, which allows for example to speed-up the
 initial Sinkhorn iteration (\autoref{sec:accelerating}). In such case, the
-cost matrix $(C(x_i,y_j))_{i,j}$ is progressively computed along the iterations.
+cost matrix $(C(x_i,y_j))_{i,j}$ should be progressively computed along the iterations.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
@@ -286,19 +329,20 @@ cost matrix $(C(x_i,y_j))_{i,j}$ is progressively computed along the iterations.
     \State Set $p = q = - \infty \in \RR^n$
     \For{$t= 0, \dots, {T-1}$}
         \State $q \gets q + \log(1 - \eta_t)$, $p \gets p + \log(1 - \eta_t)$,
-        \State Sample $I \subset [1, n]$, $J \subset [1, n]$
-        \For{$i \in I$}
-            \State $q_i \gets \log \big( \exp(q_i)
-            + \exp(\log(\eta_t) - \log \frac{1}{n} 
-            \sum_{j=1}^{n} \exp(p_j - C(x_j, y_i)) \big) $
-        \EndFor
+        \State Sample $J \subset [1, M]$, 
+        $I \subset [1, N]$
         \For{$i \in J$}
-        \State $p_i \gets \log \big( \exp(q_i)
-        + \exp(\log(\eta_t) - \log \frac{1}{n} 
-        \sum_{j=1}^{n} \exp(q_j - C(x_i, y_j)) \big)$
+            \State $q_i \gets \log \Big( \exp(q_i)
+            + \exp\big(\log(\eta_t) - \log \frac{1}{N} 
+            \sum_{j=1}^{N} \exp(p_j - C(x_j, y_i)\big) \Big) $
         \EndFor
-        \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (n)$
-        \State\hspace{2.45cm} $p_i = f_t(x_i) - \log (n)$
+        \For{$i \in I$}
+        \State $p_i \gets \log \Big( \exp(q_i)
+        + \exp \big( \log(\eta_t) - \log \frac{1}{M} 
+        \sum_{j=1}^{M} \exp(q_j - C(x_i, y_j)\big) \Big)$
+        \EndFor
+        \State \textit{Optional}: refit all $q_i = g_t(y_i) + \log (M)$
+        \State\hspace{2.45cm} $p_i = f_t(x_i) + \log (N)$
     \EndFor
     \State Returns $f_T : (q, y)$ and
     $g_T : (p, x)$

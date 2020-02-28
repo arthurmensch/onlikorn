@@ -37,7 +37,7 @@ algorithm~\citep{Sinkhorn64,sinkhorn1967concerning}.
 %
 This approach was pushed forward for ML applications by
 \citet{cuturi2013sinkhorn}. Sinkhorn distances are smooth and amenable to GPU
-computations, which makes them suitable as a loss function in model training.
+computations, which makes them suitable as a loss function in model training \citep{frogner2015learning, mensch_geometric_2019}.
 The Sinkhorn algorithm operates in two distinct phases: draw samples from the
 distributions and evaluate a pairwise distance matrix in the first phase;
 balance this distance matrix using Sinkhorn-Knopp iterations in the second
@@ -57,11 +57,14 @@ transport plan.
     \item We introduce an online variant of the Sinkhorn algorithm, that uses
     streams of samples $(x_t)_t$ and $(y_t)_y$ to enrich a non-parametric
     functional representation of the dual regularized optimal transport solution.
-    \item We cast online Sinkhorn as an instance of a block-convex stochastic mirror
-    descent algorithm. This shows convergence of the algorithm
-    with high probability. We analyse special cases of online Sinkhorn.
+    \item We cast online Sinkhorn as an instance of a block-convex stochastic
+    mirror descent algorithm. We establish the global convergence of online
+    Sinkhorn (\autoref{prop:convergence_true}), and convergence results for
+    various variants of the algorithm.
     \item We demonstrate the performance of online Sinkhorn for estimating OT
-    distances between continuous distributions and for accelerating the early phase of discrete Sinkhorn iterations. Comparison with other methods advocates for our original non-parametric representations of OT solutions.
+    distances between continuous distributions and for accelerating the early
+    phase of discrete Sinkhorn iterations. Comparison with other methods
+    advocates for our original non-parametric representations of OT solutions.
 \end{itemize}
 
 \paragraph{Notations.} We denote $\Cc(\Xx)$ the set of continuous functions over

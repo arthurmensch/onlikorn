@@ -120,8 +120,8 @@ and $\bar \beta_t$ gather previously observed samples.
             \log(\eta_t) - \log \frac{1}{n_t} 
             \sum_{j=1}^{n_t} \exp(q_j - C(x_i, y_j))$
         \EndFor
-        \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (n_{t+1})$
-        \State\hspace{2.45cm} $p_i = f_t(x_i) - \log (n_{t+1})$
+        \State \textit{Optional}: refit all $q_i = g_t(y_i) + \log (n_{t+1})$
+        \State\hspace{2.45cm} $p_i = f_t(x_i) + \log (n_{t+1})$
         \State Save $(q_i, p_i, x_i, y_i)_{(n_t,n_{t+1}]}$
     \EndFor
     \State Returns $f_T : (q_i, y_i)_{(0, n_T]}$ and
@@ -155,7 +155,7 @@ improved by refitting the weights $(p_i)_{(0, n_t]}$, $(q_j)_{(0, n_t]}$ based
 on all previously seen samples. This
 amounts to replace, after iteration $t$, for all $i \in (0, n_{t+1}]$,
 \begin{align}
-    q_i &\gets g_t(y_i) - \log(n_{t+1}) 
+    q_i &\gets g_t(y_i) + \log(n_{t+1}) 
     = - \log \frac{1}{n_{t+1}} 
     \sum_{j=1}^{n_{t+1}} e^{p_j - C(x_j, y_i)},
 \end{align}
@@ -209,7 +209,7 @@ is useful to accelerate the first phase of the Sinkhorn algorithm.
 \subsection{Stochastic mirror descent interpretation}
 \label{sec-mirror}
 
-This online Sinkhorn can be recast as a stochastic mirror descent algorithm, which enables a convergence analysis.
+This online Sinkhorn can be understood as a stochastic mirror descent algorithm.
 %
 This equivalence is obtained by applying a change
 of variable in \eqref{eq:wass}, defining 
@@ -285,4 +285,8 @@ we consider operates in an infinite-dimensional space, as in \citet{hsieh2018fin
 
 Finally, we mention that  when computing exact gradient (in the absence of noise) and when using constant step-size of
 $\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variable. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\citep{mishchenko2019sinkhorn}. 
+
+Note that we do not directly adapt the proofs of convergence of mirror descent in our
+analysis, as the lack of convexity of problem \eqref{eq:wass_reparam} prevents it.
+We will instead use concentration arguments.
 

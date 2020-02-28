@@ -1,10 +1,18 @@
 %!TEX root = article.tex
 
 
-\section{Convergence analysis}
+\section{Convergence analysis}\label{sec:analysis}
 
-We give three kind of convergence analysis: (i) a stationary distribution convergence property for the random Sinkhorn
-algorithm ; (ii) a global convergence property for the online Sinkhorn algorithm without noise ; (iii) a high-probability convergence result for the full online Sinkhorn algorithm. We make the following classic assumptions on the cost regularity and distribution compactness.
+We give four convergence results, in increasing order of interest: (i) a stationary distribution
+convergence property for the random Sinkhorn algorithm ; (ii) a global
+convergence property for the online Sinkhorn algorithm without noise ; (iii) an
+approximate convergence property for the online Sinkhorn algorithm with fixed
+batch-size and (iv) an exact global convergence result for online Sinkhorn
+with increasing batch sizes.
+
+We make the following classic assumptions on the cost regularity and
+distribution compactness, which is necessary to obtain a uniform
+soft $C$-transform contractance ratio.
 
 \begin{assumption}\label{ass:lip}
     The cost $C: \Xx \times \Xx \to \RR$ is $L$-lipschitz, and $\Xx$ is  compact.
@@ -61,7 +69,7 @@ distribution is deterministic. The following proposition shows that the modified
         + \Vert g_t - g^\star \Vert_{\text{var}} \to 0,\quad\text{and} \\
         \frac{1}{2} \dotp{\alpha}{f_t + \Ctrans{g_t}{\alpha}} + \dotp{\beta}{g_t + \Ctrans{f_t}{\beta}} 
          \to \Ww(\alpha, \beta).
-    \end{gather}robbins1951stochastic
+    \end{gather}
 \end{proposition}
 Note that, due to the fact that we perform simultaneous updates, we only obtain
 the convergence of $f_t \to f^\star + A$, and $g_t \to g^\star$, where $f^\star$
@@ -84,7 +92,7 @@ We make the following \citet{robbins1951stochastic} assumption on the weight seq
 \end{assumption}
 
 
-We first state an approximate convergence result for the online Sinkhorn algorithm with fixed batch-size.
+We first state an approximate convergence result for the online Sinkhorn algorithm with fixed batch-size $n(t) = n$.
 
 \begin{proposition}\label{prop:convergence_bis}
     We assume \autoref{ass:lip} and \ref{ass:weights}. The online Sinkhorn algorithm (\autoref{alg:online_sinkhorn}) yields a sequence $(f_t, g_t)$ that reaches a
@@ -101,8 +109,8 @@ We cannot state an exact convergence result in this case because the noise due
 to replacing $\alpha$ and $\beta$ with $\hat \alpha$ and $\hat \beta$ in the
 $C$-transform does not decrease with time --- slowing down the Sinkhorn
 iterations is not enough at we must ensure that $\sum \eta_t = \infty$. On the
-other hand, slowing-down iterations allows to obtain an approximation (in
-$\Oo(\frac{1}{\sqrt{n}}$)). This is comparable to the size of the error made by
+other hand, slowing-down iterations allows to obtain an approximation in
+$\Oo(\frac{1}{\sqrt{n}}$). This is comparable to the size of the error made by
 performing Sinkhorn without resampling \citep{2019-Genevay-aistats}.  We show in
 the experiment section $(\autoref{sec:exps})$ that online Sinkhorn strongly
 outperforms the regular Sinkhorn algorithm thanks to repeated sampling. This
@@ -110,14 +118,16 @@ suggests that the constants appearing in the bounds of online Sinkhorn are much
 better than the ones appearing in the sample complexity of the regular Sinkhorn
 algorithm.
 
-Finally, we show the almost sure convergence of the online Sinkhorn algorithm with slightly increasing batch-size $n(t)$, as specified in the following assumption.
+Finally, we show the almost sure convergence of the online Sinkhorn algorithm
+with slightly increasing batch-size $n(t)$, as specified in the following
+assumption.
 
 \begin{assumption}\label{ass:double_weights}
-    For all $t > 0$, $n(t) = \frac{n}{w_t^2}$ is an integer. ${(\eta_t)_t}_t$ is
-    not summable and ${(w_t \eta_t)_t}_t$ is summable: $\sum w_t \eta_t <
+    For all $t > 0$, the batch-size $n(t) = \frac{n}{w_t^2}$ is an integer. ${(\eta_t)}_t$ is
+    not summable and ${(w_t \eta_t)}_t$ is summable: $\sum w_t \eta_t <
     \infty$ and $\sum \eta_t = \infty$.
 \end{assumption}
-We then have the following result of global convergence.
+We then have the following global convergence result.
 
 \begin{proposition}\label{prop:convergence_true}
     We assume \autoref{ass:lip}, and
@@ -128,10 +138,10 @@ We then have the following result of global convergence.
     \end{equation}
 \end{proposition}
 
-\paragraph{Choosing weights.}
+\paragraph{Weight sequences.}
 
 Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
-provided we use batch-sizes of size $n(t) = n\, t^{2b}$, with $b > 1 - a$.
-Slowing down Sinkhorn iterations permits to work with batches whose size
-increases more slowly. The limit case when $a = 1$ requires only $b > 0$, i.e.
+provided we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c > 1$.
+Slowing down Sinkhorn iterations thus permits to work with batches whose size
+increases more slowly. The limit case when $a = 1$ requires only $b > 0$ can accommodate
 batch-sizes growing arbitrarily slowly.
