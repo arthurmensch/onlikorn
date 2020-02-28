@@ -57,7 +57,7 @@ corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive 
     \qquad g_{t+1} = \Ctrans{f_{t+1}}{\hat \alpha_t},
 \end{equation}
 which is equivalent to setting all $(q_i)_{i \leq n_t}$ to $0$, and assigning each weight
- $q_i$ to $g_t(y_i) - \log(n)$ for $n_t < i \leq  n_{t+1}$ and similarly for~$p_i$.
+ $q_i$ to $g_t(y_i) - \log(n)$ for $n_t < i \leq  n_{t+1}$, and similarly for~$p_i$.
 %
 The variance of the updates~\eqref{eq:updates_naive} does not decay through the
 iteration, hence \textit{random Sinkhorn} algorithm does nos converge.
@@ -120,8 +120,8 @@ and $\bar \beta_t$ gather previously observed samples.
             \log(\eta_t) - \log \frac{1}{n_t} 
             \sum_{j=1}^{n_t} \exp(q_j - C(x_i, y_j))$
         \EndFor
-        \State \textit{Optional}: refit all $q_i = g_t(y_i) + \log (n_{t+1})$
-        \State\hspace{2.45cm} $p_i = f_t(x_i) + \log (n_{t+1})$
+        \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (n_{t+1})$
+        \State\hspace{2.45cm} $p_i = f_t(x_i) - \log (n_{t+1})$
         \State Save $(q_i, p_i, x_i, y_i)_{(n_t,n_{t+1}]}$
     \EndFor
     \State Returns $f_T : (q_i, y_i)_{(0, n_T]}$ and
@@ -150,23 +150,18 @@ We propose some heuristics to accelerate convergence and alleviate memory and co
 %%%%%
 \paragraph{Fully-corrective scheme.} 
 
-The potentials $f_t$ and $g_t$ may be
-improved by refitting the weights $(p_i)_{(0, n_t]}$, $(q_j)_{(0, n_t]}$ based
-on all previously seen samples. This
-amounts to replace, after iteration $t$, for all $i \in (0, n_{t+1}]$,
-\begin{align}
-    q_i &\gets g_t(y_i) + \log(n_{t+1}) 
-    = - \log \frac{1}{n_{t+1}} 
-    \sum_{j=1}^{n_{t+1}} e^{p_j - C(x_j, y_i)},
-\end{align}
-and similarly for each $p_i$. This corresponds to performing one step of the
- discrete Sinkhorn algorithm with distributions $\bar \alpha_t$ and $\bar
- \beta_t$. This increases the dual cost $F_{ \bar \alpha, \bar \beta}(f_t, g_t)$,
- and ``on average'', the energy $F_{\alpha, \beta}$. This reweighted scheme (akin to
- the fully-corrective Frank-Wolfe scheme from \citet{lacoste2015global}) has a cost in
- $\Oo(n_t^2)$. In practice, it can be used only every $k$ iterations, with $k$
- increasing with $t$. We study a combination of partial and full updates in
- \autoref{sec:accelerating}.
+The potentials $f_t$ and $g_t$ may be improved by refitting the weights
+$(p_i)_{(0, n_t]}$, $(q_j)_{(0, n_t]}$ based on all previously seen samples.  For this, we 
+may perform one step of the discrete Sinkhorn algorithm with
+distributions $\bar \alpha_t$ and $\bar \beta_t$.
+This amounts to replace, after iteration $t$, for all $i \in (0, n_{t+1}]$,
+$q_i \gets g_t(y_i) - \log(n_{t+1})$. and similarly for each $p_i$. This increases the dual cost
+$F_{ \bar \alpha, \bar \beta}(f_t, g_t)$, and ``on average'', the energy
+$F_{\alpha, \beta}$. This reweighted scheme (akin to the fully-corrective
+Frank-Wolfe scheme from \citet{lacoste2015global}) has a cost in $\Oo(n_t^2)$
+per iteration. In practice, it can be used every $k$ iterations, with $k$
+increasing with $t$. We study a combination of partial and full updates in
+\autoref{sec:accelerating}.
 
 %%%%%
 \paragraph{Memory compression.} 
@@ -287,6 +282,6 @@ Finally, we mention that  when computing exact gradient (in the absence of noise
 $\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variable. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\citep{mishchenko2019sinkhorn}. 
 
 Note that we do not directly adapt the proofs of convergence of mirror descent in our
-analysis, as the lack of convexity of problem \eqref{eq:wass_reparam} prevents it.
-We will instead use concentration arguments.
+analysis, as the lack of convexity of problem \eqref{eq:wass_reparam} prevents a simple transposition.
+We will instead use functional concentration arguments.
 

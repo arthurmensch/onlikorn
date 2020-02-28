@@ -341,8 +341,8 @@ cost matrix $(C(x_i,y_j))_{i,j}$ should be progressively computed along the iter
         + \exp \big( \log(\eta_t) - \log \frac{1}{M} 
         \sum_{j=1}^{M} \exp(q_j - C(x_i, y_j)\big) \Big)$
         \EndFor
-        \State \textit{Optional}: refit all $q_i = g_t(y_i) + \log (M)$
-        \State\hspace{2.45cm} $p_i = f_t(x_i) + \log (N)$
+        \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (M)$
+        \State\hspace{2.45cm} $p_i = f_t(x_i) - \log (N)$
     \EndFor
     \State Returns $f_T : (q, y)$ and
     $g_T : (p, x)$

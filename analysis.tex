@@ -138,10 +138,15 @@ We then have the following global convergence result.
     \end{equation}
 \end{proposition}
 
-\paragraph{Weight sequences.}
+\paragraph{Choosing batch-sizes.}
 
 Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
-provided we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c > 1$.
-Slowing down Sinkhorn iterations thus permits to work with batches whose size
-increases more slowly. The limit case when $a = 1$ requires only $b > 0$ can accommodate
-batch-sizes growing arbitrarily slowly.
+provided that we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c >
+1$. Slowing down Sinkhorn iterations thus permits to work with batches whose
+size increases more slowly. The limit case when $a = 1$ requires only $b > 0$
+can accommodate batch-sizes growing arbitrarily slowly. 
+
+Note that using growing batch-size simply tells us that we should increase the
+computational budget of single iterations over time: the overall complexity
+after seeing $n_t$ samples remain in $\Oo(n_t^2)$. We use fixed batch-sizes in
+experiments as those already perform well.
