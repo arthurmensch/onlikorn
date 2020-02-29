@@ -1,7 +1,7 @@
 %!TEX root = article.tex
 \section{Background: optimal transport distances}
 
-We recall the definition of optimal transport distances between arbitrary distributions (i.e. not necessarily discrete), then review how these are estimated using finite realizations.
+We first recall the definition of optimal transport distances between arbitrary distributions (i.e. not necessarily discrete), then review how these are estimated using a finite number of samples.
 
 \subsection{Optimal transport distances and algorithms}
 
@@ -48,20 +48,21 @@ where the Kulback-Leibler divergence is defined as $\KL(\pi | \alpha \otimes
 \beta) \eqdef \int \log(\frac{\d\pi}{\d\al\d\be}) \d\pi$ (which is thus equal to
 the mutual information of $\pi$).
 %
-$\Ww_{C,\varepsilon}$ approximate $\Ww_C(\alpha,\beta)$ up to an $\epsilon
+$\Ww_{C,\varepsilon}$ approximates $\Ww_{C,0}(\alpha,\beta)$ up to an $\epsilon
 \log(\epsilon)$ error \citep{2019-Genevay-aistats}. In the following, we set
 $\varepsilon$ to $1$ without loss of generality, as $\Ww_{C, \varepsilon} =
 \epsilon \Ww_{C / \varepsilon, 1}$, and simply write $\Ww$.
 %
 The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous functions:
 \begin{equation}\label{eq:dual}
-    \max_{(f, g) \in \Cc(\Xx)^2} \dotp{f}{\alpha} + 
+    F_{\alpha, \beta}(f, g) \eqdef \max_{(f, g) \in \Cc(\Xx)^2} \dotp{f}{\alpha} + 
     \dotp{g}{\beta}
     - \dotp{e^{f \oplus g - C}}{\alpha \otimes \beta} + 1, 
 \end{equation}
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
-\eqdef f(x)+g(y)-C(x,y)$. We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
-Problem \eqref{eq:dual} can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply
+\eqdef f(x)+g(y)-C(x,y)$.
+%  We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
+Problem \eqref{eq:dual} can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply\todo{there is no - sign in front of the C transform, right?}
 \begin{align}
     &f_{t+1}(\cdot) = - \Ctrans{g_t}{\beta}, \:
     g_{t+1}(\cdot) = - \Ctrans{f_{t+1}}{\alpha}, \\
@@ -92,7 +93,7 @@ $\Ctrans{\cdot}{\alpha}$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$
 
 Iterations~\eqref{eq:sinkhorn} cannot be implemented when dealing with generic distributions $(\al,\be)$, because they involve continuous functions ${(f_t,g_t)}_t$. 
 %
-When the input distribution are discrete (or equivalently that $\Xx$ is a finite
+When the input distributions are discrete (or equivalently when $\Xx$ is a finite
 set) then these function can be stored on discrete vectors;
 the iterations~\eqref{eq:sinkhorn} correspond to the celebrated
 \citet{sinkhorn1967concerning} algorithm, which is often implemented over the scaling
@@ -100,7 +101,7 @@ variable $(e^{f_t},e^{g_t})$.
 %
 More precisely, with $\alpha =
 \frac{1}{n}\sum_{i=1}^n \delta_{x_i}$ and $\beta = \frac{1}{n} \sum_{i=1}^n
-\delta_{x_i}$, the Sinkohrn iterations~\eqref{eq:sinkhorn} update $u_t \eqdef
+\delta_{y_i}$, the Sinkohrn iterations~\eqref{eq:sinkhorn} update $u_t \eqdef
 (e^{f_t(x_i)})_{i=1}^n, v_t \eqdef (e^{g_t(y_i)})_{i=1}^n$ as
 \begin{equation*}
 	u_{t+1} = \frac{n}{ K v_t }
@@ -132,7 +133,7 @@ $\Ww_{C,\epsilon}(\alpha,\beta)$ using several sets of samples $(\hat
 \alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of reasonable size to
 allow Sinkhorn estimation, and may for example come from a temporal stream.
 \citet{2018-Genevay-aistats} propose to use a Monte-Carlo estimate $\hat
-\Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t, \beta_t)$.
+\Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t, \hat \beta_t)$.
 However, this yields a biased estimation as the distance $\Ww(\alpha,
 \beta)$ differs from its expectation under sampling $\EE_{\hat \alpha \sim
 \alpha, \hat \beta \sim \beta} [\Ww(\hat \alpha, \hat \beta)]$. To address this

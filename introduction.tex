@@ -12,15 +12,15 @@ on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$.
 %
 This distance has many favorable geometrical properties. In particular it allows one to compare distributions having disjoint supports. 
 % 
-Computing OT distance is usually performed by sampling once from the input
+Computing OT distances is usually performed by sampling once from the input
 distributions and solving a discrete linear program (LP), due
 to~\citet{Kantorovich42}. This approach is numerically costly and statistically
 inefficient \citep{weed2019sharp}. The optimisation problem depends on a fixed
 sampling of points from the data. It is therefore not adapted to machine
-learning setting where data is resampled continuously (e.g. in GANs), or
+learning settings where data is resampled continuously (e.g. in GANs), or
 accessed in an online manner. The goal of this paper is to develop an efficient
-online method able to estimate OT distances between continuous distributions. We
-will use a stream of data to refine an approximate optimal transport solution,
+online method able to estimate OT distances between continuous distributions. It uses 
+a stream of data to refine an approximate optimal transport solution,
 adapting the celebrated Sinkhorn algorithm to an online setting.
   
 
@@ -37,10 +37,10 @@ algorithm~\citep{Sinkhorn64,sinkhorn1967concerning}.
 %
 This approach was pushed forward for ML applications by
 \citet{cuturi2013sinkhorn}. Sinkhorn distances are smooth and amenable to GPU
-computations, which makes them suitable as a loss function in model training \citep{frogner2015learning, mensch_geometric_2019}.
+computations, which make them suitable as a loss function in model training \citep{frogner2015learning, mensch_geometric_2019}.
 The Sinkhorn algorithm operates in two distinct phases: draw samples from the
 distributions and evaluate a pairwise distance matrix in the first phase;
-balance this distance matrix using Sinkhorn-Knopp iterations in the second
+balance this distances matrix using Sinkhorn-Knopp iterations in the second
 phase.
 
 This two-step approach does not estimate the true regularized OT
@@ -52,10 +52,10 @@ dimension ---see~\citet{fatras2019learning} for a mathematical analysis. In
 contrast, we use streams of mini-batches to progressively enrich a consistent representation of the
 transport plan.
 
-\paragraph{Contributions.} Our paper proposes a new take on estimating optimal transport distances between continuous distributions. We make the following contribution
+\paragraph{Contributions.} Our paper proposes a new take on estimating optimal transport distances between continuous distributions. We make the following contributions:
 \begin{itemize}
     \item We introduce an online variant of the Sinkhorn algorithm, that uses
-    streams of samples $(x_t)_t$ and $(y_t)_y$ to enrich a non-parametric
+    streams of samples $(x_t)_t$ and $(y_t)_t$ to enrich a non-parametric
     functional representation of the dual regularized optimal transport solution.
     \item We cast online Sinkhorn as an instance of a block-convex stochastic
     mirror descent algorithm. We establish the global convergence of online
@@ -64,24 +64,24 @@ transport plan.
     \item We demonstrate the performance of online Sinkhorn for estimating OT
     distances between continuous distributions and for accelerating the early
     phase of discrete Sinkhorn iterations. Comparison with other methods
-    advocates for our original non-parametric representations of OT solutions.
+    advocates for our new non-parametric representations of OT solutions.
 \end{itemize}
 
 \paragraph{Notations.} We denote $\Cc(\Xx)$ the set of continuous functions over
-a space $\Xx$, $\Mm^+(\Xx)$ and $\Pp(\Xx)$ the set of positive and probability
-measures on $\Xx$, respectively. $\frac{d \mu}{d \alpha}$ denotes the
+a metric space $\Xx$, $\Mm^+(\Xx)$ and $\Pp(\Xx)$ the set of positive and probability
+measures on $\Xx$, respectively. $\frac{\d \mu}{\d \alpha}$ denotes the
 Radon-Nikodym derivative of measure $\mu$ with respect to measure $\alpha$. We
 write $(i, j]$ the sequence $[i+1, \dots, j]$.
 
 
 \section{Related work}\label{sec:related}
 
-We review recent work on Sinkhorn distances and on the general problem of estimating optimal transport distances. 
+We review recent works on Sinkhorn distances and on the general problem of estimating optimal transport distances. 
 
 \paragraph{Sinkhorn properties.} Sinkhorn algorithm computes $\epsilon$-accurate
 approximations of OT in $O(n^2/\epsilon^3)$ operations for a number $n$ of
 samples~\citep{altschuler2017near} (in contrast to the $O(n^3)$ complexity for an
-exact solution). Moreover, these Sinkhorn distances does not suffers from the
+exact solution). Moreover, these Sinkhorn distances do not suffer from the
 curse of dimensionality~\citep{2019-Genevay-aistats}, since the average error
 using $n$ random samples decays like $O(\epsilon^{-d/2}/\sqrt{n})$ in dimension
 $d$, in sharp contrast with the slow $O(1/n^{1/d})$ error decay of

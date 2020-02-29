@@ -5,7 +5,7 @@
 We introduce an online adaptation of the Sinkhorn algorithm, the major
 contribution of this paper. We construct an estimator of $f^\star$, $g^\star$
 and $\Ww(\alpha,\beta)$ using successive sets of samples ${(\hat \alpha_t)}_t$
-and ${(\hat \beta_t)}_t$, where $\alpha_t = \frac{1}{n} \sum_{i=n_t +
+and ${(\hat \beta_t)}_t$, where $\hat\alpha_t = \frac{1}{n} \sum_{i=n_t +
 1}^{n_{t+1}} \delta_{x_i}$, and we set  $n_0 = 0$ and $n_{t+1} = n_{t} +
 n$. The size of the mini-batch $n$ may potentially depends on $t$---in
 particular, $n$ must increases slightly to ensure convergence (see
@@ -30,7 +30,7 @@ it as a block-convex stochastic mirror descent in \ref{sec-mirror}.
 From \eqref{eq:dual}, along the continuous (and untractable) Sinkhorn
 optimisation trajectory ${(\bar f_t, \bar g_t)}_t$, the potential $\bar f_t$ is
 always the negative logarithm of an infinite mixture of kernel functions
-$\kappa_y(x) \eqdef \exp(-C(\cdot, y))$:
+$\kappa_y(x) \eqdef \exp(-C(x, y))$:
 \begin{equation*}
     \exp(-\bar f_t(\cdot)) = 
     \int_{y \in \Xx} \exp(\bar g_t(y))  \kappa_y  \d \beta(y),
@@ -73,7 +73,7 @@ To ensure convergence towards the potentials $(f^\star, g^\star)$ (up to a
 constant factor), we must therefore take more cautious steps---in other words,
 we cannot afford to forget past iterates to obtain a consistent estimation of
 potentials. We introduce a learning rate in Sinkhorn iterations, that averages
-the past representations and the newly computed noisy $C$-transforms.
+the past representations and the newly computed noisy $C$-transforms
 \begin{equation}\label{eq:updates}
     \exp(-f_{t+1})
     \eqdef (1 - \eta_t) \exp(-f_t) 
@@ -92,7 +92,7 @@ convergence analysis.
 %%%%%
 \paragraph{Estimating Sinkhorn distance.} 
 
-The iterations \eqref{eq:updates} allow to estimate potential functions up to a constant. As explained in~\autoref{sec:gradient},
+The iterations \eqref{eq:updates} allow us to estimate potential functions up to a constant. As explained in~\autoref{sec:gradient},
 this estimation is sufficient for most applications aiming at minimizing a Sinkhorn loss, as it only requires the spatial derivatives of the potentials.
 %
 If required, it is however possible to estimate the Sinkhorn distance using our method, by performing a final soft $C$-transform, using $\Oo(n_T^2)$ operations:
@@ -139,7 +139,7 @@ We perform the updates for $q_i$ and $p_i$ in log-space, for numerical stability
 Each iteration has complexity $\Oo(n_t\,n)$, due to the evaluation of the
 distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$, $(y_i)_{(n_t, n_{t+1}]}$
 and to the computation of the
-soft $C$-transforms. Online Sinkhorn estimates and records a distance matrix
+soft $C$-transforms. Online Sinkhorn computes a distance matrix
 $(C(x_i,y_j))_{i,j}$ on the fly, in parallel to the updates of the potentials
 $f_t$ and $g_t$. In total, its computation cost after drawing $n_t$ samples is
 $\Oo(n_t^2)$, and its memory cost is $\Oo(n_t)$.
@@ -271,17 +271,17 @@ are equal to the updates~\eqref{eq:updates} under the change of variable~\eqref{
 %%%
 \paragraph{Interpretation.} 
 
-It is important to realize that $\mu_t$ and $\nu_t$ does not need to be stored in memory. Instead,
+It is important to realize that $\mu_t$ and $\nu_t$ do not need to be stored in memory. Instead,
 their associated potentials $f_t$ and $g_t$ are parametrized as
-\eqref{eq:param}. In particular, $\mu_t$ and $\nu_t$ remains absolutely
+\eqref{eq:param}. In particular, $\mu_t$ and $\nu_t$ remain absolutely
 continuous with respect to $\alpha$ and $\beta$ respectively, so that the
 Kullbach-Leibler divergence terms are always finite. Note that the mirror descent
 we consider operates in an infinite-dimensional space, as in \citet{hsieh2018finding}.
 
-Finally, we mention that  when computing exact gradient (in the absence of noise) and when using constant step-size of
-$\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variable. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\citep{mishchenko2019sinkhorn}. 
+Finally, we mention that  when computing exact gradients (in the absence of noise) and when using constant step-size of
+$\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variables. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\citep{mishchenko2019sinkhorn} and on a semi-dual formulation~\cite{leger2019sinkhorn}. 
 
-Note that we do not directly adapt the proofs of convergence of mirror descent in our
-analysis, as the lack of convexity of problem \eqref{eq:wass_reparam} prevents a simple transposition.
-We will instead use functional concentration arguments.
+Note that one can not directly apply the proofs of convergence of mirror descent to our problem, as the lack of convexity of problem \eqref{eq:wass_reparam} prevents their use.
+%
+We use instead in the following section functional concentration arguments.
 

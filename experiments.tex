@@ -31,8 +31,8 @@ We first consider a discrete distribution $(\alpha, \beta)$, to be able to
 compute the reference distance $\Ww = \Ww(\alpha, \beta)$ and the optimal potentials $f^\star$,
 $g^\star$, using Sinkhorn algorithm. The goal here is not to perform better
 than the Sinkhorn algorithm in the long run. Indeed, the constraints of online
-Sinkhorn yields unnecessary slow-downs when dealing with small discrete
-distributions. Rather, our purpose is to illustrate the consistence of online
+Sinkhorn impose unnecessary slow-downs when dealing with small discrete
+distributions. Rather, our purpose is to illustrate the consistency of online
 Sinkhorn. We choose $\alpha$ and $\beta$ to be two discrete 1-D distributions,
 $\Xx=\RR$, sampled from the continuous densities displayed in
 \autoref{fig:potentials}. We set $\varepsilon = 10^{-2} \max_{x,y}
@@ -108,7 +108,7 @@ full matrix $\hat C$), both the function value and distance to optimum are lower
 using our scheme: the full Sinkhorn algorithm then operates from a good
 initialization for potentials. Computing those cost approximately as much as
 estimating the matrix $\hat C$ in dimension $1$. The \textit{online+full}
-Sinkhorn algorithm then maintain an advantage over the full Sinkhorn algorithm
+Sinkhorn algorithm then maintains an advantage over the full Sinkhorn algorithm
 over time. Note that the cost of estimating initial potentials becomes negligible
 as the dimension increase---the cost of computing $\hat C$ dominates. This
 strongly advocates for using an online scheme as a warm-up for regularized OT
@@ -153,7 +153,7 @@ performing runs. We set $n_T = 50000$, and $\epsilon = 10^{-1} \max C$. We could
 We compare the final potentials and associated transportation plans in
 \autoref{fig:comparison_rkhs}. Our method estimates potentials with much less
 errors, especially in areas where the mass of $\alpha$ and $\beta$ is low. The
-computational complexity of both algorithm is comparable. Online Sinkhorn does
+computational complexity of both algorithms are comparable. Online Sinkhorn does
 not require to set any hyperparameters, whereas we observed that SGD in RKHS is very
 sensitive to bandwidth selection.
 

@@ -32,7 +32,7 @@ We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:u
 \end{proposition}
 
 This result follows from \citet{diaconis_iterated} convergence theorem on
-iterated random functions which are contracting on average. We simply use the
+iterated random functions which are contracting on average. We use the
 fact that $\Ctrans{\cdot}{\hat \beta}$ and $\Ctrans{\cdot}{\hat \alpha}$ are
 \textit{always} contracting, independently of the distributions $\hat \alpha$ and
 $\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$.
@@ -48,7 +48,7 @@ converge to $\EE[\exp(-F_\infty)] \in \Cc(\Xx)$ for $\gamma_t = \frac{1}{t}$. Th
 \end{align}
 These fixed point equations are close to the Sinkhorn fixed point equations, and
 get closer as $\varepsilon$ increases, since $\varepsilon \EE[\exp(\pm F_\infty /
-\varepsilon)] \to \EE[F_\infty]$ as $\varepsilon \to \infty$. Running the random
+\varepsilon)] \to \EE[\pm F_\infty]$ as $\varepsilon \to \infty$. Running the random
 Sinkhorn algorithm with out-of-loop averaging fails to provide exactly the dual solution.
 However, it defines an approximate solution of the original problem whose accuracy depends on $\epsilon$. 
 %
@@ -58,7 +58,7 @@ We leave the quantification of this approximation for future work.
 \subsection{Noise-free online Sinkhorn.}
 
 Variance reduction is therefore necessary, to ensure that the limit stationary
-distribution is deterministic. The following proposition shows that the modified "slowed-down" online Sinkhorn algorithm converges in the absence of noise.
+distribution is deterministic. The following proposition shows that the modified ``slowed-down'' online Sinkhorn algorithm converges in the absence of noise.
 
 \begin{proposition}\label{eq:deterministic}
     We suppose that $\hat \alpha_t = \alpha$, $\hat \beta_t = \beta$ for all
@@ -102,19 +102,21 @@ We first state an approximate convergence result for the online Sinkhorn algorit
     \begin{equation}
         \Vert f_t - f^\star \Vert_{\var}
         + \Vert g_t - g^\star \Vert_{\var} 
-        \leq \frac{C}{\sqrt{n}} 
+        \leq \frac{C}{\sqrt{n}} .
     \end{equation}
 \end{proposition}
-We cannot state an exact convergence result in this case because the noise due
+
+It is not possible to have an exact convergence result in this case because the noise due
 to replacing $\alpha$ and $\beta$ with $\hat \alpha$ and $\hat \beta$ in the
-$C$-transform does not decrease with time --- slowing down the Sinkhorn
-iterations is not enough at we must ensure that $\sum \eta_t = \infty$. On the
-other hand, slowing-down iterations allows to obtain an approximation in
-$\Oo(\frac{1}{\sqrt{n}}$). This is comparable to the size of the error made by
-performing Sinkhorn without resampling \citep{2019-Genevay-aistats}.  We show in
-the experiment section $(\autoref{sec:exps})$ that online Sinkhorn strongly
-outperforms the regular Sinkhorn algorithm thanks to repeated sampling. This
-suggests that the constants appearing in the bounds of online Sinkhorn are much
+$C$-transform does not decrease with time. Slowing down the Sinkhorn
+iterations is not enough as we must ensure that $\sum \eta_t = \infty$. On the
+other hand, slowing-down iterations allows us to obtain an approximation in
+$\Oo(\frac{1}{\sqrt{n}}$). This is comparable to the amplitude of the error obtained when
+performing Sinkhorn without resampling, as in~\citep{2019-Genevay-aistats}.  We show in
+the experimental section $(\autoref{sec:exps})$ that online Sinkhorn 
+outperforms the regular Sinkhorn algorithm thanks to its ability to perform a repeated sampling. 
+%
+This suggests that the constants appearing in the bounds of online Sinkhorn are much
 better than the ones appearing in the sample complexity of the regular Sinkhorn
 algorithm.
 
