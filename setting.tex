@@ -62,10 +62,10 @@ The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximizat
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 \eqdef f(x)+g(y)-C(x,y)$.
 %  We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
-Problem \eqref{eq:dual} can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply\todo{there is no - sign in front of the C transform, right?}
+Problem \eqref{eq:dual} can be solved by alternated maximization, which is itself performed in closed form. At iteration $t$, the updates are simply
 \begin{align}
-    &f_{t+1}(\cdot) = - \Ctrans{g_t}{\beta}, \:
-    g_{t+1}(\cdot) = - \Ctrans{f_{t+1}}{\alpha}, \\
+    &f_{t+1}(\cdot) = \Ctrans{g_t}{\beta}, \:
+    g_{t+1}(\cdot) = \Ctrans{f_{t+1}}{\alpha}, \\
     &
     \Ctrans{h}{\mu} \triangleq 
     - \log \int_{y \in \Xx}\!\! \exp(h(y) - C(\cdot, y))\d \mu(y).\label{eq:sinkhorn}

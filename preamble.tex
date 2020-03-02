@@ -42,15 +42,25 @@
 \algnewcommand\Input{\State \algorithmicinput}
 
 % Hyper reference
-\usepackage[colorlinks=true,bookmarks=true,linkcolor=blue,
-urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
+\usepackage{hyperref}
+\newcommand\myshade{50}
+\colorlet{mylinkcolor}{blue}
+\colorlet{mycitecolor}{green}
+\colorlet{myurlcolor}{red}
+\hypersetup{
+  linkcolor  = mylinkcolor!\myshade!black,
+  citecolor  = mycitecolor!\myshade!black,
+  urlcolor   = myurlcolor!\myshade!black,
+  colorlinks = true,
+  breaklinks = true,
+}
 
 \usepackage{url}
 
 \makeatletter
 \addto\extrasenglish{%
-\renewcommand{\appendixautorefname}{App.}%
-\renewcommand{\figureautorefname}{Fig.}%
+\renewcommand{\appendixautorefname}{Appendix}%
+\renewcommand{\figureautorefname}{Figure}%
 \renewcommand{\tableautorefname}{Table}%
 \renewcommand{\sectionautorefname}{\S\@gobble}%
 \renewcommand{\subsectionautorefname}{\S\@gobble}%
@@ -107,14 +117,13 @@ urlcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
   \subassumptioninner
 }{\endsubassumptioninner}
 
-\newcommand{\definitionautorefname}{Def.}%
-\newcommand{\propositionautorefname}{Prop.}%
+\newcommand{\definitionautorefname}{Defition}%
+\newcommand{\propositionautorefname}{Proposition}%
 \newcommand{\corollaryautorefname}{Corollary}%
-\newcommand{\assumptionautorefname}{Ass.}%
-\newcommand{\subassumptioninnerautorefname}{Ass.}%
-\newcommand{\algorithmautorefname}{Alg.}%
+\newcommand{\assumptionautorefname}{Assumption}%
+\newcommand{\algorithmautorefname}{Algorithm}%
 \newcommand{\lemmaautorefname}{Lemma}
-\newcommand{\remarkautorefname}{Rmk.}
+\newcommand{\remarkautorefname}{Remark}
 
 \newcommand{\todo}[1]{{\color{red} TODO: #1}}
 

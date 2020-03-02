@@ -54,7 +54,7 @@ transport plan.
 
 \paragraph{Contributions.} Our paper proposes a new take on estimating optimal transport distances between continuous distributions. We make the following contributions:
 \begin{itemize}
-    \item We introduce an online variant of the Sinkhorn algorithm, that uses
+    \item We introduce an online variant of the Sinkhorn algorithm, that relies on
     streams of samples $(x_t)_t$ and $(y_t)_t$ to enrich a non-parametric
     functional representation of the dual regularized optimal transport solution.
     \item We cast online Sinkhorn as an instance of a block-convex stochastic
@@ -99,7 +99,7 @@ can also be coupled with stochastic optimization
 method~\citep{2016-genevay-nips} to tackle high dimensional problems (see
 also~\citet{staib2017parallel} for an extension to Wasserstein barycenters). 
 
-When dealing with arbitrary continuous densities, which are accessed through a
+When dealing with arbitrary continuous densities, that are accessed through a
 stream of random samples, the challenge is to approximate  the (continuous) dual
 variables of the regularized Kantorovich LP using parametric or non-parametric
 classes of functions. For application to generative model fitting, one can use

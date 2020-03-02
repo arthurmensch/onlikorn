@@ -10,10 +10,10 @@ We first introduce two useful known lemmas, and prove the propositions in their 
 First, under \autoref{ass:lip}, we note that the soft $C$-transforms are
  uniformly contracting on the distribution space $\Pp(\Xx)$. This is clarified
  in the following lemma, extracted from \citet{vialard2019elementary},
- Proposition 19.
+ Proposition 19. We refer the reader to the original references for proofs.
 
 \begin{lemma}\label{lemma:contractance}
-    Assume that \autoref{ass:lip} holds, and set $\kappa = 1 - \exp(-L
+    Unser \autoref{ass:lip}, let $\kappa = 1 - \exp(-L
     \textnormal{diam}(\Xx))$. For all $\hat \alpha \in \Pp(\Xx)$ and $\hat \beta \in
     \Pp(\Xx)$, for all $f, f', g, g' \in \Cc(\Xx)$,
     \begin{equation}
@@ -29,7 +29,7 @@ We will also need a uniform law of large numbers for functions. The following le
 Lemma 19.36 of \citet{van_der_vaart_asymptotic_2000}, and is copied in Lemma B.6 from \citet{mairal_stochastic_2013}.
 
 \begin{lemma}\label{lemma:lln}
-    Assume \autoref{ass:lip}. Let $(f_t)_t$ be an i.i.d sequence in $\Cc(\Xx)$,
+    Under \autoref{ass:lip}, let $(f_t)_t$ be an i.i.d sequence in $\Cc(\Xx)$,
     such that $\EE[f_0] = f \in \Cc(\Xx)$. Then there exists $C > 0$ such that
     \begin{equation}
         \EE \sup_{x \in \Xx} | \frac{1}{n} \sum_{i=1}^n f_i(x) - f(x) |
@@ -117,7 +117,7 @@ contraction factor that decreases sufficiently slowly.
     \end{equation}
     and mirror inequalities hold for $v_t$. Summing the four inequalities, we obtain
     \begin{align}\label{eq:et}
-        e_{t+1} \triangleq \Vert u_{t+1} \Vert_{\var} + \Vert v_{t+1} \Vert_{\var} 
+        e_{t+1} &\triangleq \Vert u_{t+1} \Vert_{\var} + \Vert v_{t+1} \Vert_{\var} \\ 
         &= \max u_{t+1} - \min u_{t+1} + \max v_{t+1} - \min v_{t+1} \\
         &\leq
         (1 - \eta_t) ( \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var})
@@ -167,7 +167,8 @@ derivations as in the proof of \autoref{eq:deterministic}, we obtain
     \begin{align}
     \Vert u_{t+1} \Vert_{\var} &\leq
     (1 - \eta_t) \Vert u_t \Vert_{\var}
-    + \eta_t \log \big( \max_{x, y \in \Xx}
+    \\
+    &\phantom{=}+ \eta_t \log \big( \max_{x, y \in \Xx}
     \exp(\epsilon_{\hat \beta_t}(x) 
     - \epsilon_{\hat \beta_t}(y)) \exp(v_t^C(x) - v_t^C(y)) \big) \\ 
     &\leq
@@ -206,10 +207,6 @@ converges towards the scalar expected value
     r_\infty \triangleq \EE_{\hat \alpha, \hat \beta}[{\Vert \epsilon_{\hat \beta} \Vert}_{\var}
     + {\Vert \iota_{\hat \alpha} \Vert}_{\var}] > 0.
 \end{equation}
-% The convergence occurs at the following speed: for all $t > 0$,
-% \begin{equation}
-%     | w_t - R | \leq C' \eta_t \sqrt{t}
-% \end{equation}
 We now relate $r_\infty$ to the number of samples $n$ using
 a uniform law of large number result on parametric functions. We indeed have, by definition
 \begin{align}
@@ -238,7 +235,7 @@ Note that we have used twice a corollary of the law of large numbers: once when 
 The result follows by a simple comparison of sequences.
 \end{proof}
 
-\subsection{Proof of \autoref{prop:convergence_true}}
+\subsection{Proof of \autoref{prop:convergence_true}}\label{sec:proof_prop_convergence}
 
 In the proof of \autoref{prop:convergence_bis} and in particular Eq. \eqref{eq:ineq_var}, the term that prevents the convergence of $e_t$ is the term
 \begin{equation}
@@ -284,26 +281,6 @@ $e_t \geq 0$ for all $t > 0$, this implies that $e_t \to_{t \to \infty} 0$
 almost surely.
 \end{proof}
 
-
-% \paragraph{Reusing samples from the past.} The distributions $\alpha_t$ and
-% $\beta_t$ do not have to contain only new samples: they may contained already
-% seen ones. This allows to reuse memorized costs $C(x_i, y_j)$. We consider as
-% in the main text a stream of batches of size $n$ of constant step sizes. We
-% set $n_t = n\,t$ and index samples of batch $t$ as ${(x_i)}_{(n_t,n_{t+1}]}$.
-% At each iteration, we can set the empirical distribution of size $n(t)$ to be
-% \begin{equation} \hat \alpha_t = \frac{1}{n(t)} \Big( \sum_{i=n_t}^{n_{t+1}}
-% \delta_{x_i}) + \sum_{i=n_t - n (\frac{1}{w_t^2} - 1)}^{n_t} \delta_{x_i}
-% \Big), \end{equation} and similarly for $\hat \beta_t$. The past starting
-% point $i=n_t - n (\frac{1}{w_t^2} - 1)$ remains positive provided that $w_t =
-% \Oo(\frac{1}{t^{1/2}})$, which is compatible with \autoref{ass:double_weights}
-% whenever $\eta_t = \frac{1}{n^a}$, $a \in (\frac{1}{2}, 1]$. Using samples
-% from the past is thus possible within the range of weights meeting
-% \autoref{ass:weights}, i.e. in the setting of \autoref{prop:convergence_bis}.
-
-% Concretely, reusing samples
-% from the past amounts to correct a fraction of the weights ${(p_i)}_i$ and
-% ${(q_i)}_i$ at each iteration.
-
 \section{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
 
 The online Sinkhorn algorithm takes a simpler form when dealing with discrete
@@ -315,11 +292,11 @@ the potentials as
     f_t(x) &= - \log \sum_{j=1}^M \exp(q_j - C(x, y_j)), \\
 \end{align}
 where $(p_j)_{J \in [1, N]}$ and $(q_j)_{J \in [1, M]}$ are fixed-size vectors.
-Note that the computations derived in \autoref{alg:discrete_online} are proposed
-in log-space so as to prevent numerical overflows. The sets $|I|$ and $|J|$ can
+Note that the computations written in \autoref{alg:discrete_online} are
+in log-space,as they should be implemented to prevent numerical overflows. The sets $|I|$ and $|J|$ can
 have varying sizes along the algorithm, which allows for example to speed-up the
-initial Sinkhorn iteration (\autoref{sec:accelerating}). In such case, the
-cost matrix $(C(x_i,y_j))_{i,j}$ should be progressively computed along the iterations.
+initial Sinkhorn iteration (\autoref{sec:accelerating}). In this case, the
+cost matrix $\hat C = C(x_i,y_j))_{i,j}$ should be progressively computed along the algorithm iterations.
 
 \begin{algorithm}[t]
     \begin{algorithmic}

@@ -61,3 +61,7 @@ count:
 	texcount $(MAIN).tex
 
 .PHONY: all clean watch count split
+
+
+hal.zip:
+	bash tools/make_hal.sh

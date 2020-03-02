@@ -11,8 +11,7 @@ Sinkhorn accelerates the Sinkhorn algorithm, by progressively estimating
 sketches of the dual potentials, in parallel to the computation of the distance
 matrix. Finally, we show how online Sinkhorn allows one to estimate accurately
 the geometry of the dual, significantly improving the result using SGD with RKHS
-expansions~\citep{2016-genevay-nips}. Numpy and Pytorch code are provided with
-this manuscript.
+expansions~\citep{2016-genevay-nips}. Numpy and Pytorch code are provided for experiment reproduction\footnote{\url{github.com/arthurmensch/online_sinkhorn}}.
 
 \subsection{Better estimation of Sinkhorn distances}\label{sec:exp1}
 
@@ -28,13 +27,14 @@ this manuscript.
 
 
 We first consider a discrete distribution $(\alpha, \beta)$, to be able to
-compute the reference distance $\Ww = \Ww(\alpha, \beta)$ and the optimal potentials $f^\star$,
-$g^\star$, using Sinkhorn algorithm. The goal here is not to perform better
-than the Sinkhorn algorithm in the long run. Indeed, the constraints of online
-Sinkhorn impose unnecessary slow-downs when dealing with small discrete
-distributions. Rather, our purpose is to illustrate the consistency of online
-Sinkhorn. We choose $\alpha$ and $\beta$ to be two discrete 1-D distributions,
-$\Xx=\RR$, sampled from the continuous densities displayed in
+compute the reference distance $\Ww = \Ww(\alpha, \beta)$ and the optimal
+potentials $f^\star$, $g^\star$, using Sinkhorn algorithm. The goal here is not
+to perform better than the Sinkhorn algorithm in the long run. Indeed, the
+constraints of online Sinkhorn impose unnecessary slow-downs when dealing with
+small discrete distributions. Rather, our purpose is to illustrate the improved
+precision of online Sinkhorn for estimating true OT distances. We choose $\alpha$ and $\beta$ to be two
+discrete 1-D distributions, $\Xx=\RR$, sampled from the continuous densities
+displayed in
 \autoref{fig:potentials}. We set $\varepsilon = 10^{-2} \max_{x,y}
 C(x,y)$, where we use the squared Euclidean loss (regularized $\Ww_2$
 setting)---the distributions $\alpha$ and $\beta$ have bounded support. We use
@@ -42,7 +42,7 @@ $\eta_t = \frac{1}{\sqrt{t}}$ for online Sinkhorn and a fixed batch-size $n$, in
 all experiments. We compare the performance of Sinkhorn, online Sinkhorn and
 random Sinkhorn, measuring $\Vert f - f^\star \Vert_{\text{var}} + \Vert g -
 g^\star \Vert_{\text{var}}$ and the absolute error $| \Ww_t - \Ww |$ versus the
-number of computations performed--- the evaluation of $C(x_i, y_i)$ and the
+number of computations performed---the evaluation of $C(x_i, y_i)$ and the
 computation of each addition in the $C$-transform being considered as elementary
 computation units. We further report the performance of using out-of-loop
 averaging with $\gamma_t = \frac{1}{\sqrt{t}}$.
@@ -54,13 +54,14 @@ estimates the distance and the associated potentials, despite performing only
 partial $C$-transforms (red). Random Sinkhorn (blue) finds a decent estimation
 of the distance and potentials, with fewer computations than the full Sinkhorn
 algorithm, but fails to converge. Averaging the random Sinkhorn iterations finds
-a biased estimation. The vanilla online Sinkhorn converges towards the true
-value, albeit with a rather high iterate variance (note that this variance does
-reduce---this is a log-log plot). Remarkably, the out-of-loop averaging of
-online Sinkhorn enjoys much better converging property---we confirmed this
-finding on many synthetic problems. It is surprising that an averaging mechanism
-brings speed-up in a non-convex setting---we attribute this to the convexity of
-the original problem, although this should be further investigated.
+a biased estimation. The vanilla online Sinkhorn yields values that are much
+closer to the true OT distance, albeit with a rather high iterate variance (note
+that this variance does reduce---this is a log-log plot). Remarkably, the
+out-of-loop averaging of online Sinkhorn enjoys much better converging
+property---we confirmed this finding on many synthetic problems. It is
+surprising that an averaging mechanism brings speed-up in a non-convex
+setting---we attribute this to the convexity of the original problem, although
+this should be further investigated.
 
 \begin{figure}[t]
     \centering
@@ -90,13 +91,13 @@ the original problem, although this should be further investigated.
 
 \subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
 
-The discrete Sinkhorn algorithm requires to compute a full matrix $\hat C \eqdef
+The discrete Sinkhorn algorithm requires to compute the full cost matrix $\hat C \eqdef
 (C(x_i,y_i))_{i,j}$  of size $N \times N$, prior to estimating the
 potentials $f_1$ and $g_1$ by a first $C$-transform. In contrast, online Sinkhorn can progressively
 computes this matrix while computing first sketches of the potentials. We therefore
 assess the performance of the following \textit{online+full Sinkhorn} algorithm
 in a discrete setting: online Sinkhorn is run with batch-size $n$ during the first iterations, until
-observing each sample of $[1,N]$, i.e. until the cost matrix $C$ is completely evaluated.
+observing each sample of $[1,N]$, i.e. until the cost matrix $C$ is completely evaluated. The discrete instantion of online Sinkhorn is derived in \autoref{sec:sinkhorn_discrete}, \autoref{alg:discrete_online}. 
 At this point (iteration $t$), online Sinkhorn provides the estimates $f_{t},
 g_{t}$. From then, the algorithm only performs full Sinkhorn updates.
 
@@ -115,7 +116,7 @@ strongly advocates for using an online scheme as a warm-up for regularized OT
 estimation. We note that using smaller batch-size $n$ may lead to higher speed-up (here, $n=50$ performs better than $n=100$).
 There is an optimal $n$. The speed gain decreases with $\epsilon$, but remains
 significant even for $\epsilon = 10^{-4} \max \hat C$. We add that
-using a sampling-without-replacement scheme brings an additional speed-up. Out-of-loop averaging is also beneficial. We refer to the appendix for additional figures.
+using a sampling-without-replacement scheme brings an additional speed-up. Out-of-loop averaging is also beneficial. We refer to \autoref{sec:supp_exp} for an additional experiment with a lower $\varepsilon$.
 
 \subsection{Continuous potential estimation}
 
@@ -136,8 +137,8 @@ final plan is undistinguishable from the true transportation plan. Quantitative
 values (distance to true potentials, error in Sinkhorn distance estimation) converge as in
 \autoref{fig:convergence}.
 
-\paragraph{Comparison to concurrent approaches.}\label{sec:compare}Finally, we compare online
-Sinkhorn to constructing representations of Sinkhorn potentials using universal
+\paragraph{Comparison to concurrent approaches.}\label{sec:compare}Finally, we compare the online
+Sinkhorn algorithm to constructing representations of Sinkhorn potentials using universal
 RKHS \citep{2016-genevay-nips}. This competing approach sets $f_t(\cdot) =
 \sum_{i=1}^{n_t} \alpha_t \kappa(\cdot, x_i)$ (and similarly for $g_t$), where $\kappa$ is
 a reproducing kernel (typically a Gaussian). This differs significantly from the

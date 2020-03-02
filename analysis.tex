@@ -8,7 +8,7 @@ convergence property for the random Sinkhorn algorithm ; (ii) a global
 convergence property for the online Sinkhorn algorithm without noise ; (iii) an
 approximate convergence property for the online Sinkhorn algorithm with fixed
 batch-size and (iv) an exact global convergence result for online Sinkhorn
-with increasing batch sizes.
+with increasing batch sizes. We provide the proofs in \autoref{sec:proofs}.
 
 We make the following classic assumptions on the cost regularity and
 distribution compactness, which is necessary to obtain a uniform
@@ -27,28 +27,30 @@ We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:u
     Under \autoref{ass:lip}, the randomized Sinkhorn algorithm \eqref{eq:updates} yields a time-homogeneous
     Markov chain ${(f_t, g_t)}_t$ which is $(\hat \alpha_s, \hat \beta_s)_{s \leq
     t}$ measurable, and converges in law towards a stationary distribution
-    $(F_\infty, G_\infty) \in \Pp(\Cc(\Xx)^2)$ independent of the initialization
+    $(f_\infty, g_\infty) \in \Pp(\Cc(\Xx)^2)$ independent of the initialization
     point $(f_0, g_0)$.
 \end{proposition}
 
 This result follows from \citet{diaconis_iterated} convergence theorem on
 iterated random functions which are contracting on average. We use the
 fact that $\Ctrans{\cdot}{\hat \beta}$ and $\Ctrans{\cdot}{\hat \alpha}$ are
-\textit{always} contracting, independently of the distributions $\hat \alpha$ and
+\textit{uniformly} contracting, independently of the distributions $\hat \alpha$ and
 $\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$.
 
 \paragraph{Out-of-loop averages.} Note that using the law of large number for Markov chains
-\citep{breiman_strong_1960}, the out-of-loop averages $\exp(-\bar f_t)$
-converge to $\EE[\exp(-F_\infty)] \in \Cc(\Xx)$ for $\gamma_t = \frac{1}{t}$. This expectation verifies the following fixed point equations
+\citep{breiman_strong_1960}, the out-of-loop average $\exp(-\bar f_t)$
+converges almost surely to $\EE[\exp(-f_\infty)]
+ \in \Cc(\Xx)$ for $\gamma_t = 
+ \frac{1}{t}$. This expectation verifies the following fixed point equations:
 \begin{align}
-    \EE[\exp(-F_\infty)] &=
-     \dotp{\beta}{\EE[\exp(G_\infty)] \exp(-C)}, \\
-    \EE[\exp(-G_\infty)] &=
-     \dotp{\alpha}{\EE[\exp(F_\infty)] \exp(-C)}.
+    \EE[\exp(-f_\infty)] &=
+     \dotp{\beta}{\EE[\exp(g_\infty)] \exp(-C)}, \\
+    \EE[\exp(-g_\infty)] &=
+     \dotp{\alpha}{\EE[\exp(f_\infty)] \exp(-C)}.
 \end{align}
 These fixed point equations are close to the Sinkhorn fixed point equations, and
-get closer as $\varepsilon$ increases, since $\varepsilon \EE[\exp(\pm F_\infty /
-\varepsilon)] \to \EE[\pm F_\infty]$ as $\varepsilon \to \infty$. Running the random
+get closer as $\varepsilon$ increases, since $\varepsilon \EE[\exp(\pm f_\infty /
+\varepsilon)] \to \EE[\pm f_\infty]$ as $\varepsilon \to \infty$. Running the random
 Sinkhorn algorithm with out-of-loop averaging fails to provide exactly the dual solution.
 However, it defines an approximate solution of the original problem whose accuracy depends on $\epsilon$. 
 %
@@ -84,10 +86,10 @@ $\nabla_y g^\star(\cdot)$ \citep[e.g.][]{cuturi2018semidual}.
 %%%
 \subsection{Online Sinkhorn}
 
-We make the following \citet{robbins1951stochastic} assumption on the weight sequence
+We make the following \citet{robbins1951stochastic} assumption on the weight sequence.
 
 \begin{assumption}\label{ass:weights}
-    The weight sequence ${(\eta_t)}_t$ is square summable but not summable: 
+    The sequence ${(\eta_t)}_t$ is such that
     $\sum \eta_t = \infty$ and $\sum \eta_t^2 < \infty$.
 \end{assumption}
 
@@ -139,6 +141,8 @@ We then have the following global convergence result.
         \Vert f_t - f^\star \Vert_{\var} + \Vert g_t - g^\star \Vert_{\var} \to 0.
     \end{equation}
 \end{proposition}
+
+The proof, reported in \autoref{sec:proof_prop_convergence}, relies on a uniform law of large number for functions \citep[][chapter 19]{van_der_vaart_asymptotic_2000} and on the uniform contractance of soft $C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}.
 
 \paragraph{Choosing batch-sizes.}
 
