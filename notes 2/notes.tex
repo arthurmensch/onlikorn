@@ -1,0 +1,34 @@
+\documentclass[a4paper, 10pt]{article}
+\input{preamble.tex}
+
+\addbibresource{biblio.bib}
+
+\begin{document}
+
+\section{An online expectation minimization algorithm}
+
+Define $\mu = \alpha \exp(f)$, $\nu = \beta \exp(g)$, $x = (\mu, \nu)$. We will change variables without warning in the following.
+Define the Bregman divergence
+\begin{align}
+    D_{\alpha}(\mu, \mu_0) &= \dotp{\alpha}{\exp(f_0 - f) - 1 - (f_0 - f)} \\
+    D_{\beta}(\nu, \nu_0) &= \dotp{\beta}{\exp(g_0 - g) - 1 - (g_0 - g)} \\
+    D_{\alpha, \beta}(x, x_0) &= D_{\alpha}(\mu, \mu_0) + D_{\beta}(\nu, \nu_0)
+\end{align}
+We want to solve the objective
+\begin{equation}
+    \min_x \Ff(x) \triangleq \KL(\alpha, \mu) + \KL(\beta, \nu) + \dotp{\mu \otimes \nu}{\exp(-C)}
+\end{equation}
+Define the prox objective
+\begin{align}
+    \Ll(x, x_t) &= 2 F(x_t) + \dotp{\nabla \Ff(x_t)}{x - x_t} + D_{\alpha,\beta}(x, x_t) \\
+    &= \EE_{\hat \alpha \sim \alpha, \hat \beta \sim \alpha}
+    \Big[2 F(x_t) + \dotp{\nabla \Ff(x_t)}{x - x_t} + D_{\hat \alpha,\hat \beta}(x, x_t) \Big]
+\end{align}
+The Sinkhorn iterations then rewrites as
+\begin{equation}
+    x_t = \argmin_x \EE_{\hat \alpha, \hat \beta} \Ll_{\hat \alpha, \hat \beta}(x, x_t)
+\end{equation}
+Probably useless ?
+\printbibliography
+
+\end{document}

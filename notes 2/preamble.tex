@@ -1,0 +1,153 @@
+%!TEX root = notes.tex
+%%%%%%%%%%%%%%%%%%%%%% INCLUDES %%%%%%%%%%%%%%%%
+% Copyright (c) 2007 Gabriel Peyre
+% Modfied 2018 Arthur Mensch
+
+\usepackage{fullpage}
+\usepackage[utf8]{inputenc}
+\usepackage[OT1]{fontenc}
+\usepackage{lmodern}
+% Bold math
+\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{csquotes}
+% spacings
+\renewcommand{\baselinestretch}{1}
+
+% Micro-typing
+\usepackage{xspace}
+\usepackage{nicefrac}
+\usepackage[super]{nth}
+
+\usepackage[english]{babel}
+
+% Compact itemize
+\usepackage{enumitem}
+
+% Tables
+\usepackage{booktabs}
+
+\usepackage{graphicx}
+
+% For colors
+\usepackage{xcolor}
+
+% Compact itemize
+\usepackage{enumitem}
+
+% Algorithm
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand{\algorithmiccomment}[1]{$\vartriangleright$ #1}
+\algrenewcommand{\algorithmicreturn}{\textbf{Return: }}
+\algnewcommand\algorithmicinput{\textbf{Input: }}
+\algnewcommand\Input{\State \algorithmicinput}
+
+
+% Hyper reference
+\usepackage{hyperref}
+\newcommand\myshade{50}
+\colorlet{mylinkcolor}{blue}
+\colorlet{mycitecolor}{green}
+\colorlet{myurlcolor}{red}
+\hypersetup{
+  linkcolor  = mylinkcolor!\myshade!black,
+  citecolor  = mycitecolor!\myshade!black,
+  urlcolor   = myurlcolor!\myshade!black,
+  colorlinks = true,
+}
+
+\makeatletter
+\addto\extrasenglish{%
+\renewcommand{\appendixautorefname}{Appendix}%
+\renewcommand{\figureautorefname}{Fig.}%
+\renewcommand{\tableautorefname}{Table}%
+\renewcommand{\sectionautorefname}{\S\@gobble}%
+\renewcommand{\subsectionautorefname}{\S\@gobble}%
+\renewcommand{\subsubsectionautorefname}{\S\@gobble}%
+}
+\makeatother
+
+% Bibliography
+\usepackage[backend=biber,
+    style=authoryear-icomp,%
+    natbib=true,%
+    url=false,isbn=false,doi=false,%
+    date=year,
+    maxcitenames=2,
+    maxbibnames=10]{biblatex}
+
+
+% Float parameters, for more full pages.
+% From Gaël Varoquaux
+\renewcommand{\topfraction}{0.9}	% max fraction of floats at top
+\renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
+\renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+%   Parameters for FLOAT pages (not text pages):
+\renewcommand{\floatpagefraction}{0.6}	% require fuller float pages
+%    % N.B.: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dbltopfraction}{.95}  % double page floats at the top
+\renewcommand{\dblfloatpagefraction}{.6}
+\setcounter{totalnumber}{4}
+\setcounter{topnumber}{3}
+\setcounter{dbltopnumber}{3}
+\setcounter{bottomnumber}{2}
+
+% Wide pages for supplementary figures
+\usepackage{changepage}                 % adjust margins for selected portions
+% wide page for side by side figures, tables, etc
+\newlength{\offsetpage}
+\setlength{\offsetpage}{3.0cm}
+\newenvironment{widepage}{\begin{adjustwidth}{-\offsetpage}{-\offsetpage}%
+    \addtolength{\textwidth}{2\offsetpage}}%
+{\end{adjustwidth}}
+
+
+% MATHS (AMS)
+\usepackage{amsmath}
+\usepackage{amsfonts} 
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{mathtools} % for psmallmatrix
+\mathtoolsset{showonlyrefs}
+
+\usepackage{amsthm}
+\newcommand{\definitionautorefname}{Def.}%
+\newcommand{\propositionautorefname}{Prop.}%
+\newcommand{\corollaryautorefname}{Corr.}%
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+\newtheorem{assumption}{Assumption}
+
+% Title
+\makeatletter
+\providecommand{\@maketitle}{}
+\renewcommand{\@maketitle}{%
+  \vbox{%
+    \hsize\textwidth
+    \linewidth\hsize
+    \vskip 0.1in
+    \centering
+    {\LARGE\bf \@title\par}
+      \def\And{%
+        \end{tabular}\hfil\linebreak[0]\hfil%
+        \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\ignorespaces%
+      }
+      \def\AND{%
+        \end{tabular}\hfil\linebreak[4]\hfil%
+        \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\ignorespaces%
+      }
+      \begin{tabular}[t]{c}\bf\rule{\z@}{24\p@}\@author\end{tabular}%
+    \vskip 0.3in \@minus 0.1in
+  }
+}
+
+\makeatother
+
+\input{commands.tex}
