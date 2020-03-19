@@ -26,9 +26,42 @@ Define the prox objective
 \end{align}
 The Sinkhorn iterations then rewrites as
 \begin{equation}
-    x_t = \argmin_x \EE_{\hat \alpha, \hat \beta} \Ll_{\hat \alpha, \hat \beta}(x, x_t)
+    x_{t+1} = \argmin_x \EE_{\hat \alpha, \hat \beta} \Ll_{\hat \alpha, \hat \beta}(x, x_t)
+\end{equation}
+and online Sinkhorn
+
+\begin{equation}
+    x_{t+1} = (1 - \eta_t) x_t + \eta_t \argmin_x \Ll_{\hat \alpha_t, \hat \beta_t}(x, x_t)
 \end{equation}
 Probably useless ?
+
+\section{Variable mirror descent point of view}
+
+Consider the objective
+\begin{equation}
+    \max_{f, g} \Ff(f, g) = \dotp{\alpha}{f} + \dotp{g, \beta} -
+     \dotp{\alpha \otimes \beta}{\exp(f \oplus g - C)} + 1
+\end{equation}
+The gradient reads
+\begin{equation}
+    \nabla \Ff(f, g) = \Big(\alpha\big(1 - \exp(f - T_\beta(g))\big), \beta\big(1 - \exp(g - T_\alpha(f))\big)\Big)
+     \in \Mm^+(\Xx^2)
+\end{equation}
+Using the local Bregman divergence
+\begin{equation}
+    \omega_t(f, g) = \dotp{\alpha}{\exp(f_t - f)} + \dotp{\beta}{\exp(g_t - g)},
+\end{equation}
+online Sinkhorn iterations rewrites as
+\begin{equation}
+    \nabla \omega_t(f_{t+1}, g_{t+1}) = \nabla \omega_t(f_t, g_t) + \eta_t \tilde \nabla \Ff(f_t, g_t),
+\end{equation}
+where 
+\begin{equation}
+    \tilde \nabla \Ff(f, g) = \Big(\hat \alpha_t \big(1 - \exp(f - T_\beta(g))\big), 
+    \hat \beta_t \big(1 - \exp(g - T_\alpha(f))\big)\Big)
+    \in \Mm^+(\Xx^2)
+\end{equation}
+is an unbiased estimate of $\nabla \Ff(f, g)$.
 \printbibliography
 
 \end{document}
