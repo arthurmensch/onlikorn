@@ -16,11 +16,11 @@ Define the Bregman divergence
 \end{align}
 We want to solve the objective
 \begin{equation}
-    \min_x \Ff(x) \triangleq \KL(\alpha, \mu) + \KL(\beta, \nu) + \dotp{\mu \otimes \nu}{\exp(-C)}
+    \min_x \Ff(x) \triangleq \KL(\alpha, \mu) + \KL(\beta, \nu) + \dotp{\mu \otimes \nu}{\exp(-C)} - 1
 \end{equation}
 Define the prox objective
 \begin{align}
-    \Ll(x, x_t) &= 2 F(x_t) + \dotp{\nabla \Ff(x_t)}{x - x_t} + D_{\alpha,\beta}(x, x_t) \\
+    \Ll(x, x_t) &= 2 \Ff(x_t) + \dotp{\nabla \Ff(x_t)}{x - x_t} + D_{\alpha,\beta}(x, x_t) \\
     &= \EE_{\hat \alpha \sim \alpha, \hat \beta \sim \alpha}
     \Big[2 F(x_t) + \dotp{\nabla \Ff(x_t)}{x - x_t} + D_{\hat \alpha,\hat \beta}(x, x_t) \Big]
 \end{align}
@@ -62,6 +62,58 @@ where
     \in \Mm^+(\Xx^2)
 \end{equation}
 is an unbiased estimate of $\nabla \Ff(f, g)$.
+
+\section{An EM point of view}
+
+\begin{align}
+    f_t, g_t = \argmax_{f, g} Q_t^\star((f, g), (f_t, g_t)) 
+    &\triangleq \EE_{Y \sim \beta} \left[ \EE_{X \sim \alpha} \left[
+     f(X) - e^{f(X) + g_t(Y) - C(X, Y)} \right] \right] \\
+     &+
+     \EE_{X \sim \alpha} \left[ \EE_{Y \sim \beta} \left[
+     g(Y) - e^{f_t(X) + g(Y) - C(X, Y)} \right] \right]
+\end{align}
+We now define the approximate functions
+
+\begin{align}
+    Q_t((f, g), (f_t, g_t)) &= \EE_{Y \sim \hat \beta_t} \left[ \EE_{X \sim \alpha} \left[
+        f(X) - e^{f(X) + g_t(Y) - C(X, Y)} \right] \right] \\
+        &+
+        \EE_{X \sim \hat \alpha_t} \left[ \EE_{Y \sim \beta} \left[
+        g(Y) - e^{f_t(X) + g(Y) - C(X, Y)} \right] \right] \\
+        &= \EE_{X \sim \alpha} [f(X)] + \EE_{X \sim \alpha} \left[ \sum_{i=n_t}^{n_{t+1}} 
+        b_i e^{f(X) + g_t(y_i) - C(X, y_i)} \right] \\
+        &+ \EE_{Y \sim \beta} [g(Y)] + \EE_{Y \sim \beta} \left[ \sum_{i=n_t}^{n_{t+1}} 
+        a_i e^{g(Y) + f_t(x_i) - C(x_i, Y)} \right]
+\end{align}
+Running the iterations
+\begin{equation}
+    f_t, g_t = \argmax_{f,g} Q_t((f, g), (f_t, g_t))
+\end{equation}
+amounts to set
+\begin{equation}
+    f_t(\cdot) = - \log \sum_{i=n_t}^{n_{t+1}} b_i e^{g_t(y_i) - C(\cdot, y_i)} \quad
+    g_t(\cdot) = - \log \sum_{i=n_t}^{n_{t+1}} a_i e^{f_t(x_i) - C(x_i, \cdot)},
+\end{equation}
+which is the randomized Sinkhorn algorithm. Setting
+\begin{equation}
+    \bar Q_{t+1} = (1 - \eta_t) \bar Q_{t} + \eta_t Q_{t}
+\end{equation}
+and running the iterations
+\begin{equation}
+    f_t, g_t = \argmin_{f,g} \bar Q_t((f, g), (f_t, g_t))
+\end{equation}
+gives online Sinkhorn:
+\begin{equation}
+    f_t(\cdot) = - \log \sum_{i=1}^{n_{t+1}} e^{q_i - C(\cdot, y_i)} \quad
+    g_t(\cdot) = - \log \sum_{i=1}^{n_{t+1}} e^{p_i - C(x_i, \cdot)},
+\end{equation}
+with the update rule on $q_i, p_i$ as : see paper.
+Every function $Q_t$ is parametrized by $(p_i, q_i, x_i, y_i)_{i=(n_t,
+ n_{t+1}]}$, and $\bar Q_t$ by $(p_i, q_i, x_i, y_i)_{i=(0, n_{t+1}]}$. Thus the
+ parametrization of $f_t, g_t$ is encoded using an argmax trick, and we recover the structure of a stochastic expectation-maximization algorithm (less the probabilistic point of view).
+
+
 \printbibliography
 
 \end{document}
