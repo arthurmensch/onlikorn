@@ -26,7 +26,7 @@ First, under \autoref{ass:lip}, we note that the soft $C$-transforms are
 \end{lemma}
 
 We will also need a uniform law of large numbers for functions. The following lemma is a consequence of Example 19.7 and
-Lemma 19.36 of \citet{van_der_vaart_asymptotic_2000}, and is copied in Lemma B.6 from \citet{mairal_stochastic_2013}.
+Lemma 19.36 of \citet{van_der_vaart_asymptotic_2000}, and is copied in Lemma B.6 in \citet{mairal_stochastic_2013}.
 
 \begin{lemma}\label{lemma:lln}
     Under \autoref{ass:lip}, let $(f_t)_t$ be an i.i.d sequence in $\Cc(\Xx)$,
@@ -98,22 +98,22 @@ contraction factor that decreases sufficiently slowly.
 \begin{proof}
     We write ${(f_t, g_t)}_t$ the sequence of iterates. Given a pair of optimal potentials 
     $(f^\star, g^\star)$, we write $u_t \triangleq f_t - f^\star$, $v_t \triangleq g_t - g^\star$,
-    $u_t^C \triangleq \Ctrans{f_t}{\alpha} - g^\star$ and $v_t^C \triangleq \Ctrans{g_t}{\alpha} - f^\star$
+    $u_t^T \triangleq \Ctrans{f_t}{\alpha} - g^\star$ and $v_t^T \triangleq \Ctrans{g_t}{\alpha} - f^\star$.
     For all $t > 0$, we observe that 
     \begin{align}
         \max u_{t+1} &= - \log \min \exp(-u_{t+1}) \\
         &= - \log \big( \min \big( (1 - \eta_t) \exp(-u_{t}) + \eta_t 
-        \exp(-v_t^C) \big) \big)\\
+        \exp(-v_t^T) \big) \big)\\
         &\leq - \log \big( (1 - \eta_t) \min \exp(-u_{t}) + \eta_t 
-        \min \exp(-v_t^C) \big)\\
+        \min \exp(-v_t^T) \big)\\
         &\leq - (1 - \eta_t) \log \min \exp(-u_{t}) -  \eta_t \log \min
-         \exp(-v_t^C) \\
-         &= (1 - \eta_t) \max u_t  + \eta_t \max v_t^C,
+         \exp(-v_t^T) \\
+         &= (1 - \eta_t) \max u_t  + \eta_t \max v_t^T,
     \end{align}
     where we have used the algorithm recursion on the second line, $\min f + g \geq \min f + \min g$
      on the third line and Jensen inequality on the fourth line. Similarly
     \begin{equation}
-        \min u_{t+1} \geq (1 - \eta_t) \min u_t  + \eta_t \min v_t^C,
+        \min u_{t+1} \geq (1 - \eta_t) \min u_t  + \eta_t \min v_t^T,
     \end{equation}
     and mirror inequalities hold for $v_t$. Summing the four inequalities, we obtain
     \begin{align}\label{eq:et}
@@ -121,14 +121,14 @@ contraction factor that decreases sufficiently slowly.
         &= \max u_{t+1} - \min u_{t+1} + \max v_{t+1} - \min v_{t+1} \\
         &\leq
         (1 - \eta_t) ( \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var})
-        + \eta_t ( \Vert u_t^C \Vert_{\var} + \Vert v_t^C \Vert_{\var}), \\
+        + \eta_t ( \Vert u_t^T \Vert_{\var} + \Vert v_t^T \Vert_{\var}), \\
         &\leq
         (1 - \eta_t) ( \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var})
         + \eta_t \kappa ( \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var}),
     \end{align}
     where we use the contractance of the soft-$C$-transform, that guarantees that
-    there exists $\kappa < 1$ such that $\Vert v_t^C\Vert_{\var} \leq \kappa \Vert
-    v_t\Vert_{\var}$ and $\Vert u_t^C\Vert_{\var} \leq \kappa \Vert
+    there exists $\kappa < 1$ such that $\Vert v_t^T\Vert_{\var} \leq \kappa \Vert
+    v_t\Vert_{\var}$ and $\Vert u_t^T\Vert_{\var} \leq \kappa \Vert
     u_t\Vert_{\var}$ \citep{peyre2019computational}.
 
     Unrolling the recursion above, we obtain
@@ -156,11 +156,11 @@ so that the updates can be rewritten as
     +\Ctrans{g^\star}{\hat \beta_t} + \epsilon_{\hat \beta_t}) \\
     \exp(-g_{t+1} + g^\star) &= (1 - \eta_t)
     \exp(-g_{t} + g^\star)
-    + \eta_t \exp(-\Ctrans{f_t}{\hat \beta_t} 
-    +\Ctrans{f^\star}{\hat \beta_t} + \iota_{\hat \beta_t}).
+    + \eta_t \exp(-\Ctrans{f_t}{\hat \alpha_t} 
+    +\Ctrans{f^\star}{\hat \alpha_t} + \iota_{\hat \alpha_t}).
 \end{align}
-We denote $u_t \triangleq -f_{t} + f^\star$, $v_t \triangleq -g_{t} + g^\star$, $u_t^C \triangleq
-\Ctrans{f_t}{\hat \beta_t} - \Ctrans{f^\star}{\hat \beta_t}$, $v_t^C \triangleq
+We denote $u_t \triangleq -f_{t} + f^\star$, $v_t \triangleq -g_{t} + g^\star$, $u_t^T \triangleq
+\Ctrans{f_t}{\hat \beta_t} - \Ctrans{f^\star}{\hat \beta_t}$, $v_t^T \triangleq
 \Ctrans{g_t}{\hat \beta_t} - \Ctrans{g^\star}{\hat \beta_t}$. Reusing the same
 derivations as in the proof of \autoref{eq:deterministic}, we obtain
     \label{eq:pre_ineq_var}
@@ -170,10 +170,10 @@ derivations as in the proof of \autoref{eq:deterministic}, we obtain
     \\
     &\phantom{=}+ \eta_t \log \big( \max_{x, y \in \Xx}
     \exp(\epsilon_{\hat \beta_t}(x) 
-    - \epsilon_{\hat \beta_t}(y)) \exp(v_t^C(x) - v_t^C(y)) \big) \\ 
+    - \epsilon_{\hat \beta_t}(y)) \exp(v_t^T(x) - v_t^T(y)) \big) \\ 
     &\leq
     (1 - \eta_t) \Vert u_t \Vert_{\var}
-    + \eta_t \Vert v_t^C \Vert_{\var}
+    + \eta_t \Vert v_t^T \Vert_{\var}
     + \eta_t \Vert \epsilon_{\hat \beta_t} \Vert_{\var},
 \end{align}
 where we have used $\max_x f(x) g(x) \leq \max_x f(x) \max_x f(x)$ on the second line. Therefore,
@@ -187,10 +187,11 @@ using the contractance of the soft $C$-transform,
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}),
 \end{equation}
 where we set $e_t \triangleq \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var}$,
-$\tilde \eta_t = \frac{\eta_t}{1-\kappa}$ and $\kappa$ is set to be the minimum
-of the contraction factor over all empirical realizations $\hat \alpha_t$, $\hat
-\beta_t$ of the distributions $\alpha$ and $\beta$. It is upper bounded by
-$1 - e^{- L\text{diam}(\Xx)}$, thanks to \autoref{ass:lip} and \autoref{lemma:contractance}.
+$\tilde \eta_t = \eta_t (1-\kappa)$ and $\kappa$ is set to be the biggest
+contraction factor over all empirical realizations $\hat \alpha_t$, $\hat
+\beta_t$ of the distributions $\alpha$ and $\beta$. It is upper bounded by $1 -
+e^{- L\text{diam}(\Xx)}$, thanks to \autoref{ass:lip} and
+\autoref{lemma:contractance}.
 
 The realizations $\hat \beta_t$ and $\hat \alpha_t$
 are sampled according to the same distribution $\hat \alpha$ and $\hat \beta$. We
@@ -218,11 +219,13 @@ a uniform law of large number result on parametric functions. We indeed have, by
     \sup_{x \in \Xx}
      \Big| \frac{1}{n} \sum_{i=1}^n \exp(g^\star(Y_i)) - C(x, Y_i)) \\
       &\phantom{=}\qquad\qquad\qquad\quad- \EE_{Y \sim \beta}[\exp(g^\star(Y)) - C(x, Y)] \Big| \\
-      &= \EE \sup_{x \in \Xx} | \frac{1}{n} \sum_{i=1}^n f_i(x) - f(x) | ,
+      &= \EE \sup_{x \in \Xx} | \frac{1}{n} \sum_{i=1}^n \phi_i(x) - \phi(x) | ,
 \end{align}
-where we have defined $f_i: x \to \exp(g^\star(Y_i - C(x, Y_i))$ and set $f$ to be the
-expected value of each $f_i$. The compactness of $\Xx$ ensures that the
-functions  are square integrable and uniformly bounded. \autoref{lemma:lln} ensures that there exists $C$ (that depends only on $\alpha$ and $\beta$) such that
+where we have defined $\phi_i: x \to \exp(g^\star(Y_i - C(x, Y_i))$ and set
+$\phi$ to be the expected value of each $\phi_i$. The compactness of $\Xx$
+ensures that the functions  are square integrable and uniformly bounded.
+\autoref{lemma:lln} ensures that there exists $C$ (that depends only on $\beta$)
+such that
 \begin{equation}\label{eq:vdv}
     \EE_{\hat \beta} {\Vert \epsilon_{\hat \beta} \Vert}_{\var}  \leq \frac{C}{\sqrt{n}}.
 \end{equation}

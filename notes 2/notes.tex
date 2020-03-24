@@ -2,6 +2,7 @@
 \input{preamble.tex}
 
 \addbibresource{biblio.bib}
+\addbibresource{SA.bib}
 
 \begin{document}
 
@@ -64,15 +65,16 @@ where
 is an unbiased estimate of $\nabla \Ff(f, g)$.
 
 \section{An EM point of view}
-
+The simultaneous Sinkhorn updates can be rewritten as
 \begin{align}
     f_t, g_t = \argmax_{f, g} Q_t^\star((f, g), (f_t, g_t)) 
     &\triangleq \EE_{Y \sim \beta} \left[ \EE_{X \sim \alpha} \left[
      f(X) - e^{f(X) + g_t(Y) - C(X, Y)} \right] \right] \\
      &+
      \EE_{X \sim \alpha} \left[ \EE_{Y \sim \beta} \left[
-     g(Y) - e^{f_t(X) + g(Y) - C(X, Y)} \right] \right]
+     g(Y) - e^{f_t(X) + g(Y) - C(X, Y)} \right] \right].
 \end{align}
+This is similar to the EM algorithm: the first expectation is on data, the second on hidden random variables.
 We now define the approximate functions
 
 \begin{align}
@@ -97,7 +99,7 @@ amounts to set
 \end{equation}
 which is the randomized Sinkhorn algorithm. Setting
 \begin{equation}
-    \bar Q_{t+1} = (1 - \eta_t) \bar Q_{t} + \eta_t Q_{t}
+    \bar Q_t = (1 - \eta_t) \bar Q_{t-1} + \eta_t Q_{t}
 \end{equation}
 and running the iterations
 \begin{equation}
@@ -113,6 +115,76 @@ Every function $Q_t$ is parametrized by $(p_i, q_i, x_i, y_i)_{i=(n_t,
  n_{t+1}]}$, and $\bar Q_t$ by $(p_i, q_i, x_i, y_i)_{i=(0, n_{t+1}]}$. Thus the
  parametrization of $f_t, g_t$ is encoded using an argmax trick, and we recover the structure of a stochastic expectation-maximization algorithm (less the probabilistic point of view).
 
+ \section{Stochastic approximation}
+
+ Online EM: in finite dimension: \fullcite{cappe_online_2009}
+
+ Applications + better explanation: \fullcite{dupuy_online_2017}
+
+ Random fixed point iterations: \fullcite{alber_stochastic_2012}
+
+ Non-asymptotic rates for SGD + Polyak-Ruppert averaging: \fullcite{moulines_non-asymptotic_2011}
+
+\subsection{The Robbins Monroe-Algorithm}
+Overall, everything can be rewritten as looking for the zero of some function
+\begin{equation}
+    \text{Find}\:x^\star\:\text{such that}\:h(x) = 0,
+\end{equation}
+with access to an oracle 
+$\hat h(x)$ s.t. $\EE[\hat h(x)] = h(x)$ for all $x \in \Xx$. Then the algorithm
+\begin{equation}
+    x_{n+1} = x_n - \eta_n h(x_n)
+\end{equation}
+gives a sequence converging to $x^\star$, provided that
+\begin{equation}
+    \sum_n \eta_n = \infty,\qquad \sum_n \eta_n^2 \leq \infty,
+    \qquad h\text{ non decreasing}\qquad \EE[h(x_n)^2 | \Ff_{n-1} ] \leq \sigma^2
+\end{equation}
+When looking for $\min f(x)$, we can use $h(x) = \nabla f(x)$. When looking for a fixed point equation
+\begin{equation}
+    x = T x,
+\end{equation}
+we may use $h(x) = x - T(x)$, in which case the algorithm writes
+\begin{equation}
+    x_{n+1} = (1 - \eta_n) x_n + \eta_n S(x_n),
+\end{equation}
+where $\EE[S(x_n)] = x - T(x)$, which is our case. In a Hilbert space, assuming $T$ is contracting for the norm, i.e.
+\begin{equation}
+    \Vert Tx - Ty \Vert \leq \kappa \Vert x - y \Vert,
+\end{equation}
+it is easy to obtain convergence of $\EE[\Vert x_n  - x^\star \Vert^2]$ + rates on the mean-square convergence rate + almost sure convergence of the iterate \autocite{alber_stochastic_2012}.
+
+
+\subsection{Proof: basic inequality}
+
+Overall, all these references use at some point exhibits a sequence $(\delta_n)_n$ such that
+\begin{equation}
+    \delta_{n+1} \leq (1 - \eta_n) \delta_n + C \gamma_n
+\end{equation}
+with $\sum \eta_n = \infty$ and $\sum \gamma_n \leq \infty$. Typically $\gamma_n = \delta_n^2$.
+
+
+\paragraph{Problem.} We do not have access to such an equality:
+\begin{itemize}
+    \item The contraction of the Sinkhorn operator is for a non-Euclidean distance
+    \item Therefore we need to increase the sampling size with time
+\end{itemize}
+
+What we have at hand
+\begin{equation}\label{eq:Et_rec}
+    0 \leq e_{t+1} \leq 
+    (1 - \tilde \eta_t) e_t
+    + \tilde \eta_t
+    ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
+    {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}).
+\end{equation}
+with
+\begin{equation}
+    \epsilon_{\hat \beta}(\cdot) \triangleq
+    f^\star - T_{\hat \beta}{g^\star} ,\qquad
+    \iota_{\hat \alpha}(\cdot) \triangleq 
+    g^\star - T_{\hat \alpha}{f^\star},
+\end{equation}
 
 \printbibliography
 
