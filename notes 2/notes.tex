@@ -191,6 +191,32 @@ with
     g^\star - T_{\hat \alpha}{f^\star},
 \end{equation}
 
+\section{Unbalanced algorithm}
+
+Fixed point equation (KL divergence, or aprox from Thibault's paper)
+\begin{equation}
+    f^\star = \left( 1 + \frac{\varepsilon}{\rho} \right)^{-1} T_\beta ( g^\star), \qquad
+    g^\star = \left( 1 + \frac{\varepsilon}{\rho} \right)^{-1} T_\alpha ( f^\star)
+\end{equation}
+In unbiased space, $\lambda \triangleq \left( 1 + \frac{\varepsilon}{\rho} \right)^{-1}$:
+\begin{equation}
+    u^\star = \exp(-f^\star) = \exp(-\lambda) \exp(-T_\beta ( g^\star)), \qquad
+    v^\star = \exp(-g^\star) = \exp(-\lambda) \exp(-T_\alpha ( f^\star))
+\end{equation}
+Define
+\begin{equation}
+    T(u, v) \triangleq \left(\exp(-\lambda) \exp(-T_\beta (\log(v))),
+                    \exp(-\lambda) \exp(-T_\alpha (-\log(u)) \right)
+\end{equation}
+fixed point operator. Online Sinkhorn reads
+\begin{equation}
+    x_n = (u_n, v_n) = (1 - \eta_n) x_{n-1} + \eta_n T_n(x_{n-1}),
+\end{equation}
+\begin{equation}
+    T_n(u, v) \triangleq \left(\exp(-\lambda) \exp(-T_{\hat \beta_n} (\log(v))),
+                    \exp(-\lambda) \exp(-T_{\hat \alpha_n} (-\log(u)) \right)
+\end{equation}
+
 \printbibliography
 
 \end{document}
