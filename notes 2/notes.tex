@@ -175,7 +175,7 @@ E.g. from SGD, setting $\delta_n = \EE[|| \theta_n - \theta ||^2]$, we have, if 
     \item Therefore we need to increase the sampling size with time
 \end{itemize}
 
-What we have at hand
+What we have at hand, $e_t \triangleq \EE ||f_t - f^\star||_{var} + ||g_t - g^\star||_{var}$:
 \begin{equation}\label{eq:Et_rec}
     0 \leq e_{t+1} \leq 
     (1 - \tilde \eta_t) e_t
@@ -183,14 +183,17 @@ What we have at hand
     ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}).
 \end{equation}
-with
+with $\tilde \eta_t = \eta_t (1 - \kappa)$ and
 \begin{equation}
     \epsilon_{\hat \beta}(\cdot) \triangleq
     f^\star - T_{\hat \beta}{g^\star} ,\qquad
     \iota_{\hat \alpha}(\cdot) \triangleq 
     g^\star - T_{\hat \alpha}{f^\star},
 \end{equation}
-
+With increasing batch-sizes, we may end up with
+\begin{equation}
+    e_{t+1} \leq (1 - \eta_t) e_t + C \eta_t w_t.           
+\end{equation}
 \section{Unbalanced algorithm}
 
 Fixed point equation (KL divergence, or aprox from Thibault's paper)
