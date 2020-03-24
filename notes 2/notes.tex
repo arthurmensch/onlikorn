@@ -161,7 +161,12 @@ Overall, all these references use at some point exhibits a sequence $(\delta_n)_
 \begin{equation}
     \delta_{n+1} \leq (1 - \eta_n) \delta_n + C \gamma_n
 \end{equation}
-with $\sum \eta_n = \infty$ and $\sum \gamma_n \leq \infty$. Typically $\gamma_n = \delta_n^2$.
+with $\sum \eta_n = \infty$ and $\sum \gamma_n \leq \infty$. Typically $\gamma_n = \eta_n^2$.
+
+E.g. from SGD, setting $\delta_n = \EE[|| \theta_n - \theta ||^2]$, we have, if objective is $L$-smooth and $\mu$-strongly convex:
+\begin{equation}
+    \delta_n \leq (1 - 2 \mu \gamma_n   + 2 L^2 \gamma_n^2) \delta_{n-1} + 2 \sigma^2 \gamma_n^2
+\end{equation}
 
 
 \paragraph{Problem.} We do not have access to such an equality:
