@@ -1,0 +1,361 @@
+
+@article{roulet_elementary_2020,
+	title = {An Elementary Approach to Convergence Guarantees of Optimization Algorithms for Deep Networks},
+	url = {http://arxiv.org/abs/2002.09051},
+	abstract = {We present an approach to obtain convergence guarantees of optimization algorithms for deep networks based on elementary arguments and computations. The convergence analysis revolves around the analytical and computational structures of optimization oracles central to the implementation of deep networks in machine learning software. We provide a systematic way to compute estimates of the smoothness constants that govern the convergence behavior of first-order optimization algorithms used to train deep networks. A diverse set of example components and architectures arising in modern deep networks intersperse the exposition to illustrate the approach.},
+	journaltitle = {{arXiv}:2002.09051 [cs, stat]},
+	author = {Roulet, Vincent and Harchaoui, Zaid},
+	urldate = {2020-03-09},
+	date = {2020-02-20},
+	eprinttype = {arxiv},
+	eprint = {2002.09051},
+	keywords = {Statistics - Machine Learning, Computer Science - Machine Learning},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/7W9T2Z6A/Roulet and Harchaoui - 2020 - An Elementary Approach to Convergence Guarantees o.pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/SZXKLDU3/2002.html:text/html}
+}
+
+@article{roulet_iterative_2019,
+	title = {Iterative Linearized Control: Stable Algorithms and Complexity Guarantees},
+	url = {http://arxiv.org/abs/1908.07615},
+	shorttitle = {Iterative Linearized Control},
+	abstract = {We examine popular gradient-based algorithms for nonlinear control in the light of the modern complexity analysis of first-order optimization algorithms. The examination reveals that the complexity bounds can be clearly stated in terms of calls to a computational oracle related to dynamic programming and implementable by gradient back-propagation using machine learning software libraries such as {PyTorch} or {TensorFlow}. Finally, we propose a regularized Gauss-Newton algorithm enjoying worst-case complexity bounds and improved convergence behavior in practice. The software library based on {PyTorch} is publicly available.},
+	journaltitle = {{arXiv}:1908.07615 [math]},
+	author = {Roulet, Vincent and Srinivasa, Siddhartha and Drusvyatskiy, Dmitriy and Harchaoui, Zaid},
+	urldate = {2020-03-09},
+	date = {2019-08-20},
+	eprinttype = {arxiv},
+	eprint = {1908.07615},
+	keywords = {Mathematics - Optimization and Control},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/7MYPIWYQ/Roulet et al. - 2019 - Iterative Linearized Control Stable Algorithms an.pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/6BXUH2ZJ/1908.html:text/html}
+}
+
+@article{bolte_conservative_2019,
+	title = {Conservative set valued fields, automatic differentiation, stochastic gradient method and deep learning},
+	url = {http://arxiv.org/abs/1909.10300},
+	abstract = {Modern problems in {AI} or in numerical analysis require nonsmooth approaches with a flexible calculus. We introduce generalized derivatives called conservative fields for which we develop a calculus and provide representation formulas. Functions having a conservative field are called path differentiable: convex, concave, Clarke regular and any semialgebraic Lipschitz continuous functions are path differentiable. Using Whitney stratification techniques for semialgebraic and definable sets, our model provides variational formulas for nonsmooth automatic differentiation oracles, as for instance the famous backpropagation algorithm in deep learning. Our differential model is applied to establish the convergence in values of nonsmooth stochastic gradient methods as they are implemented in practice.},
+	journaltitle = {{arXiv}:1909.10300 [cs, math]},
+	author = {Bolte, Jérôme and Pauwels, Edouard},
+	urldate = {2020-03-09},
+	date = {2019-10-07},
+	eprinttype = {arxiv},
+	eprint = {1909.10300},
+	keywords = {Mathematics - Optimization and Control, Computer Science - Artificial Intelligence, Computer Science - Machine Learning},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/56HZLL4P/Bolte and Pauwels - 2019 - Conservative set valued fields, automatic differen.pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/3D6Q5QFY/1909.html:text/html}
+}
+
+@article{vogels_powersgd_2020,
+	title = {{PowerSGD}: Practical Low-Rank Gradient Compression for Distributed Optimization},
+	url = {http://arxiv.org/abs/1905.13727},
+	shorttitle = {{PowerSGD}},
+	abstract = {We study gradient compression methods to alleviate the communication bottleneck in data-parallel distributed optimization. Despite the significant attention received, current compression schemes either do not scale well or fail to achieve the target test accuracy. We propose a new low-rank gradient compressor based on power iteration that can i) compress gradients rapidly, ii) efficiently aggregate the compressed gradients using all-reduce, and iii) achieve test performance on par with {SGD}. The proposed algorithm is the only method evaluated that achieves consistent wall-clock speedups when benchmarked against regular {SGD} with an optimized communication backend. We demonstrate reduced training times for convolutional networks as well as {LSTMs} on common datasets. Our code is available at https://github.com/epfml/powersgd.},
+	journaltitle = {{arXiv}:1905.13727 [cs, math, stat]},
+	author = {Vogels, Thijs and Karimireddy, Sai Praneeth and Jaggi, Martin},
+	urldate = {2020-03-09},
+	date = {2020-02-18},
+	eprinttype = {arxiv},
+	eprint = {1905.13727},
+	keywords = {Mathematics - Optimization and Control, Statistics - Machine Learning, Computer Science - Distributed, Parallel, and Cluster Computing, I.2.6, Computer Science - Machine Learning, I.5.1},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/Q98Z7MQD/Vogels et al. - 2020 - PowerSGD Practical Low-Rank Gradient Compression .pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/WUM5PC2P/1905.html:text/html}
+}
+
+@article{dalalyan_all--one_2020,
+	title = {All-In-One Robust Estimator of the Gaussian Mean},
+	url = {http://arxiv.org/abs/2002.01432},
+	abstract = {The goal of this paper is to show that a single robust estimator of the mean of a multivariate Gaussian distribution can enjoy five desirable properties. First, it is computationally tractable in the sense that it can be computed in a time which is at most polynomial in dimension, sample size and the logarithm of the inverse of the contamination rate. Second, it is equivariant by translations and orthogonal transformations. Third, it has a high breakdown point equal to \$0.5\$, and a nearly-minimax-rate-breakdown point approximately equal to \$0.28\$. Fourth, it is minimax rate optimal when data consist of independent observations corrupted by adversarially chosen outliers. Fifth, it is asymptotically optimal when the rate of contamination tends to zero. The estimator is obtained by an iterative reweighting approach. Each sample point is assigned a weight that is iteratively updated using a convex optimization problem. We also establish a dimension-free non-asymptotic risk bound for the expected error of the proposed estimator. It is the first of this kind results in the literature and involves only the effective rank of the covariance matrix.},
+	journaltitle = {{arXiv}:2002.01432 [math, stat]},
+	author = {Dalalyan, Arnak S. and Minasyan, Arshak},
+	urldate = {2020-03-12},
+	date = {2020-02-04},
+	eprinttype = {arxiv},
+	eprint = {2002.01432},
+	keywords = {Mathematics - Statistics Theory},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/N7BBBX29/Dalalyan and Minasyan - 2020 - All-In-One Robust Estimator of the Gaussian Mean.pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/INVZRPAU/2002.html:text/html}
+}
+
+@article{flammarion_stochastic_nodate,
+	title = {Stochastic Composite Least-Squares Regression with convergence rate O(1/n)},
+	abstract = {We consider the minimization of composite objective functions composed of the expectation of quadratic functions and an arbitrary convex function. We study the stochastic dual averaging algorithm with a constant step-size, showing that it leads to a convergence rate of O(1/n) without strong convexity assumptions. This thus extends earlier results on least-squares regression with the Euclidean geometry to (a) all convex regularizers and constraints, and (b) all geometries represented by a Bregman divergence. This is achieved by a new proof technique that relates stochastic and deterministic recursions.},
+	pages = {45},
+	author = {Flammarion, Nicolas and Bach, Francis},
+	langid = {english},
+	file = {Flammarion - Stochastic Composite Least-Squares Regression with.pdf:/home/amensch/Zotero/storage/E3Z5SQSC/Flammarion - Stochastic Composite Least-Squares Regression with.pdf:application/pdf}
+}
+
+@article{cardoso_equivariant_1996,
+	title = {Equivariant adaptive source separation},
+	volume = {44},
+	issn = {1941-0476},
+	doi = {10.1109/78.553476},
+	abstract = {Source separation consists of recovering a set of independent signals when only mixtures with unknown coefficients are observed. This paper introduces a class of adaptive algorithms for source separation that implements an adaptive version of equivariant estimation and is henceforth called equivariant adaptive separation via independence ({EASI}). The {EASI} algorithms are based on the idea of serial updating. This specific form of matrix updates systematically yields algorithms with a simple structure for both real and complex mixtures. Most importantly, the performance of an {EASI} algorithm does not depend on the mixing matrix. In particular, convergence rates, stability conditions, and interference rejection levels depend only on the (normalized) distributions of the source signals. Closed-form expressions of these quantities are given via an asymptotic performance analysis. The theme of equivariance is stressed throughout the paper. The source separation problem has an underlying multiplicative structure. The parameter space forms a (matrix) multiplicative group. We explore the (favorable) consequences of this fact on implementation, performance, and optimization of {EASI} algorithms.},
+	pages = {3017--3030},
+	number = {12},
+	journaltitle = {{IEEE} Transactions on Signal Processing},
+	author = {Cardoso, J.-F. and Laheld, B.H.},
+	date = {1996-12},
+	note = {Conference Name: {IEEE} Transactions on Signal Processing},
+	keywords = {convergence of numerical methods, matrix algebra, Convergence, Signal processing algorithms, Stability, Adaptive algorithm, adaptive algorithms, adaptive estimation, adaptive signal processing, Array signal processing, asymptotic performance analysis, closed-form expressions, complex mixtures, convergence rates, {EASI} algorithms, equivariant adaptive separation via independence, equivariant adaptive source separation, equivariant estimation, independent signals, Interference, interference rejection levels, matrix group, matrix updates, multiplicative group, multiplicative structure, normalized distributions, optimization, parameter estimation, parameter space, Performance analysis, real mixtures, Sensor phenomena and characterization, serial updating, Source separation, source signals, stability conditions, Yttrium},
+	file = {IEEE Xplore Abstract Record:/home/amensch/Zotero/storage/YNR997HS/553476.html:text/html}
+}
+
+@article{bach_non-asymptotic_nodate,
+	title = {Non-Asymptotic Analysis of Stochastic Approximation Algorithms for Machine Learning},
+	abstract = {We consider the minimization of a convex objective function deﬁned on a Hilbert space, which is only available through unbiased estimates of its gradients. This problem includes standard machine learning algorithms such as kernel logistic regression and least-squares regression, and is commonly referred to as a stochastic approximation problem in the operations research community. We provide a non-asymptotic analysis of the convergence of two well-known algorithms, stochastic gradient descent (a.k.a. Robbins-Monro algorithm) as well as a simple modiﬁcation where iterates are averaged (a.k.a. Polyak-Ruppert averaging). Our analysis suggests that a learning rate proportional to the inverse of the number of iterations, while leading to the optimal convergence rate in the strongly convex case, is not robust to the lack of strong convexity or the setting of the proportionality constant. This situation is remedied when using slower decays together with averaging, robustly leading to the optimal rate of convergence. We illustrate our theoretical results with simulations on synthetic and standard datasets.},
+	pages = {9},
+	author = {Bach, Francis and Moulines, Eric},
+	langid = {english},
+	file = {Bach and Moulines - Non-Asymptotic Analysis of Stochastic Approximatio.pdf:/home/amensch/Zotero/storage/3VKRPMLP/Bach and Moulines - Non-Asymptotic Analysis of Stochastic Approximatio.pdf:application/pdf}
+}
+
+@article{cappe_online_2009,
+	title = {Online {EM} Algorithm for Latent Data Models},
+	volume = {71},
+	url = {https://hal.archives-ouvertes.fr/hal-00201327},
+	doi = {10.1111/j.1467-9868.2009.00698.x},
+	abstract = {In this contribution, we propose a generic online (also sometimes called adaptive or recursive) version of the Expectation-Maximisation ({EM}) algorithm applicable to latent variable models of independent observations. Compared to the algorithm of Titterington (1984), this approach is more directly connected to the usual {EM} algorithm and does not rely on integration with respect to the complete data distribution. The resulting algorithm is usually simpler and is shown to achieve convergence to the stationary points of the Kullback-Leibler divergence between the marginal distribution of the observation and the model distribution at the optimal rate, i.e., that of the maximum likelihood estimator. In addition, the proposed approach is also suitable for conditional (or regression) models, as illustrated in the case of the mixture of linear regressions model.},
+	pages = {593--613},
+	number = {3},
+	journaltitle = {Journal of the Royal Statistical Society: Series B},
+	author = {Cappé, Olivier and Moulines, Eric},
+	urldate = {2020-03-19},
+	date = {2009},
+	note = {Publisher: Royal Statistical Society},
+	keywords = {stochastic approximation, adaptive algorithms, Expectation-Maximisation, Latent data models, mixture of regressions, online estimation, Polyak-Ruppert averaging},
+	file = {HAL PDF Full Text:/home/amensch/Zotero/storage/6VFFHFF4/Cappé and Moulines - 2009 - Online EM Algorithm for Latent Data Models.pdf:application/pdf}
+}
+
+@article{dupuy_online_nodate,
+	title = {Online but Accurate Inference for Latent Variable Models with Local Gibbs Sampling},
+	abstract = {We study parameter inference in large-scale latent variable models. We ﬁrst propose a uniﬁed treatment of online inference for latent variable models from a non-canonical exponential family, and draw explicit links between several previously proposed frequentist or Bayesian methods. We then propose a novel inference method for the frequentist estimation of parameters, that adapts {MCMC} methods to online inference of latent variable models with the proper use of local Gibbs sampling. Then, for latent Dirichlet allocation,we provide an extensive set of experiments and comparisons with existing work, where our new approach outperforms all previously proposed methods. In particular, using Gibbs sampling for latent variable inference is superior to variational inference in terms of test log-likelihoods. Moreover, Bayesian inference through variational methods perform poorly, sometimes leading to worse ﬁts with latent variables of higher dimensionality.},
+	pages = {45},
+	author = {Dupuy, Christophe and Bach, Francis},
+	langid = {english},
+	file = {Dupuy and Bach - Online but Accurate Inference for Latent Variable .pdf:/home/amensch/Zotero/storage/X32NQ9CI/Dupuy and Bach - Online but Accurate Inference for Latent Variable .pdf:application/pdf}
+}
+
+@article{bach_stochastic_nodate,
+	title = {Stochastic gradient descent and robustness to ill-conditioning},
+	pages = {67},
+	author = {Bach, Francis},
+	langid = {english},
+	file = {Bach - Stochastic gradient descent and robustness to ill-.pdf:/home/amensch/Zotero/storage/RID4UCA4/Bach - Stochastic gradient descent and robustness to ill-.pdf:application/pdf}
+}
+
+@article{flammarion_averaging_2015,
+	title = {From Averaging to Acceleration, There is Only a Step-size},
+	url = {http://arxiv.org/abs/1504.01577},
+	abstract = {We show that accelerated gradient descent, averaged gradient descent and the heavy-ball method for non-strongly-convex problems may be reformulated as constant parameter second-order difference equation algorithms, where stability of the system is equivalent to convergence at rate O(1/n 2), where n is the number of iterations. We provide a detailed analysis of the eigenvalues of the corresponding linear dynamical system , showing various oscillatory and non-oscillatory behaviors, together with a sharp stability result with explicit constants. We also consider the situation where noisy gradients are available, where we extend our general convergence result, which suggests an alternative algorithm (i.e., with different step sizes) that exhibits the good aspects of both averaging and acceleration.},
+	journaltitle = {{arXiv}:1504.01577 [math, stat]},
+	author = {Flammarion, Nicolas and Bach, Francis},
+	urldate = {2020-03-19},
+	date = {2015-04-07},
+	eprinttype = {arxiv},
+	eprint = {1504.01577},
+	keywords = {Mathematics - Optimization and Control, Statistics - Machine Learning},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/XN8N5GUX/Flammarion and Bach - 2015 - From Averaging to Acceleration, There is Only a St.pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/FVJACM4H/1504.html:text/html}
+}
+
+@article{bach_adaptivity_nodate,
+	title = {Adaptivity of Averaged Stochastic Gradient Descent to Local Strong Convexity for Logistic Regression},
+	abstract = {In this paper, we consider supervised learning problems such as logistic regression and study the stochastic gradient method with averaging, in the usual stochastic approximation setting where observations are used on√ly once. We show that after N iterations, with a constant step-size proportional to 1/R2 N where N is the number of observations and√R is the maximum norm of the observations, the convergence rate is always of order O(1/ N ), and improves to O(R2/µN ) where µ is the lowest eig√envalue of the Hessian at the global optimum (when this eigenvalue is greater than R2/ N ). Since µ does not need to be known in advance, this shows that averaged stochastic gradient is adaptive to unknown local strong convexity of the objective function. Our proof relies on the generalized selfconcordance properties of the logistic loss and thus extends to all generalized linear models with uniformly bounded features.},
+	pages = {33},
+	author = {Bach, Francis},
+	langid = {english},
+	file = {Bach - Adaptivity of Averaged Stochastic Gradient Descent.pdf:/home/amensch/Zotero/storage/TSQ5JVN5/Bach - Adaptivity of Averaged Stochastic Gradient Descent.pdf:application/pdf}
+}
+
+@article{bach_non-strongly-convex_2013,
+	title = {Non-strongly-convex smooth stochastic approximation with convergence rate O(1/n)},
+	url = {http://arxiv.org/abs/1306.2119},
+	abstract = {We consider the stochastic approximation problem where a convex function has to be minimized, given only the knowledge of unbiased estimates of its gradients at certain points, a framework which includes machine learning methods based on the minimization of the empirical risk. We focus on problems without strong convexity, for which all previously known algorithms achieve a convergence rate for function values of O(1/n{\textasciicircum}\{1/2\}). We consider and analyze two algorithms that achieve a rate of O(1/n) for classical supervised learning problems. For least-squares regression, we show that averaged stochastic gradient descent with constant step-size achieves the desired rate. For logistic regression, this is achieved by a simple novel stochastic gradient algorithm that (a) constructs successive local quadratic approximations of the loss functions, while (b) preserving the same running time complexity as stochastic gradient descent. For these algorithms, we provide a non-asymptotic analysis of the generalization error (in expectation, and also in high probability for least-squares), and run extensive experiments on standard machine learning benchmarks showing that they often outperform existing approaches.},
+	journaltitle = {{arXiv}:1306.2119 [cs, math, stat]},
+	author = {Bach, Francis and Moulines, Eric},
+	urldate = {2020-03-19},
+	date = {2013-06-10},
+	eprinttype = {arxiv},
+	eprint = {1306.2119},
+	keywords = {Mathematics - Optimization and Control, Statistics - Machine Learning, Computer Science - Machine Learning},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/NSZ4AWKE/Bach and Moulines - 2013 - Non-strongly-convex smooth stochastic approximatio.pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/ZZHQKKUR/1306.html:text/html}
+}
+
+@article{orabona_generalized_2015,
+	title = {A generalized online mirror descent with applications to classification and regression},
+	volume = {99},
+	issn = {0885-6125, 1573-0565},
+	url = {http://link.springer.com/10.1007/s10994-014-5474-8},
+	doi = {10.1007/s10994-014-5474-8},
+	abstract = {Online learning algorithms are fast, memory-efﬁcient, easy to implement, and applicable to many prediction problems, including classiﬁcation, regression, and ranking. Several online algorithms were proposed in the past few decades, some based on additive updates, like the Perceptron, and some on multiplicative updates, like Winnow. A unifying perspective on the design and the analysis of online algorithms is provided by online mirror descent, a general prediction strategy from which most ﬁrst-order algorithms can be obtained as special cases. We generalize online mirror descent to time-varying regularizers with generic updates. Unlike standard mirror descent, our more general formulation also captures second order algorithms, algorithms for composite losses and algorithms for adaptive ﬁltering. Moreover, we recover, and sometimes improve, known regret bounds as special cases of our analysis using speciﬁc regularizers. Finally, we show the power of our approach by deriving a new second order algorithm with a regret bound invariant with respect to arbitrary rescalings of individual features.},
+	pages = {411--435},
+	number = {3},
+	journaltitle = {Machine Learning},
+	shortjournal = {Mach Learn},
+	author = {Orabona, Francesco and Crammer, Koby and Cesa-Bianchi, Nicolò},
+	urldate = {2020-03-19},
+	date = {2015-06},
+	langid = {english},
+	file = {Orabona et al. - 2015 - A generalized online mirror descent with applicati.pdf:/home/amensch/Zotero/storage/DNVK8TYR/Orabona et al. - 2015 - A generalized online mirror descent with applicati.pdf:application/pdf}
+}
+
+@incollection{orabona_dimension-free_2013,
+	title = {Dimension-Free Exponentiated Gradient},
+	url = {http://papers.nips.cc/paper/4920-dimension-free-exponentiated-gradient.pdf},
+	pages = {1806--1814},
+	booktitle = {Advances in Neural Information Processing Systems 26},
+	publisher = {Curran Associates, Inc.},
+	author = {Orabona, Francesco},
+	editor = {Burges, C. J. C. and Bottou, L. and Welling, M. and Ghahramani, Z. and Weinberger, K. Q.},
+	urldate = {2020-03-19},
+	date = {2013},
+	file = {NIPS Full Text PDF:/home/amensch/Zotero/storage/FCXTNMXS/Orabona - 2013 - Dimension-Free Exponentiated Gradient.pdf:application/pdf;NIPS Snapshot:/home/amensch/Zotero/storage/EZ9PT7HK/4920-dimension-free-exponentiated-gradient.html:text/html}
+}
+
+@article{staib_parallel_2017,
+	title = {Parallel Streaming Wasserstein Barycenters},
+	url = {http://arxiv.org/abs/1705.07443},
+	abstract = {Efficiently aggregating data from different sources is a challenging problem, particularly when samples from each source are distributed differently. These differences can be inherent to the inference task or present for other reasons: sensors in a sensor network may be placed far apart, affecting their individual measurements. Conversely, it is computationally advantageous to split Bayesian inference tasks across subsets of data, but data need not be identically distributed across subsets. One principled way to fuse probability distributions is via the lens of optimal transport: the Wasserstein barycenter is a single distribution that summarizes a collection of input measures while respecting their geometry. However, computing the barycenter scales poorly and requires discretization of all input distributions and the barycenter itself. Improving on this situation, we present a scalable, communication-efficient, parallel algorithm for computing the Wasserstein barycenter of arbitrary distributions. Our algorithm can operate directly on continuous input distributions and is optimized for streaming data. Our method is even robust to nonstationary input distributions and produces a barycenter estimate that tracks the input measures over time. The algorithm is semi-discrete, needing to discretize only the barycenter estimate. To the best of our knowledge, we also provide the first bounds on the quality of the approximate barycenter as the discretization becomes finer. Finally, we demonstrate the practical effectiveness of our method, both in tracking moving distributions on a sphere, as well as in a large-scale Bayesian inference task.},
+	journaltitle = {{arXiv}:1705.07443 [cs, math, stat]},
+	author = {Staib, Matthew and Claici, Sebastian and Solomon, Justin and Jegelka, Stefanie},
+	urldate = {2020-03-19},
+	date = {2017-11-13},
+	eprinttype = {arxiv},
+	eprint = {1705.07443},
+	keywords = {Mathematics - Optimization and Control, Statistics - Computation, Statistics - Machine Learning, Computer Science - Machine Learning},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/F9E35LPS/Staib et al. - 2017 - Parallel Streaming Wasserstein Barycenters.pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/JYD6N5BX/1705.html:text/html}
+}
+
+@article{chan_understanding_2017,
+	title = {Understanding Symmetric Smoothing Filters: A Gaussian Mixture Model Perspective},
+	volume = {26},
+	issn = {1057-7149, 1941-0042},
+	url = {http://arxiv.org/abs/1601.00088},
+	doi = {10.1109/TIP.2017.2731208},
+	shorttitle = {Understanding Symmetric Smoothing Filters},
+	abstract = {Many patch-based image denoising algorithms can be formulated as applying a smoothing filter to the noisy image. Expressed as matrices, the smoothing filters must be row normalized so that each row sums to unity. Surprisingly, if we apply a column normalization before the row normalization, the performance of the smoothing filter can often be significantly improved. Prior works showed that such performance gain is related to the Sinkhorn-Knopp balancing algorithm, an iterative procedure that symmetrizes a row-stochastic matrix to a doubly-stochastic matrix. However, a complete understanding of the performance gain phenomenon is still lacking. In this paper, we study the performance gain phenomenon from a statistical learning perspective. We show that Sinkhorn-Knopp is equivalent to an Expectation-Maximization ({EM}) algorithm of learning a Gaussian mixture model of the image patches. By establishing the correspondence between the steps of Sinkhorn-Knopp and the {EM} algorithm, we provide a geometrical interpretation of the symmetrization process. This observation allows us to develop a new denoising algorithm called Gaussian mixture model symmetric smoothing filter ({GSF}). {GSF} is an extension of the Sinkhorn-Knopp and is a generalization of the original smoothing filters. Despite its simple formulation, {GSF} outperforms many existing smoothing filters and has a similar performance compared to several state-of-the-art denoising algorithms.},
+	pages = {5107--5121},
+	number = {11},
+	journaltitle = {{IEEE} Transactions on Image Processing},
+	shortjournal = {{IEEE} Trans. on Image Process.},
+	author = {Chan, Stanley H. and Zickler, Todd and Lu, Yue M.},
+	urldate = {2020-03-19},
+	date = {2017-11},
+	eprinttype = {arxiv},
+	eprint = {1601.00088},
+	keywords = {Computer Science - Computer Vision and Pattern Recognition},
+	file = {arXiv Fulltext PDF:/home/amensch/Zotero/storage/D5RYIZQP/Chan et al. - 2017 - Understanding Symmetric Smoothing Filters A Gauss.pdf:application/pdf;arXiv.org Snapshot:/home/amensch/Zotero/storage/9SIXPUJ9/1601.html:text/html}
+}
+
+@inproceedings{sakuma_non-parametric_2002,
+	title = {Non-parametric expectation-maximization for Gaussian mixtures},
+	volume = {1},
+	doi = {10.1109/ICONIP.2002.1202224},
+	abstract = {We propose a non-parametric {EM} algorithm, where nonparametric kernel density estimation is used instead of conventional parametric density estimation. Our proposal kernel function, the constructive elliptical basis function ({CEBF}), is an extension of the {EBF} and can effectively represent ill-scaled and non-separable distributions without a covariance matrix even in high dimensionality in a nonparametric manner. The overlapping {CEBFs} with a fixed smoothing parameter can be used as an approximation of Gaussian distribution in a statistical sense. Using {CEBFs} as kernel functions, we propose non-parametric expectation-maximization ({NPEM}) for the Gaussian mixture model ({GMM}). Then we show that {NPEM} obtains better estimation in terms of log likelihood than traditional {EM} algorithms when the given data set has high dimensionality or holds multiple components by numerical experiments.},
+	eventtitle = {Proceedings of the 9th International Conference on Neural Information Processing, 2002. {ICONIP} '02.},
+	pages = {517--522 vol.1},
+	booktitle = {Proceedings of the 9th International Conference on Neural Information Processing, 2002. {ICONIP} '02.},
+	author = {Sakuma, J. and Kobayashi, S.},
+	date = {2002-11},
+	note = {{ISSN}: null},
+	keywords = {Equations, Vectors, Kernel, Computational modeling, Computational intelligence, constructive elliptical basis function, covariance matrices, covariance matrix, Covariance matrix, Density functional theory, expectation-maximization algorithm, function approximation, Gaussian distribution, log likelihood, maximum likelihood estimation, nonparametric {EM} algorithm, probabilistic density function, probability, Proposals, Smoothing methods},
+	file = {IEEE Xplore Abstract Record:/home/amensch/Zotero/storage/ZFBP59JM/1202224.html:text/html}
+}
+
+@article{fort_stochastic_2019,
+	title = {Stochastic proximal-gradient algorithms for penalized mixed models},
+	volume = {29},
+	issn = {0960-3174, 1573-1375},
+	url = {http://link.springer.com/10.1007/s11222-018-9805-7},
+	doi = {10.1007/s11222-018-9805-7},
+	pages = {231--253},
+	number = {2},
+	journaltitle = {Statistics and Computing},
+	shortjournal = {Stat Comput},
+	author = {Fort, Gersende and Ollier, Edouard and Samson, Adeline},
+	urldate = {2020-03-19},
+	date = {2019-03},
+	langid = {english},
+	file = {Submitted Version:/home/amensch/Zotero/storage/RFURVRTL/Fort et al. - 2019 - Stochastic proximal-gradient algorithms for penali.pdf:application/pdf}
+}
+
+@incollection{chen_stochastic_2018,
+	title = {Stochastic Expectation Maximization with Variance Reduction},
+	url = {http://papers.nips.cc/paper/8021-stochastic-expectation-maximization-with-variance-reduction.pdf},
+	pages = {7967--7977},
+	booktitle = {Advances in Neural Information Processing Systems 31},
+	publisher = {Curran Associates, Inc.},
+	author = {Chen, Jianfei and Zhu, Jun and Teh, Yee Whye and Zhang, Tong},
+	editor = {Bengio, S. and Wallach, H. and Larochelle, H. and Grauman, K. and Cesa-Bianchi, N. and Garnett, R.},
+	urldate = {2020-03-19},
+	date = {2018},
+	file = {NIPS Full Text PDF:/home/amensch/Zotero/storage/F95U7D7R/Chen et al. - 2018 - Stochastic Expectation Maximization with Variance .pdf:application/pdf;NIPS Snapshot:/home/amensch/Zotero/storage/DPXTEJZJ/8021-stochastic-expectation-maximization-with-variance-reduction.html:text/html}
+}
+
+@book{noauthor_stochastic_2003,
+	location = {New York},
+	title = {Stochastic Approximation and Recursive Algorithms and Applications},
+	volume = {35},
+	isbn = {978-0-387-00894-3},
+	url = {http://link.springer.com/10.1007/b97441},
+	series = {Stochastic Modelling and Applied Probability},
+	publisher = {Springer-Verlag},
+	urldate = {2020-03-20},
+	date = {2003},
+	langid = {english},
+	doi = {10.1007/b97441},
+	file = {2003 - Stochastic Approximation and Recursive Algorithms .pdf:/home/amensch/Zotero/storage/QV6JLHX3/2003 - Stochastic Approximation and Recursive Algorithms .pdf:application/pdf}
+}
+
+@article{alber_stochastic_2012,
+	title = {Stochastic Approximation Method for Fixed Point Problems},
+	volume = {03},
+	issn = {2152-7385, 2152-7393},
+	url = {http://www.scirp.org/journal/doi.aspx?DOI=10.4236/am.2012.312A293},
+	doi = {10.4236/am.2012.312A293},
+	abstract = {We study iterative processes of stochastic approximation for finding fixed points of weakly contractive and nonexpansive operators in Hilbert spaces under the condition that operators are given with random errors. We prove mean square convergence and convergence almost sure (a.s.) of iterative approximations and establish both asymptotic and nonasymptotic estimates of the convergence rate in degenerate and non-degenerate cases. Previously the stochastic approximation algorithms were studied mainly for optimization problems.},
+	pages = {2123--2132},
+	number = {12},
+	journaltitle = {Applied Mathematics},
+	shortjournal = {{AM}},
+	author = {Alber, Ya. I. and Chidume, C. E. and Li, Jinlu},
+	urldate = {2020-03-20},
+	date = {2012},
+	langid = {english},
+	file = {Alber et al. - 2012 - Stochastic Approximation Method for Fixed Point Pr.pdf:/home/amensch/Zotero/storage/ZPFMB2Y2/Alber et al. - 2012 - Stochastic Approximation Method for Fixed Point Pr.pdf:application/pdf}
+}
+
+@unpublished{crepey_uncertainty_2017,
+	title = {Uncertainty Quantification for Stochastic Approximation Limits Using Chaos Expansion},
+	url = {https://hal.archives-ouvertes.fr/hal-01629952},
+	author = {Crépey, Stéphane and Fort, Gersende and {GOBET}, Emmanuel and Stazhynski, Uladzislau},
+	urldate = {2020-03-24},
+	date = {2017-11},
+	keywords = {Almost-sure convergence., Chaos expansion, Stochas- tic Programming, Stochastic Approximation in Hilbert space, Uncertainty Quantification},
+	file = {HAL PDF Full Text:/home/amensch/Zotero/storage/U3DIT7SB/Crépey et al. - 2017 - Uncertainty Quantification for Stochastic Approxim.pdf:application/pdf}
+}
+
+@incollection{moulines_non-asymptotic_2011,
+	title = {Non-Asymptotic Analysis of Stochastic Approximation Algorithms for Machine Learning},
+	url = {http://papers.nips.cc/paper/4316-non-asymptotic-analysis-of-stochastic-approximation-algorithms-for-machine-learning.pdf},
+	pages = {451--459},
+	booktitle = {Advances in Neural Information Processing Systems 24},
+	publisher = {Curran Associates, Inc.},
+	author = {Moulines, Eric and Bach, Francis R.},
+	editor = {Shawe-Taylor, J. and Zemel, R. S. and Bartlett, P. L. and Pereira, F. and Weinberger, K. Q.},
+	urldate = {2020-03-24},
+	date = {2011},
+	file = {NIPS Full Text PDF:/home/amensch/Zotero/storage/A69ZGHEG/Moulines and Bach - 2011 - Non-Asymptotic Analysis of Stochastic Approximatio.pdf:application/pdf;NIPS Snapshot:/home/amensch/Zotero/storage/YRCXNNPP/4316-non-asymptotic-analysis-of-stochastic-approximation-algorithms-for-machine-learning.html:text/html}
+}
+
+@article{alber_general_1985,
+	title = {General non-asymptotic estimates of the rate of convergence of iterative stochastic algorithms},
+	volume = {25},
+	issn = {00415553},
+	url = {https://linkinghub.elsevier.com/retrieve/pii/0041555385900990},
+	doi = {10.1016/0041-5553(85)90099-0},
+	pages = {13--20},
+	number = {2},
+	journaltitle = {{USSR} Computational Mathematics and Mathematical Physics},
+	shortjournal = {{USSR} Computational Mathematics and Mathematical Physics},
+	author = {Al'ber, Ya.I. and Shil'man, S.V.},
+	urldate = {2020-03-24},
+	date = {1985-01},
+	langid = {english},
+	file = {Al'ber and Shil'man - 1985 - General non-asymptotic estimates of the rate of co.pdf:/home/amensch/Zotero/storage/FMC7A7K5/Al'ber and Shil'man - 1985 - General non-asymptotic estimates of the rate of co.pdf:application/pdf}
+}
