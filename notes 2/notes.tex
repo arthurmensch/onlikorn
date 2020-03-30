@@ -194,6 +194,70 @@ With increasing batch-sizes, we may end up with
 \begin{equation}
     e_{t+1} \leq (1 - \eta_t) e_t + C \eta_t w_t.           
 \end{equation}
+
+\section{Rates for online Sinkhorn}
+
+We set $e_t \triangleq \Vert f^\star - f_t \Vert_{\var} + \Vert g^\star - g_t \Vert_{\var}$.
+From Eq. (10) and Eq. (15) in the paper, there exists $A, A' >0$ such that
+\begin{align}
+    \delta_{t+ 1} = \EE e_{t+1} &\leq (1 - (1 - \kappa) \eta_t) \EE e_t + \eta_t 
+    \frac{A}{\sqrt{n(t)}} \\
+\end{align}
+Note the $1 - \kappa$ that appears in the recursion 
+(which breaks for $\varepsilon = 0$). We
+set $\eta_t = \frac{S}{t^a}$, $n(t) = \lceil B t^{2b} \rceil$. We are left to study the recursion
+\begin{equation}
+    \delta_{t+1} \leq (1 - \frac{S(1 - \kappa)}{t^a}) + 
+    \frac{A S}{\sqrt{B}{t^{a + b}}}
+\end{equation}
+
+Using the proof of \citep[Theorem 2]{moulines_non-asymptotic_2011}, we have,
+provided that $0 \leq a < 1$ and $a+ b > 1$, for all $t > 0$,
+% \begin{equation}
+%     \delta_t \leq (\delta_0 + \frac{A S}{\sqrt{B}} \phi_{1 - (a + b)}(t))
+%     \exp(- \frac{S(1 - \kappa)}{2} n^{1 - a})
+%     + \frac{2 A S}{\sqrt{B}(1 - \kappa) n^a},
+% \end{equation}
+% where $\phi_c(t) = \frac{t^c - 1}{c}$ for all $c \neq 0$, $\phi_0(t) = \log t$.
+% Note that $\phi_{1 - (a + b)} \leq \frac{1}{a + b - 1}$, so that
+\begin{equation}
+    \delta_t \leq (\delta_0 + \frac{A S}{(a + b - 1)\sqrt{B}})
+    \exp(- \frac{S(1 - \kappa)}{2} t^{1 - a})
+    + \frac{2 A S}{\sqrt{B}(1 - \kappa) t^a}.
+\end{equation}
+Let us now relate the iteration number $t$ to the number of seen sample $n(t)$. By definition
+\begin{equation}
+    n_t = \sum_{s=1}^t n(s) \leq B \sum_{s=1}^t s^{2b} + t \leq
+     t + \frac{(t+1)^{2b + 1} - 1}{2b + 1}
+     \leq \frac{2b + 1}{2b + 2} (2t)^{2b+1}.
+\end{equation}
+Therefore, when we have seen $n$ samples, the error we make is $\delta_t$, with
+\begin{equation}
+    t \geq {(n/2)}^{\frac{1}{2b + 1}}.
+\end{equation}
+Therefore
+\begin{equation}
+    \delta_n \triangleq \delta_{t+1} \leq 
+    (\delta_0 + \frac{A S}{(a + b - 1)\sqrt{B}})
+    \exp(- \frac{S(1 - \kappa)}{2} {(n /2)}^{\frac{1 - a}{2b+1}})
+    + \frac{2 A S}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{a}{2b+1}}}.
+\end{equation}
+We set $a = 1 - \iota$, $ b = 2 \iota$:
+\begin{align}
+    \delta_n \triangleq \delta_t &\leq 
+    (\delta_0 + \frac{A S}{(a + b - 1)\sqrt{B}})
+    \exp(- \frac{S(1 - \kappa)}{2} {(n/2)}^{\frac{\iota}{4\iota+1}})
+    + \frac{2 A S}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{1 - \iota}{4\iota+1}}} \\
+    &\leq \Oo(n^{-\frac{1 - \iota}{4 \iota - 1}}).
+\end{align}
+Notice that $b$ and $a$ should be as close to $0$ as possible to reduce the bias term, while $a$
+should be as close to $1$ and $b$ as close to $0$ as possible to reduce the variance
+term (with respect to $n$). As the variance term dominates asymptotically, we take $a=1 - \iota$ and
+$b = \iota$. Note that we can take $a = 1$ and $b = 1$, in which case the second part of Theorem 2 from \citet{moulines_non-asymptotic_2011} can still be applied and we get
+\begin{equation}
+    \delta_n = \Oo(\frac{1}{n^{\frac{1 - \kappa}{2}}})
+\end{equation}
+
 \section{Unbalanced algorithm}
 
 Fixed point equation (KL divergence, or aprox from Thibault's paper)
