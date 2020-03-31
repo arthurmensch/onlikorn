@@ -404,7 +404,8 @@ This rate is as close to the rate $\Oo(\frac{1}{n})$ as desired. We may then
 perform a last soft $C$-transform (using the $n$ seen samples) over the
 estimated $f_{t(n)}, g_{t(n)}$ to obtain a estimated solution of the dual
 optimisation problem \eqref{eq:dual}. The Sinkhorn potentials can therefore be
-estimated with \textit{fast rates}. 
+estimated with \textit{fast rates}. Note that the upper bound explodes when $\varepsilon
+\to 0$, as $C_{\max} \to \infty$, hence $A \to \infty$, and $(1 - \kappa) \to 0$.
 
 \paragraph{Estimating the Sinkhorn distance.} The Sinkhorn distance requires to estimate the integral
 \begin{equation}
