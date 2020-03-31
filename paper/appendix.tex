@@ -408,16 +408,18 @@ estimated with \textit{fast rates}.
 
 \paragraph{Estimating the Sinkhorn distance.} The Sinkhorn distance requires to estimate the integral
 \begin{equation}
-    \Ww(\alpha, \beta) = \int_x f^\star(x) \d \alpha(x) + \int_y g^\star(y) \d \beta(y),
+    \Ww(\alpha, \beta) = \int_x f^\star(x) \d \alpha(x) + \int_y g^\star(y) \d \beta(y).
 \end{equation}
-with empirical realization $\bar \alpha_t$ and $\bar \beta_t$, containing $n$ samples: 
+At iteration $t(n)$, with empirical realization $\bar \alpha_t$ and $\bar
+\beta_t$, containing $n$ samples, we use the estimator
 \begin{equation}
     \hat \Ww(\alpha, \beta) = \frac{1}{n} \sum_{i=1}^n f_{t(n)}(x_i) + \frac{1}{n} \sum_{i=1}^n g_{t(n)}(y_i),
 \end{equation}
-This evaluation is made with an error in $\Oo(\frac{1}{\sqrt{n}})$. We thus
-recover a new estimator of the Sinkhorn distance with the same sample complexity
-as the batch Sinkhorn estimator \citep{2019-Genevay-aistats}. Our estimator
-enjoys a refined rate in estimating the potentials.
+We can bound the estimation error $|\hat \Ww(\alpha, \beta) - \Ww(\alpha, \beta) | =
+\Oo(\frac{1}{\sqrt{n}})$, dominated by the integral evaluation noise. We thus recover
+a new estimator of the Sinkhorn distance with the same sample complexity as the
+batch Sinkhorn estimator \citep{2019-Genevay-aistats}. Our estimator enjoys a
+refined rate in estimating the potentials.
 
 
 \section{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
