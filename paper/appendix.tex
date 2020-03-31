@@ -343,6 +343,83 @@ $e_t \geq 0$ for all $t > 0$, this implies that $e_t \to_{t \to \infty} 0$
 almost surely.
 \end{proof}
 
+
+% XXX: remove before upload to arXiv
+\subsection{Sample complexity rates for online Sinkhorn}
+
+The proof of \autoref{prop:convergence_true} allows us to derive non-asymptotic rates for potential estimations using the online Sinkhorn algorithm. Let us set $\eta_t = \frac{S}{t^a}$, $n(t) = \lceil B t^{2b} \rceil$ in \eqref{eq:Et_rec}, so that \autoref{ass:double_weights} is met.
+$\lceil \cdot \rceil$ denotes the ceiling function.
+We are left to study the recursion
+\begin{equation}
+    \delta_{t+1} \triangleq \EE e_{t+1} \leq (1 - \frac{S(1 - \kappa)}{t^a}) \delta_t + 
+    \frac{A S}{\sqrt{B}{t^{a + b}}}
+\end{equation}
+
+Mimicking the analysis of \citet[Theorem 2]{moulines_non-asymptotic_2011}, we have the following
+bias-variance decomposed upper-bound,
+provided that $0 \leq a < 1$ and $a+ b > 1$. For all $t > 0$,
+% \begin{equation}
+%     \delta_t \leq (\delta_0 + \frac{A S}{\sqrt{B}} \phi_{1 - (a + b)}(t))
+%     \exp(- \frac{S(1 - \kappa)}{2} n^{1 - a})
+%     + \frac{2 A S}{\sqrt{B}(1 - \kappa) n^a}, 
+% \end{equation}
+% where $\phi_c(t) = \frac{t^c - 1}{c}$ for all $c \neq 0$, $\phi_0(t) = \log t$.
+% Note that $\phi_{1 - (a + b)} \leq \frac{1}{a + b - 1}$, so that
+\begin{equation}\label{eq:rates}
+    \delta_t \leq (\delta_0 + \frac{A S}{(a + b - 1)\sqrt{B}})
+    \exp(- \frac{S(1 - \kappa)}{2} t^{1 - a})
+    + \frac{2 A S}{\sqrt{B}(1 - \kappa) t^a}.
+\end{equation}
+Let us now relate the iteration number $t$ to the number of seen sample $n(t)$. By definition
+\begin{equation}
+    n_t = \sum_{s=1}^t n(s) \leq B \sum_{s=1}^t s^{2b} + t \leq
+     t + \frac{(t+1)^{2b + 1} - 1}{2b + 1}
+     \leq (2t)^{2b+1}.
+\end{equation}
+Therefore, when we have seen $n$ samples, the iteration number is superior to $t(n)$, and the expected error $\delta_n$ is of the order of $\delta_{t(n)}$, with
+\begin{equation}\label{eq:tn}
+    t(n) =  {(n/2)}^{\frac{1}{2b + 1}}.
+\end{equation}
+We write $\delta_n = \delta_{t(n)}$. Replacing \eqref{eq:tn} in \eqref{eq:rates}
+\begin{equation}
+    \delta_n \leq 
+    (\delta_0 + \frac{A S}{(a + b - 1)\sqrt{B}})
+    \exp\left(- \frac{S(1 - \kappa)}{2} {(n /2)}^{\frac{1 - a}{2b+1}}\right)
+    + \frac{2 A S}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{a}{2b+1}}}.
+\end{equation}
+Notice that $b$ and $a$ should be as close to $0$ as possible to reduce the bias term, while $a$
+should be as close to $1$ and $b$ as close to $0$ as possible to reduce the variance
+term. Of course, $b$ should remain larger than $1 - a$ to ensure convergence.
+
+To obtain the best asymptotical rates (the error is always dominated by the variance term), we set $a = 1 - \iota$, $ b = 2 \iota$, with $\iota \succsim 0$. This yields
+\begin{align}
+    \delta_n &\leq 
+    (\delta_0 + \frac{A S}{\iota \sqrt{B}})
+    \exp\left(- \frac{S(1 - \kappa)}{2} {(n/2)}^{\frac{\iota}{1 + 4\iota}}\right)
+    + \frac{2 A S}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{1 - \iota}{1 + 4\iota}}} \\
+    &= \Oo(n^{-\frac{1 - \iota}{1 + 4 \iota}}).
+\end{align}
+
+This rate is as close to the rate $\Oo(\frac{1}{n})$ as desired. We may then
+perform a last soft $C$-transform (using the $n$ seen samples) over the
+estimated $f_{t(n)}, g_{t(n)}$ to obtain a estimated solution of the dual
+optimisation problem \eqref{eq:dual}. The Sinkhorn potentials can therefore be
+estimated with \textit{fast rates}. 
+
+\paragraph{Estimating the Sinkhorn distance.} The Sinkhorn distance requires to estimate the integral
+\begin{equation}
+    \Ww(\alpha, \beta) = \int_x f^\star(x) \d \alpha(x) + \int_y g^\star(y) \d \beta(y),
+\end{equation}
+with empirical realization $\bar \alpha_t$ and $\bar \beta_t$, containing $n$ samples: 
+\begin{equation}
+    \hat \Ww(\alpha, \beta) = \frac{1}{n} \sum_{i=1}^n f_{t(n)}(x_i) + \frac{1}{n} \sum_{i=1}^n g_{t(n)}(y_i),
+\end{equation}
+This evaluation is made with an error in $\Oo(\frac{1}{\sqrt{n}})$. We thus
+recover a new estimator of the Sinkhorn distance with the same sample complexity
+as the batch Sinkhorn estimator \citep{2019-Genevay-aistats}. Our estimator
+enjoys a refined rate in estimating the potentials.
+
+
 \section{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
 
 The online Sinkhorn algorithm takes a simpler form when dealing with discrete
