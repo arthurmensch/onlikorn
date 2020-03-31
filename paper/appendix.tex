@@ -182,7 +182,7 @@ using the contractance of the soft $C$-transform,
     \label{eq:ineq_var}
     e_{t+1} \leq 
     (1 - \tilde \eta_t) e_t
-    +  \eta_t
+    +  \frac{\tilde \eta_t}{1 -\kappa}
     ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}),
 \end{equation}
@@ -212,7 +212,10 @@ We now relate $r_\infty$ to the number of samples $n$ using
 a uniform law of large number result on parametric functions.
 
 We now write $\hat \beta = \hat \beta_n$ to make explicit the dependency of the
-quantities on the batch size $n$. Using \autoref{lemma:lln}, we bound the quantity
+quantities on the batch size $n$. We choose $g^\star = g^\star_0$ such that
+$\max_{x \in X} g^\star_0(x) = 0$ without loss of generality.
+
+Using \autoref{lemma:lln}, we bound the quantity
 \begin{align}
     E_n &\triangleq \EE_{\hat \beta_n} {\Vert \exp(-\Ctrans{g^\star}{\beta})
     - \exp(-\Ctrans{g^\star}{\hat \beta_n}) \Vert}_{\infty} \\
@@ -225,62 +228,68 @@ quantities on the batch size $n$. Using \autoref{lemma:lln}, we bound the quanti
 where we have defined $\phi_i: x \to \exp(g^\star(Y_i) - C(x, Y_i))$ and set
 $\phi$ to be the expected value of each $\phi_i$. The compactness of $\Xx$
 ensures that the functions  are square integrable and uniformly bounded.
-\autoref{lemma:lln} ensures that there exists $A$ (that depends only on $\beta$)
-such that
+\autoref{lemma:lln} ensures that there exists $S(g^\star_0)$ such that
 \begin{equation}
-    E_n \leq \frac{A}{\sqrt{n}}.
+    E_n \leq \frac{S(g^\star_0)}{\sqrt{n}}.
 \end{equation}
 We now bound $\EE_{\hat \beta_n} {|| \epsilon_{\hat \beta_n} ||}_\var$ using the
- quantity $E_n$. First, we observe that there exists $g^\star_{\min},
- g^\star_{\max}, C_{\max} \in \RR$ such that $g^\star_{\min} \leq g^\star \leq
- g^\star_{\max}$ on $\Xx$ and $C(x, y) \leq C_{\max}$ for all $x, y \in \Xx$, thanks to the
- \autoref{ass:lip}. Therefore
+ quantity $E_n$. First, we observe that $\Vert_{\var} = g^\star_{\min} < g^\star
+ < 0$, and there exists $C_{\max} > 0$ such that $0 \leq C(x, y) \leq C_{\max}$
+ for all $x, y \in \Xx$, thanks to the \autoref{ass:lip}.
  \begin{align}
-    \delta \triangleq 
-    \exp(g^\star_{\min} - C_{\max}) &\leq \exp(-T_\beta(g^\star)) \leq \exp(g^\star_{\max}) \\
-    \delta &\leq \exp(-T_{\hat \beta_n} 
-    (g^\star)) \leq \exp(g^\star_{\max}).
+    \delta \triangleq \exp(-\Vert g^\star \Vert_{\var}
+     - C_{\max}) &\leq \exp(-T_\beta(g^\star)) \leq 1 \\
+    \exp(-\Vert g^\star \Vert_{\var}
+     - C_{\max}) &\leq \exp(-T_{\hat \beta_n} 
+    (g^\star)) \leq 1,
 \end{align}
+where we have used $g^\star = \Vert g^\star \Vert_{\var}$.
 For all $x \in \Xx$, 
-\begin{equation}
-    | \epsilon_{\hat \beta_n}(x) | = 
-    | \log \frac{\exp(-T_{\beta_n}(g^\star))(x)}{\exp(-T_\beta(g^\star))(x)} |,
+\begin{equation}\label{eq:expression}
+    | \epsilon_{\hat \beta_n} | = 
+    | \log \frac{\exp(-T_{\hat \beta_n}(g^\star))}{\exp(-T_\beta(g^\star))} | =
+    \Big| \log\big(1 + 
+    \frac{\exp(-\Ctrans{g^\star}{\hat \beta_n})
+    -\exp(-\Ctrans{g^\star}{\beta})
+    }
+    {\exp(-\Ctrans{g^\star}{\beta})}\big) \Big|.
 \end{equation}
-so that
+We first obtain an upper-bound independent of $n$ with the first equality in
+ \eqref{eq:expression}:
 \begin{equation}\label{eq:const_ineq}
     {|| \varepsilon_{\hat \beta_n} ||}_{\var} \leq {|| \varepsilon_{\hat \beta_n} ||}_{\infty} \leq 
     {\Vert g^\star \Vert}_{\var} + C_{\max}.
 \end{equation}
- Then, we note that, for $n$ large enough, $E_n < \delta$, and for all $x \in \Xx$, 
-\begin{align}\label{eq:log_ineq}
-    {|| \varepsilon_{\hat \beta_n} ||}_{\var} \leq | \epsilon_{\hat \beta_n}(x) |
-    &= | \log(1 + 
-    \frac{\exp(-\Ctrans{g^\star}{\beta})
-    - \exp(-\Ctrans{g^\star}{\hat \beta_n})}{\exp(-\Ctrans{g^\star}{\beta}})(x) | \\
-    &\leq \max ( \log(1 + \frac{E_n}{\delta}),
-     - \log(1 - \frac{E_n}{\delta}) ) \\ 
-    &= - \log(1 - D_n),
-\end{align}
-where we have set $D_n \triangleq \frac{E_n}{\delta}$. On the event $\{D_n \leq
-\frac{1}{2}\}$, a simple calculation gives $- \log(1 - D_n) \leq (2 \log 2)
-D_n$. Thanks to Markov inequality, $\PP[D_n > \frac{1}{2}] \leq 2 \EE[D_n]$.
-
-We then split the expectation over the previous event, and use inequalities \eqref{eq:log_ineq} and \eqref{eq:const_ineq}
-on each conditional expectation:
+ We now use the second expression in \eqref{eq:expression}: for $n$ large enough, $E_n < \delta$
+\begin{equation}\label{eq:log_ineq}
+    {|| \varepsilon_{\hat \beta_n} ||}_{\var} \leq \max ( \log(1 + \frac{E_n}{\delta}),
+     - \log(1 - \frac{E_n}{\delta}) ) = 
+    - \log(1 - \tilde E_n),
+\end{equation}
+where we have set $\tilde E_n \triangleq \frac{E_n}{\delta}$. On the event
+$\Omega_n = \{\tilde E_n \leq \frac{1}{2}\}$, a simple calculation gives $- \log(1
+- \tilde E_n) \leq (2 \log 2) \tilde E_n \leq 2 \tilde E_n$. Thanks to Markov inequality,
+$\PP[\tilde E_n > \frac{1}{2}] \leq 2 \EE[\tilde E_n]$. We then split the
+expectation over the event $\Omega_n$, and use inequalities \eqref{eq:log_ineq}
+and \eqref{eq:const_ineq} on each conditional expectation:
 \begin{align}\label{eq:vdv}
-    \EE {|| \varepsilon_{\hat \beta_n} ||}_{\var}  &= \PP\left[D_n \leq \frac{1}{2}\right] 
+    \EE {|| \varepsilon_{\hat \beta_n} ||}_{\var}  &= \PP\left[\tilde E_n \leq \frac{1}{2}\right] 
     \EE \left[ {|| \varepsilon_{\hat \beta_n} ||}_{\var}
-    \Big| D_n \leq \frac{1}{2}\right] 
+    \Big| \tilde E_n \leq \frac{1}{2}\right] 
     \\
     &\phantom{=}
-    + \PP\left[D_n > \frac{1}{2}\right]      \EE \left[ {|| \varepsilon_{\hat \beta_n} ||}_{\var}
-    \Big| D_n > \frac{1}{2}\right] \\
-    &\leq (\frac{2 \log 2}{\delta} + 2 {\Vert g^\star \Vert}_{\var} + C_{\max}) \EE[E_n] \leq \frac{C'}{\sqrt{n}},
+    + \PP\left[\tilde E_n > \frac{1}{2}\right]      \EE \left[ {|| \varepsilon_{\hat \beta_n} ||}_{\var}
+    \Big| \tilde E_n > \frac{1}{2}\right] \\
+    &\leq \frac{2 \phi({\Vert g^\star \Vert}_{\var} + C_{\max}) 
+    S(g^\star_0)}{\sqrt{n}} \triangleq \frac{A(g^\star)}{\sqrt{n}}
 \end{align}
-where $A'$ is a constant depending on $\alpha, \beta$ and $C$. A similar results
-holds for $\EE_{\hat \alpha_n} {\Vert \iota_{\hat \alpha_n} \Vert}_{\var}$.
-Therefore, there exists $A'' > 0$ such that $r_\infty \leq \frac{A''}{\sqrt{n}}$.
-As for all $t >0$, $e_t \leq r_t \to_{t \to \infty} r_\infty$, the proposition follows.
+where $\phi: x \to e^x +x$. $S$ and therefore $A$ depends on the ``complexity'' of estimating
+the functional $x \to \int_y \exp(g^\star(y) - C(x,y)) \d \beta(y)$ with samples from $\beta$.
+A parallel
+result holds for $\EE_{\hat \alpha_n} {\Vert \iota_{\hat \alpha_n}
+\Vert}_{\var}$. There exists $A(f^\star), A(g^\star) > 0$ such that $r_\infty \leq
+\frac{A(f^\star) + A(g^\star)}{\sqrt{n}}$. As for all $t >0$, $e_t \leq r_t \to_{t \to \infty}
+r_\infty$, the proposition follows.
 
 Note that we have used twice a corollary of the law of large numbers: once when
 averaging over $t$ with $t \to \infty$ (Eq. \eqref{eq:r_infty}), and once when
@@ -302,33 +311,34 @@ From Eq. \eqref{eq:ineq_var}, for all $t > 0$, we have
 \begin{equation}\label{eq:Et_rec}
     0 \leq e_{t+1} \leq 
     (1 - \tilde \eta_t) e_t
-    + \frac{\tilde \eta_t}{1 - \kappa}
+    + \eta_t
     ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}).
 \end{equation}
 Taking the expectation and using the uniform law of 
-large number \eqref{eq:vdv}, there exists $A, A' > 0$ such that
+large number \eqref{eq:vdv}, writing $A = A(f^\star) + A(g^\star)$,
 \begin{align}\label{eq:recursion}
-    \EE e_{t+1} &\leq (1 - \tilde \eta_t) \EE e_t + \tilde \eta_t \frac{A}{(1 - \kappa) \sqrt{n(t)}} \\
-    &\leq (1 - \tilde \eta_t) \EE e_t + A' \tilde \eta_t w_t,
+    \EE e_{t+1} &\leq (1 - (1 - \kappa) \eta_t) \EE e_t + 
+    \eta_t \frac{A}{\sqrt{n(t)}} \\
+    &= (1 - (1 - \kappa) \eta_t) \EE e_t + 
+    A \eta_t w_t,
 \end{align}
 where we have used the definition of $n(t)$ from \autoref{ass:double_weights} in the last line.
 
 The proof follows from a simple asymptotic analysis of the sequence ${(\EE e_t)}_t$, following recursion \eqref{eq:recursion}.
 For all $t > 0$, 
 \begin{equation}\label{eq:Et_rec2}
-    \EE e_{t+1} - \EE e_t = - \tilde \eta_t \EE e_t + A' \tilde \eta_t w_t \leq A' \tilde \eta_t w_t
+    \EE e_{t+1} - \EE e_t = - (1 - \kappa) \eta_t \EE e_t + A \eta_t w_t
+     \leq A \eta_t w_t
 \end{equation}
 Therefore, from \autoref{ass:double_weights}, ${(\EE e_{t+1} - \EE e_t)}_t$ is
 summable and $\EE e_t \to_{t \to \infty} \ell \geq 0$. Let's assume $\ell > 0$.
 Summing \eqref{eq:Et_rec2} over $t$, we obtain
 \begin{equation}
-    \EE e_t \leq \EE e_1 - \sum_{s=1}^{t-1} \tilde \eta_s \EE_s 
-    + A' \sum_{s=1}^{t-1} \tilde \eta_s w_s \to_{t \to \infty} - \infty,
+    \EE e_t \leq \EE e_1 - (1 - \kappa) \sum_{s=1}^{t-1} \eta_s \EE_s 
+    + A \sum_{s=1}^{t-1} \eta_s w_s \to_{t \to \infty} - \infty,
 \end{equation}
-which leads to a contradiction. Therefore $\EE e_t \to_{t \to \infty} 0$. 
-
-As
+which leads to a contradiction. Therefore $\EE e_t \to_{t \to \infty} 0$. As
 $e_t \geq 0$ for all $t > 0$, this implies that $e_t \to_{t \to \infty} 0$
 almost surely.
 \end{proof}
