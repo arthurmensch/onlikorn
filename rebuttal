@@ -1,0 +1,114 @@
+We thank the reviewers for their thorough reviews and detailed remarks. We
+provide answers to some of their major concerns. All comments will be addressed
+in the final version.
+
+R1
+--
+
+We thank the reviewer for his enthusiasm. OT between continuous distributions is
+indeed a challenging task and we believe that our work provides an original take
+on the problem.
+
+- " Non-asymptotic rates are not provided in this paper."
+
+This was indeed a limitation of our results. We have since obtained sample
+complexities on potentials. Those may be O(1/n_t^b) with b chosen <1 and n_t the
+number of observed samples. This requires appropriate selection of step-sizes
+and batch-sizes (that should be slowly increasing). The constants are
+proportional to exp(1/epsilon) -- with an expected divergent behavior for
+epsilon -> 0, which makes the upper-bounds usable only for reasonable epsilon.
+We will add this refined result to Section 5.
+
+R4
+--
+
+We thank R4 for his in-depth review.
+
+- "Although the proofs are non-trivial, the techniques are standard and the
+results somehow expected."
+
+The convergence results are indeed reminiscent of results on online EM, and of
+stochastic approximation techniques in general. Yet they are not corollary of
+such results, as the Sinkhorn algorithm cannot be interpreted as a gradient
+descent nor an EM algorithm. 
+
+A major difficulty comes from the non-Hilbertian nature of optimal
+transport. This presents the usage of Hilbert spaces' properties, that are
+central in the proofs of convergence of SGD, online EM, and other related
+algorithms. We therefore use a non-Hilbertian functional norm (||.||_var) to
+control convergence. We will clarify how this is challenging.
+
+As described in R1 answer, we have since derived convergence rates w.r.t to the
+number of observed samples.
+
+- Prop. 1 should read t+1 on the left.
+
+- "Noise free" refers to the "oracle" algorithm where the C-transform is
+performed over the whole distribution alpha or beta (which is impossible to do
+in general). Our point is to show how Sinkhorn iterations can be slowed
+down. This will be clarified.
+
+- Out-of-loop averaging is inspired by Polyak-Ruppert averaging for SGD/mirror
+descent. It is beneficial in practice, but its analysis is challenging in the
+non-convex mirror descent setting we identify. We will provide better
+references.
+
+- "Variance reduction"
+
+Introducing a decreasing step-size is indeed a way to progressively reduce the
+variance of a single algorithm iteration. We will better explain the role of the
+step-size and of the batch-size in reducing the variance introduced by the
+random C-transform.
+
+- "Memory compression"
+
+This section will be removed and left for future work.
+
+- "x-axis Fig 1 and 2"
+
+* The x-axis counts the number of multiplications performed by the algorithm,
+which is proportional to computation time with an efficient implementation.
+* The curves of random Sinkhorn were interrupted too early (they do not diverge).
+These curves will be updated to cover the whole x-axis.
+
+R4-R5
+-----
+
+- R4: "Nonetheless, I encourage the authors to provide even more compelling
+results, perhaps going beyond toy examples?"
+
+- R5: "The major concern here is that the experimental results are performeded
+using only 1-D distributions."
+
+Both reviewers are much right on this aspect. These experiments were only missing
+due to time constraints. We have since validated the use of online Sinkhorn on
+3D shapes from Stanford and multi-dimensional GMM. In particular:
+
+* online Sinkhorn provides speed up during the first pass over the data (the
+"warm-start" effect), and is therefore faster for a given precision. Precisely,
+for a dataset of 10^4 samples, a relative precision of 10^2 in the distance
+estimation, the speed up is with 10% sampling, with 1% sampling.
+
+* it allows consistent estimation of transportation plans as in 1D. We will illustrate
+this for 2D distributions in a figure complementary to Fig 3.
+
+R5
+--
+
+-  "Line 225: [...]The logic of this sentence is strange."
+
+This sentence was unclear. At iteration t, we have observed 2 n_t samples, and
+have used these to construct the potentials (f_t, g_t), hence the memory requirement.
+This memory cost goes to infinity asymptotically, which is unavoidable to ensure
+a consistent estimation of the Sinkhorn potentials. Indeed, those do not admit a
+parametric (i.e. finite-memory) representation for general measures alpha and beta. In
+practice, we interrupt the algorithm after a finite number of steps. We will
+clarify.
+
+- Specifically, although p_i and q_i are not parametric in general, is it possible to parametrize them for certain cases?
+
+We can expect that for some regular distributions, the optimal potentials may be
+well approximated with parametric functions. We have proposed in Section 4 to
+use finite-memory representations using k-means, but haven't explored it
+empirically. Another approach would be to use neural-network representations as
+Seguy et al. 2017, yet this comes will no guarantees.
