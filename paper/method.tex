@@ -98,52 +98,51 @@ roots of vector-valued functions:
     e^{-\hat f_{t+1}} = (1 - \eta_t) e^{-\hat f_{t}} + 
     \eta_t e^{-\Ctrans{\hat g_t}{\hat \beta_t}}
 \end{equation}
-Through these updates, $\hat f_t$ and $\hat g_t$ remains continuous log-mixtures
-of kernel functions. They are materialized in-memory using some weights ${(p_i,
-q_i)}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i \leq n_t} \subset~\Xx$, as
+Each update brings new kernel functions into a non-parametric construction of
+$\hat u_t$ and $\hat v_t$. These potentials are defined by weights ${(p_{i,t},
+q_{i,t})}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i \leq n_t} \subset~\Xx$:
 \begin{align}\label{eq:param}
-    \hat f_t(\cdot) = - \log \sum_{i=1}^{n_t} 
-    \exp(q_i - C(\cdot, y_i)),\quad
-    \hat g_t(\cdot) = - \log \sum_{i=1}^{n_t}
-    \exp(p_i - C(x_i, \cdot)).
+    e^{-\hat f_t(\cdot)} \triangleq \hat u_t(\cdot) = \sum_{i=1}^{n_t} 
+    \exp(q_{i,t} - C(\cdot, y_i)),\quad
+    e^{-\hat g_t(\cdot)} \triangleq \hat v_t(\cdot) = \sum_{i=1}^{n_t}
+    \exp(p_{i,t} - C(x_i, \cdot)).
 \end{align}
-The SA updates \eqref{eq:updates} yields simple updates for the weights
+The SA updates \eqref{eq:updates} yields simple vectorized updates for the weights
 ${(p_i,q_i)}_i$, leading to \autoref{alg:online_sinkhorn}. We perform
 the updates for $q_i$ and $p_i$ in log-space, for numerical stability reasons.
 
 \paragraph{Complexity.}
 
 Each iteration has complexity $\Oo(n_t\,n)$, due to the evaluation of the
-distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$ and $(y_i)_{(n_t, n_{t+1}]}$, and
-to the computation of the soft $C$-transforms. Online Sinkhorn computes a
-distance matrix $(C(x_i,y_j))_{i,j \leq n_t}$ on the fly, parallel to updating
-the potentials~$\hat f_t$ and~$\hat g_t$. In total, its computation cost after drawing
-$n_t$ samples is $\Oo(n_t^2)$, and its memory cost is $\Oo(n_t)$.
+distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$ and $(y_i)_{(n_t, n_{t+1}]}$,
+and the soft $C$-transforms in \eqref{eq:param}. Online Sinkhorn computes a distance matrix
+$(C(x_i,y_j))_{i,j \leq n_t}$ on the fly, parallel to updating~$\hat f_t$
+and~$\hat g_t$. In total, its computation cost after drawing $n_t$ samples is
+$\Oo(n_t^2)$. Its memory cost is $\Oo(n_t)$ and increases with iterations.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
     \State \textbf{Input:} Distribution $\alpha$ and $\beta$, learning weights ${(\eta_t)}_t$. 
     \textbf{Set} $p_i = q_i = 0$ for $i \in (0, n_t]$
     \For{$t= 0, \dots, {T-1}$}
-        \For{$i \in (0, n_t]$}
-        \State $q_i \gets q_i + \log(1 - \eta_t)$, $p_i \gets p_i + \log(1 - \eta_t)$,
-        \EndFor
         \State Sample $(x_i)_{(n_t, n_{t+1}]} \sim \alpha$, $(y_j)_{(n_t, n_{t+1}]} \sim \beta$.
-        \For{$i \in (n_t, n_{t+1}]$}
-            \State $q_i {\gets} 
-            \log(\eta_t n_t) {-} \log 
-            \sum_{j=1}^{n_t} \exp(p_j {-} C(x_j, y_i))$,\: $p_i {\gets} 
-            \log(\eta_t n_t) {-} \log 
-            \sum_{j=1}^{n_t} \exp(q_j {-} C(x_i, y_j))$
-        \EndFor
-        \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (n_{t+1})$ \quad
-         $p_i = f_t(x_i) - \log (n_{t+1})$
-        \State Save $(q_i, p_i, x_i, y_i)_{(n_t,n_{t+1}]}$
+            \State Evaluate $(\hat f_t(x_i))_{i=(n_t, n_{t+1}]}$,
+             $(\hat g_t(y_i))_{i=(n_t, n_{t+1}]}$ using $(q_{i,t}, p_{i,t}, x_i, y_i)_{i=(0,n_{t}]}$ in \eqref{eq:param}.
+             \State $q_{(n_t, n_{t+1}],t+1} {\gets} \log \frac{\eta_t}{n}
+             + (\hat g_t(y_i))_{(n_t, n_{t+1}]}$,
+             \qquad $p_{(n_t, n_{t+1}],t+1} {\gets} \log \frac{\eta_t}{n} 
+             + (\hat f_t(x_i))_{(n_t, n_{t+1}]}$.
+            \State $q_{(0, n_t],t+1} \gets q_{(0, n_t],t} + \log(1 - \eta_t)$, \qquad
+            $p_{(0, n_t],t+1} \gets p_{(0, n_t],t} + \log(1 - \eta_t)$.
+        % \State Persists $\hat f_{t+1} : (q_{i,t+1}, y_i)_{(0, n_{t+1}]}$ and
+        % $\hat g_{t+1} : (p_{i,t+1}, x_i)_{(0, n_{t+1}]}$
+        % \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (n_{t+1})$ \quad
+        %  $p_i = f_t(x_i) - \log (n_{t+1})$
     \EndFor
-    \State \textbf{Returns:} $f_T : (q_i, y_i)_{(0, n_T]}$ and
-    $g_T : (p_i, x_i)_{(0, n_T]}$
+    \State \textbf{Returns:} $\hat f_T : (q_{i,T}, y_i)_{(0, n_T]}$ and
+    $\hat g_T : (p_{i,T}, x_i)_{(0, n_T]}$
     \end{algorithmic}
-    \caption{Online Sinkhorn potentials}\label{alg:online_sinkhorn}
+    \caption{Online Sinkhorn}\label{alg:online_sinkhorn}
 \end{algorithm}
 
 
@@ -151,9 +150,9 @@ $n_t$ samples is $\Oo(n_t^2)$, and its memory cost is $\Oo(n_t)$.
 \subsection{Refinements}
 \paragraph{Estimating Sinkhorn distance.} 
 
-The iterations \eqref{eq:updates} only estimate potential functions up to a
+As we will see in \autoref{sec:analysis}, the iterations \eqref{eq:updates} only estimate potential functions up to a
 constant. This is sufficient for minimizing a loss function involving a Sinkhorn
-distance (e.g.for model training or barycenter estimation \citep{staib2017parallel}), as backpropagating through the Sinkhorn distance
+distance (e.g. for model training or barycenter estimation \citep{staib2017parallel}), as backpropagating through the Sinkhorn distance
 relies only on the gradients of the potentials $\nabla_x f^\star(\cdot)$,
 $\nabla_y g^\star(\cdot)$ \citep[e.g.][]{cuturi2018semidual}. With extra
 $\Oo(n_t^2)$ operations, $(\hat f_t, \hat g_t)$ may be used to
@@ -168,11 +167,11 @@ and $\bar \beta_t$ are formed of all previously observed samples.
 \paragraph{Out-of-loop averaging.} To reduce the estimation variance,
 we may compute averages of potentials
 \begin{equation}
-    \bar u_{t+1}, \bar v_{t+1} = (1 - \gamma_t) (\bar u_t, \bar v_t) + \gamma_t (\hat u_t, \hat v_t)
+    (\bar u_{t+1}, \bar v_{t+1}) = (1 - \gamma_t) (\bar u_t, \bar v_t) + \gamma_t (\hat u_t, \hat v_t),
 \end{equation}
-We show in \autoref{sec:exp1} that
+which amounts to update some weights $(\bar p_t, \bar q_t)$. We show in \autoref{sec:exp1} that
 this averaging is efficient in practice.  With $\gamma_t = 1/t$, this
-is similar to Polyak-Rupert averaging for stochastic approximation.
+is similar to Polyak-Ruppert  averaging \cite{ruppert1988efficient} for stochastic approximation.
 
 
 %%%%%
@@ -180,13 +179,13 @@ is similar to Polyak-Rupert averaging for stochastic approximation.
 
 The potentials $\hat f_t$ and $\hat g_t$ may be improved by refitting the
 weights $(p_i)_{(0, n_t]}$, $(q_j)_{(0, n_t]}$ based on all previously seen
-samples.  For this, we update $\hat f_{t+1} = \Ctrans{g_t}{\bar \beta_t}$ and
+samples and on the persisted distance matrix.  For this, we update $\hat f_{t+1} = \Ctrans{g_t}{\bar \beta_t}$ and
 $\hat g_{t+1} = \Ctrans{f_t}{\bar \alpha_t}$. This reweighted scheme (akin to
 the fully-corrective Frank-Wolfe scheme from \cite{lacoste2015global}) has a
-cost of $\Oo(n_t^2)$ per iteration, and requires to keep in memory or recompute
+cost of $\Oo(n_t^2)$ per iteration. It requires to keep in memory
 the whole distance matrix. In practice, it can be used every $k$ iterations,
-with $k$ increasing with $t$. We study a combination of partial and full updates
-in \autoref{sec:accelerating}.
+with $k$ increasing with $t$. Combining partial and full updates
+can accelerate Sinkhorn distance estimation (\autoref{sec:accelerating}).
 
 
 %%%%%
@@ -212,7 +211,7 @@ in \autoref{sec:accelerating}.
 
 
 \paragraph{Finite samples.}Finally, we note that our algorithm
-applies on both continuous or discrete distributions. When $\alpha$ and $\beta$
+can handle both continuous or discrete distributions. When $\alpha$ and $\beta$
 are discrete distributions of size $N$, we can store $p$ and $q$ as fixed-size
 vectors of size~$N$, and update at each iterations a set of coordinates of size $n < N$. The resulting
 algorithm is a \textit{subsampled} Sinkhorn algorithm for histograms, which is
