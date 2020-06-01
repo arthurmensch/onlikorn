@@ -75,8 +75,8 @@ The proof is reported in \autoref{sec:proof_convergence_approx}. It is unfortuna
 to ensure the convergence of online Sinkhorn with constant batch-size. This is a
 fundamental difference with other SA algorithms, e.g. SGD on strongly convex
 objectives (see \cite{moulines_non-asymptotic_2011}). This stems from the fact
-that the norm $\Vert \cdot \Vert_{\var}$ for which $I - \Ff$ is contracting is
-non-Hilbertian. The non-explicit constant $A$ depends on $L$, the diameter of $\Xx$, and the measures $\alpha$ and
+that the metric for which $\text{Id} - \Ff$ is contracting is
+not a Hilbert norm. The non-explicit constant $A$ depends on $L$, the diameter of $\Xx$, and the measures $\alpha$ and
 $\beta$. In particular, it behaves as $\exp(-\frac{1}{\varepsilon})$ when the
 regularization $\varepsilon \to 0$.
 % 
