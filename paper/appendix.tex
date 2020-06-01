@@ -49,7 +49,7 @@ Finally, we need a result on running averages using the sequence ${(\eta_t)}_t$.
     Then $\bar X_t \to_{t \to \infty} \EE[X_0]$.
 \end{lemma}
 
-\subsection{Proof of \autoref{prop:markov}}
+\subsection{Proof of \autoref{prop:markov}}\label{sec:proof_markov}
 
 \begin{proof}
     We use Theorem 1 from \citet{diaconis_iterated}. For this, we simply note
@@ -88,7 +88,29 @@ Finally, we need a result on running averages using the sequence ${(\eta_t)}_t$.
     $(F_\infty, G_\infty)$.
 \end{proof}
 
-\subsection{Proof of \autoref{eq:deterministic}}
+\subsection{Proof of \autoref{prop:convergence_approx}}\label{sec:proof_convergence_approx}
+
+
+For presentation purpose, we first show that the ``slowed-down'' online Sinkhorn algorithm converges in the absence of noise. We then turn to prove \autoref{prop:convergence_approx}.
+
+\subsubsection{Noise-free online Sinkhorn}
+
+\begin{proposition}\label{eq:deterministic}
+    We suppose that $\hat \alpha_t = \alpha$, $\hat \beta_t = \beta$ for all
+    $t$. Then the updates \eqref{eq:updates} yields a (deterministic) sequence $(f_t, g_t)_t$ such
+    that 
+    \begin{equation}
+        \Vert \hat f_t - f^\star \Vert_{\text{var}} 
+        + \Vert \hat g_t - g^\star \Vert_{\text{var}} \to 0,\qquad
+        \frac{1}{2} \dotp{\alpha}{f_t + \Ctrans{\hat g_t}{\alpha}} + \dotp{\beta}{\hat g_t + \Ctrans{f_t}{\beta}} 
+         \to \Ww(\alpha, \beta).
+    \end{equation}
+\end{proposition}
+Note that, as we perform \textit{simultaneous} updates, we only obtain
+the convergence of $f_t \to f^\star + A$, and $g_t \to g^\star$, where $f^\star$
+and $g^\star$ are solutions of \eqref{eq:wass} and $A$ is a constant depending
+on initialization.
+%%%
 
 The \enquote{slowed-down} Sinkhorn iterations converge toward an optimal
 potential couple, up to a constant factor: this stems from the fact that we
@@ -138,9 +160,8 @@ contraction factor that decreases sufficiently slowly.
     provided that $\sum \eta_t = \infty$. The proposition follows.
 \end{proof}
 
-\subsection{Proof of \autoref{prop:convergence_bis}}
 
-\begin{proof}
+\begin{proof}[Proof of \autoref{prop:convergence_approx}]
 For discrete realizations $\hat \alpha$ and $\hat \beta$, we define the perturbation terms
 \begin{equation}
     \epsilon_{\hat \beta}(\cdot) \triangleq
@@ -283,13 +304,17 @@ and \eqref{eq:const_ineq} on each conditional expectation:
     &\leq \frac{2 \phi({\Vert g^\star \Vert}_{\var} + C_{\max}) 
     S(g^\star_0)}{\sqrt{n}} \triangleq \frac{A(g^\star)}{\sqrt{n}}
 \end{align}
-where $\phi: x \to e^x +x$. $S$ and therefore $A$ depends on the ``complexity'' of estimating
+where $\phi: x \to e^x +x$. The constants $S$ and therefore $A$ depends on the complexity of estimating
 the functional $x \to \int_y \exp(g^\star(y) - C(x,y)) \d \beta(y)$ with samples from $\beta$.
 A parallel
 result holds for $\EE_{\hat \alpha_n} {\Vert \iota_{\hat \alpha_n}
 \Vert}_{\var}$. There exists $A(f^\star), A(g^\star) > 0$ such that $r_\infty \leq
 \frac{A(f^\star) + A(g^\star)}{\sqrt{n}}$. As for all $t >0$, $e_t \leq r_t \to_{t \to \infty}
-r_\infty$, the proposition follows.
+r_\infty$, the proposition follows,  writing $A = A(f^\star) + A(g^\star)$.
+
+The constant $A$ is in therefore in $\Omega(\exp(C_{\max}))$ when $C_{\max} \to
+\infty$, and hence in $\Omega(\exp(\frac{1}{\varepsilon}))$ when~$\varepsilon
+\to 0$.
 
 Note that we have used twice a corollary of the law of large numbers: once when
 averaging over $t$ with $t \to \infty$ (Eq. \eqref{eq:r_infty}), and once when
@@ -298,7 +323,7 @@ averaging over $n$ with $n$ finite (Eq. \eqref{eq:vdv}).
 
 \subsection{Proof of \autoref{prop:convergence_true}}\label{sec:proof_prop_convergence}
 
-In the proof of \autoref{prop:convergence_bis} and in particular Eq. \eqref{eq:ineq_var}, the term that prevents the convergence of $e_t$ is the term
+In the proof of \autoref{prop:convergence_approx} and in particular Eq. \eqref{eq:ineq_var}, the term that prevents the convergence of $e_t$ is
 \begin{equation}
     \eta_t ({\Vert \epsilon_{\hat \beta_t} \Vert}_{\var} + 
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}),
@@ -316,7 +341,7 @@ From Eq. \eqref{eq:ineq_var}, for all $t > 0$, we have
     {\Vert \iota_{\hat \alpha_t} \Vert}_{\var}).
 \end{equation}
 Taking the expectation and using the uniform law of 
-large number \eqref{eq:vdv}, writing $A = A(f^\star) + A(g^\star)$,
+large number \eqref{eq:vdv},
 \begin{align}\label{eq:recursion}
     \EE e_{t+1} &\leq (1 - (1 - \kappa) \eta_t) \EE e_t + 
     \eta_t \frac{A}{\sqrt{n(t)}} \\
@@ -344,18 +369,18 @@ almost surely.
 \end{proof}
 
 
-% XXX: remove before upload to arXiv
-\subsection{Sample complexity rates for online Sinkhorn}
+\subsection{Proof of \autoref{prop:rate}}\label{app:proof_rate}
 
+\begin{proof}
 The proof of \autoref{prop:convergence_true} allows us to derive non-asymptotic rates for potential estimations using the online Sinkhorn algorithm. Let us set $\eta_t = \frac{S}{t^a}$, $n(t) = \lceil B t^{2b} \rceil$ in \eqref{eq:Et_rec}, so that \autoref{ass:double_weights} is met.
 $\lceil \cdot \rceil$ denotes the ceiling function.
-We are left to study the recursion
+We are left to study the recursion \eqref{eq:recursion}:
 \begin{equation}
     \delta_{t+1} \triangleq \EE e_{t+1} \leq (1 - \frac{S(1 - \kappa)}{t^a}) \delta_t + 
     \frac{A S}{\sqrt{B}{t^{a + b}}}
 \end{equation}
 
-Mimicking the analysis of \citet[Theorem 2]{moulines_non-asymptotic_2011}, we have the following
+Following the derivations of \citet[Theorem 2]{moulines_non-asymptotic_2011}, we have the following
 bias-variance decomposed upper-bound,
 provided that $0 \leq a < 1$ and $a+ b > 1$. For all $t > 0$,
 % \begin{equation}
@@ -370,24 +395,24 @@ provided that $0 \leq a < 1$ and $a+ b > 1$. For all $t > 0$,
     \exp(- \frac{S(1 - \kappa)}{2} t^{1 - a})
     + \frac{2 A S}{\sqrt{B}(1 - \kappa) t^a}.
 \end{equation}
-Let us now relate the iteration number $t$ to the number of seen sample $n(t)$. By definition
+Let us now relate the iteration number $t$ to the number of seen sample $N$. By definition
 \begin{equation}
     n_t = \sum_{s=1}^t n(s) \leq B \sum_{s=1}^t s^{2b} + t \leq
      t + \frac{(t+1)^{2b + 1} - 1}{2b + 1}
      \leq (2t)^{2b+1}.
 \end{equation}
-Therefore, when we have seen $n$ samples, the iteration number is superior to $t(n)$, and the expected error $\delta_n$ is of the order of $\delta_{t(n)}$, with
+Therefore, when we have seen $N$ samples, the iteration number is superior to $t(N)$, and the expected error $\delta_N$ is of the order of $\delta_{t(N)}$, with
 \begin{equation}\label{eq:tn}
-    t(n) =  {(n/2)}^{\frac{1}{2b + 1}}.
+    t(N) =  {(N/2)}^{\frac{1}{2b + 1}}.
 \end{equation}
-We write $\delta_n = \delta_{t(n)}$. Replacing \eqref{eq:tn} in \eqref{eq:rates}
-\begin{equation}
+We write $\delta_N = \delta_{t(N)}$. Replacing \eqref{eq:tn} in \eqref{eq:rates} yields
+\begin{equation}\label{eq:non-asymptotic}
     \delta_n \leq 
     (\delta_0 + \frac{A S}{(a + b - 1)\sqrt{B}})
     \exp\left(- \frac{S(1 - \kappa)}{2} {(n /2)}^{\frac{1 - a}{2b+1}}\right)
     + \frac{2 A S}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{a}{2b+1}}}.
 \end{equation}
-Notice that $b$ and $a$ should be as close to $0$ as possible to reduce the bias term, while $a$
+We note that $b$ and $a$ should be as close to $0$ as possible to reduce the bias term, while $a$
 should be as close to $1$ and $b$ as close to $0$ as possible to reduce the variance
 term. Of course, $b$ should remain larger than $1 - a$ to ensure convergence.
 
@@ -406,6 +431,7 @@ estimated $f_{t(n)}, g_{t(n)}$ to obtain a estimated solution of the dual
 optimisation problem \eqref{eq:dual}. The Sinkhorn potentials can therefore be
 estimated with \textit{fast rates}. Note that the upper bound explodes when $\varepsilon
 \to 0$, as $C_{\max} \to \infty$, hence $A \to \infty$, and $(1 - \kappa) \to 0$.
+\end{proof}
 
 \paragraph{Estimating the Sinkhorn distance.} The Sinkhorn distance requires to estimate the integral
 \begin{equation}
@@ -426,7 +452,7 @@ refined rate in estimating the potentials.
 \section{Stochastic mirror descent interpretation}
 \label{sec-mirror}
 
-This online Sinkhorn can be understood as a stochastic mirror descent algorithm.
+The online Sinkhorn can be understood as a stochastic mirror descent algorithm.
 %
 This equivalence is obtained by applying a change
 of variable in \eqref{eq:wass}, defining 

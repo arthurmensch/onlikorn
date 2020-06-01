@@ -3,16 +3,11 @@
 
 \section{Convergence analysis}\label{sec:analysis}
 
-We give four convergence results, in increasing order of interest: (i) a stationary distribution
-convergence property for the random Sinkhorn algorithm ; (ii) a global
-convergence property for the online Sinkhorn algorithm without noise ; (iii) an
-approximate convergence property for the online Sinkhorn algorithm with fixed
-batch-size and (iv) an exact global convergence result for online Sinkhorn
-with increasing batch sizes. We provide the proofs in \autoref{sec:proofs}.
-
-We make the following classic assumptions on the cost regularity and
-distribution compactness, which is necessary to obtain a uniform
-soft $C$-transform contractance ratio.
+We show a
+stationary distribution convergence property for the randomized Sinkhorn algorithm,
+ an approximate convergence property for the online Sinkhorn algorithm with
+fixed batch-size and an exact convergence result for online Sinkhorn with
+increasing batch sizes, with asymptotic convergence rates. We make the following classical assumption on the cost regularity and compacity of $\alpha$ and $\beta$.
 
 \begin{assumption}\label{ass:lip}
     The cost $C: \Xx \times \Xx \to \RR$ is $L$-lipschitz, and $\Xx$ is  compact.
@@ -20,12 +15,11 @@ soft $C$-transform contractance ratio.
 
 \subsection{Randomized Sinkhorn}
 
-We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:updates}, which corresponds to
-\autoref{alg:online_sinkhorn} with step-size $\eta_t = 1$.
+We first state a result concerning the randomized Sinkhorn algorithm~\eqref{eq:updates_naive}, proved in \autoref{sec:proof_markov}.
 
 \begin{proposition}\label{prop:markov}
-    Under \autoref{ass:lip}, the randomized Sinkhorn algorithm \eqref{eq:updates} yields a time-homogeneous
-    Markov chain ${(f_t, g_t)}_t$ which is $(\hat \alpha_s, \hat \beta_s)_{s \leq
+    Under \autoref{ass:lip}, the randomized Sinkhorn algorithm \eqref{eq:updates_naive} yields a time-homogeneous
+    Markov chain ${(\hat f_t, \hat g_t)}_t$ which is $(\hat \alpha_s, \hat \beta_s)_{s \leq
     t}$ measurable, and converges in law towards a stationary distribution
     $(f_\infty, g_\infty) \in \Pp(\Cc(\Xx)^2)$ independent of the initialization
     point $(f_0, g_0)$.
@@ -35,54 +29,26 @@ This result follows from \citet{diaconis_iterated} convergence theorem on
 iterated random functions which are contracting on average. We use the
 fact that $\Ctrans{\cdot}{\hat \beta}$ and $\Ctrans{\cdot}{\hat \alpha}$ are
 \textit{uniformly} contracting, independently of the distributions $\hat \alpha$ and
-$\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$.
+$\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$. 
 
-\paragraph{Out-of-loop averages.} Note that using the law of large number for Markov chains
+Using the law of large number for Markov chains
 \citep{breiman_strong_1960}, the out-of-loop average $\exp(-\bar f_t)$
 converges almost surely to $\EE[\exp(-f_\infty)]
  \in \Cc(\Xx)$ for $\gamma_t = 
- \frac{1}{t}$. This expectation verifies the following fixed point equations:
+ \frac{1}{t}$. This expectation verifies the fixed point equations
 \begin{equation}
     \EE[\exp(-f_\infty)] =
-     \dotp{\beta}{\EE[\exp(g_\infty)] \exp(-C)},\qquad
+     \dotp{\beta}{\EE[\exp(g_\infty)] \exp(-C)},\quad
     \EE[\exp(-g_\infty)] =
      \dotp{\alpha}{\EE[\exp(f_\infty)] \exp(-C)}.
 \end{equation}
-These fixed point equations are close to the Sinkhorn fixed point equations, and
+These equations are close to the Sinkhorn fixed point equations, and
 get closer as $\varepsilon$ increases, since $\varepsilon \EE[\exp(\pm f_\infty /
 \varepsilon)] \to \EE[\pm f_\infty]$ as $\varepsilon \to \infty$. Running the random
-Sinkhorn algorithm with out-of-loop averaging fails to provide exactly the dual solution.
-However, it defines an approximate solution of the original problem whose accuracy depends on $\epsilon$. 
+Sinkhorn algorithm with out-of-loop averaging fails to provide exactly the dual solution, but solves an approximate problem.
 %
 % We leave the quantification of this approximation for future work.
 
-%%%
-\subsection{Noise-free online Sinkhorn.}
-
-Variance reduction is therefore necessary, to ensure that the limit stationary
-distribution is deterministic. The following proposition shows that the modified ``slowed-down'' online Sinkhorn algorithm converges in the absence of noise.
-
-\begin{proposition}\label{eq:deterministic}
-    We suppose that $\hat \alpha_t = \alpha$, $\hat \beta_t = \beta$ for all
-    $t$. Then the updates \eqref{eq:updates} yields a (deterministic) sequence $(f_t, g_t)_t$ such
-    that 
-    \begin{equation}
-        \Vert f_t - f^\star \Vert_{\text{var}} 
-        + \Vert g_t - g^\star \Vert_{\text{var}} \to 0,\qquad
-        \frac{1}{2} \dotp{\alpha}{f_t + \Ctrans{g_t}{\alpha}} + \dotp{\beta}{g_t + \Ctrans{f_t}{\beta}} 
-         \to \Ww(\alpha, \beta).
-    \end{equation}
-\end{proposition}
-Note that, due to the fact that we perform simultaneous updates, we only obtain
-the convergence of $f_t \to f^\star + A$, and $g_t \to g^\star$, where $f^\star$
-and $g^\star$ are solutions of \eqref{eq:wass} and $A$ is a constant depending
-on initialization. This is only a small caveat, as we can average the potentials
-and their soft $C$-transform as in \eqref{eq-dist-est} to remove the offset $A$.
-This is not necessary when using the Sinkhorn distance as a loss for training
-purposes, e.g. for generative modeling or barycenter estimation as in
-\citet{staib2017parallel}. Backpropagation through the Sinkhorn distance indeed
-relies only on the gradients of the potentials $\nabla_x f^\star(\cdot)$,
-$\nabla_y g^\star(\cdot)$ \citep[e.g.][]{cuturi2018semidual}.
 %%%
 \subsection{Online Sinkhorn}
 
@@ -93,62 +59,83 @@ We make the following \citet{robbins1951stochastic} assumption on the weight seq
     $\sum \eta_t = \infty$ and $\sum \eta_t^2 < \infty$.
 \end{assumption}
 
-\begin{proposition}\label{prop:convergence_bis}
-    We assume \autoref{ass:lip} and \ref{ass:weights}. The online Sinkhorn algorithm (\autoref{alg:online_sinkhorn}) yields a sequence $(f_t, g_t)$ that reaches a
+\begin{proposition}\label{prop:convergence_approx}
+    Under \autoref{ass:lip} and \ref{ass:weights}, the online Sinkhorn algorithm without full-reweighting (\autoref{alg:online_sinkhorn}) yields a sequence $(f_t, g_t)$ that reaches a
     ball centered around $f^\star, g^\star$ for the variational norm $\Vert
     \cdot \Vert_{\var}$.
-     Namely, there exists $T > 0$, $C > 0$ such that for all $t > T$, almost surely
+     Namely, there exists $T > 0$, $A > 0$ such that for all $t > T$, almost surely
     \begin{equation}
         \Vert f_t - f^\star \Vert_{\var}
         + \Vert g_t - g^\star \Vert_{\var} 
-        \leq \frac{C}{\sqrt{n}} .
+        \leq \frac{A}{\sqrt{n}} .
     \end{equation}
 \end{proposition}
 
-It is not possible to have an exact convergence result in this case because the noise due
-to replacing $\alpha$ and $\beta$ with $\hat \alpha$ and $\hat \beta$ in the
-$C$-transform does not decrease with time. Slowing down the Sinkhorn
-iterations is not enough as we must ensure that $\sum \eta_t = \infty$. On the
-other hand, slowing-down iterations allows us to obtain an approximation in
-$\Oo(\frac{1}{\sqrt{n}}$). This is comparable to the amplitude of the error obtained when
-performing Sinkhorn without resampling, as in~\citep{2019-Genevay-aistats}.  We show in
-the experimental section $(\autoref{sec:exps})$ that online Sinkhorn 
-outperforms the regular Sinkhorn algorithm thanks to its ability to perform a repeated sampling. 
-%
-This suggests that the constants appearing in the bounds of online Sinkhorn are much
-better than the ones appearing in the sample complexity of the regular Sinkhorn
-algorithm.
+The proof is reported in \autoref{sec:proof_convergence_approx}. It is unfortunately not possible
+to ensure the convergence of online Sinkhorn with constant batch-size. This is a
+fundamental difference with other SA algorithms, e.g. SGD on strongly convex
+objectives (see \cite{moulines_non-asymptotic_2011}). This stems from the fact
+that the norm $\Vert \cdot \Vert_{\var}$ for which $I - \Ff$ is contracting is
+non-Hilbertian. The non-explicit constant $A$ depends on $L$, the diameter of $\Xx$, and the measures $\alpha$ and
+$\beta$. In particular, it behaves as $\exp(-\frac{1}{\varepsilon})$ when the
+regularization $\varepsilon \to 0$.
+% 
+% This is comparable to the error obtained when performing Sinkhorn without resampling, as
+% in~\citep{2019-Genevay-aistats}.  We show in experiments
+% $(\autoref{sec:exps})$ that online Sinkhorn outperforms the regular Sinkhorn
+% algorithm thanks to repeated sampling. 
+% %
+% This suggests that the constants appearing in the bounds of online Sinkhorn are
+% better than the ones appearing in the sample complexity of regular Sinkhorn.
 
-Finally, we show the almost sure convergence of the online Sinkhorn algorithm
-with slightly increasing batch-size $n(t)$, as specified in the following
-assumption. We then provide an exact convergence results for Sinkhorn potentials.
+We therefore show the almost sure convergence of the online Sinkhorn algorithm
+with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly), as specified in the following
+assumption.
 
 \begin{assumption}\label{ass:double_weights}
-    For all $t > 0$, the batch-size $n(t) = \frac{n}{w_t^2}$ is an integer. ${(\eta_t)}_t$ is
-    not summable and ${(w_t \eta_t)}_t$ is summable: $\sum w_t \eta_t <
+    For all $t > 0$, the batch-size $n(t) = \frac{n}{w_t^2}$ is an integer. $\sum w_t \eta_t <
     \infty$ and $\sum \eta_t = \infty$.
 \end{assumption}
 
 \begin{proposition}\label{prop:convergence_true}
-    We assume \autoref{ass:lip}, and
-    \ref{ass:double_weights}. Almost surely, the iterates of online Sinkhorn
-    (\autoref{alg:online_sinkhorn}) converge, and we have
+    Under \autoref{ass:lip} and
+    \ref{ass:double_weights}, the online Sinkhorn algorithm converge almost surely:
     \begin{equation}
-        \Vert f_t - f^\star \Vert_{\var} + \Vert g_t - g^\star \Vert_{\var} \to 0.
+        \Vert \hat f_t - f^\star \Vert_{\var} + \Vert \hat g_t - g^\star \Vert_{\var} \to 0.
     \end{equation}
 \end{proposition}
 
-The proof, reported in \autoref{sec:proof_prop_convergence}, relies on a uniform law of large number for functions \citep[][chapter 19]{van_der_vaart_asymptotic_2000} and on the uniform contractance of soft $C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}.
+The proof is reported in \autoref{sec:proof_prop_convergence}. It relies on a uniform
+law of large number for functions \citep[][chapter
+19]{van_der_vaart_asymptotic_2000} and on the uniform contractance of soft
+$C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}. Inspired by derivations in \cite{moulines_non-asymptotic_2011}, we derive in \autoref{app:proof_rate} asymptotic rates of convergence for online Sinkhorn, with
+respect to the number of observed samples $N$. We write $\delta_N = \Vert \hat
+f_{t(N)} - f^\star \Vert_{\var} + \Vert \hat g_{t(N)} - g^\star \Vert_{\var}$,
+where $t(N)$ is the iteration number for which $n_t > N$ samples have been observed.
 
-\paragraph{Choosing batch-sizes.}
+\begin{proposition}\label{prop:rate}
+    For all $\iota \in (0, 1)$, $S > 0$ and $B \in \NN^\star$, setting $\eta_t =
+    \frac{S}{t^{1 - \iota}}$, $n(t) = \lceil B t^{4\iota} \rceil$, there
+    exists~$D > 0$ independant of $N$ and $N_0 > 0$ such that, for all $N >
+    N_0$, $\delta_N \leq \frac{D}{N^{\frac{1 - \iota}{1 + 4 \iota}}}$.
+\end{proposition}
 
-Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
-provided that we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c >
-1$. Slowing down Sinkhorn iterations thus permits to work with batches whose
-size increases more slowly. The limit case when $a = 1$ requires only $b > 0$
-can accommodate batch-sizes growing arbitrarily slowly. 
+Online Sinkhorn thus provides estimators of potentials whose asymptotic sample
+complexity in variational norm is arbitrarily close to $\Oo(\frac{1}{N})$. To
+the best of our knowledge, this is an original property. It also results in a distance estimator $\hat \Ww_N$ whose
+complexity is arbitrarily close to $\Oo(\frac{1}{\sqrt{N}})$, recovering
+existing asymptotic rates from \cite{2019-Genevay-aistats} beyond Wasserstein-2
+distances. We derive non-asymptotic rates in \autoref{sec:proof_prop_convergence} (see \eqref{eq:non-asymptotic}), that explicits the
+bias-variance trade-off when choosing the step-sizes and batch-sizes. They
+unfortunately rely on the non-explicit constant~$A$ from
+\autoref{prop:convergence_approx}. Note that using growing batch-sizes amounts
+to increase the budget of a single iteration over time: the overall
+computational complexity after seeing $N$ samples remain in $\Oo(N^2)$.
 
-Note that using growing batch-size simply tells us that we should increase the
-computational budget of single iterations over time: the overall complexity
-after seeing $n_t$ samples remain in $\Oo(n_t^2)$. We use fixed batch-sizes in
-experiments as those already perform well.
+% \paragraph{Choosing batch-sizes.}
+
+% Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
+% provided that we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c >
+% 1$. Slowing down Sinkhorn iterations thus permits to work with batches whose
+% size increases more slowly. The limit case when $a = 1$ requires only $b > 0$
+% can accommodate batch-sizes growing arbitrarily slowly. 

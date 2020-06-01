@@ -2,20 +2,19 @@
 
 \section{OT distances from sample streams}
 
-We introduce an online adaptation of the Sinkhorn algorithm. We construct an estimator of $f^\star$, $g^\star$
+We now introduce an online adaptation of the Sinkhorn algorithm. We construct functional estimators of $f^\star$, $g^\star$
 and $\Ww(\alpha,\beta)$ using successive sets of samples ${(\hat \alpha_t)}_t$
-and ${(\hat \beta_t)}_t$, where $\hat\alpha_t = \frac{1}{n} \sum_{i=n_t +
-1}^{n_{t+1}} \delta_{x_i}$, and we set  $n_0 = 0$ and $n_{t+1} = n_{t} +
-n$. The size of the mini-batch $n$ may potentially depends on $t$---in
-particular, $n$ must increases slightly to ensure convergence (see
-\autoref{prop:convergence_true}). We write $n = n(t)$ for simplicity.
-% 
+and ${(\hat \beta_t)}_t$, where $\hat\alpha_t \triangleq \frac{1}{n} \sum_{i=n_t +
+1}^{n_{t+1}} \delta_{x_i}$, with  $n_0 \triangleq 0$ and $n_{t+1} \triangleq n_{t} +
+n$. The size of the mini-batch $n$ may potentially depends on $t$.
+% ---in
+% particular, $n$ must increases slightly to ensure exact convergence (see
+% \autoref{prop:convergence_true}).  
 ${(\hat \alpha_t)}_t$ and ${(\hat \beta_t)}_t$ may be
-seen as mini-batches of size $n$ within a training procedure, or as a temporal
-stream of samples.
+seen as mini-batches of size $n$ within a training procedure.
 %
-Our estimator progressively enriches a representation of the
-solution of~\eqref{eq:dual}, that may be arbitrary complex. 
+% Our estimator progressively enriches a representation of the
+% solution of~\eqref{eq:dual}, that may be arbitrary complex. 
 % 
 % We detail an intuitive construction of our algorithm in
 % \autoref{sec-online-sink-iter}, formalize it in \autoref{sec:alg} before casting
@@ -26,89 +25,100 @@ solution of~\eqref{eq:dual}, that may be arbitrary complex.
 \subsection{Online Sinkhorn iterations}
 \label{sec-online-sink-iter}
 
-From \eqref{eq:dual}, along the continuous (and untractable) Sinkhorn
-optimisation trajectory ${(\bar f_t, \bar g_t)}_t$, the exp-potential $\exp(-\bar f_t)$ is an infinite mixture of kernel functions
-$\kappa_y(x) \eqdef \exp(-C(x, y))$:
-\begin{equation*}
-    \exp(-\bar f_t(\cdot)) = 
-    \int_{y \in \Xx} \exp(\bar g_t(y))  \kappa_y  \d \beta(y),
-\end{equation*}
-and similarly for $\bar g_t$. Our algorithm constructs a sequence of non-parametric
-potentials $(f_t, g_t)_t$ that behaves as $(\bar f_t, \bar g_t)$. The strong
-structural property of the continuous potentials suggests to express
-$\exp(-f_t)$ as a finite mixture of kernel functions. That is, $f_t$ and $g_t$
-are continuous functions constructed respectively from the weights ${(p_i,
-q_i)}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i} \subset~\Xx$ as
-\begin{align}\label{eq:param}
-    f_t(\cdot) = - \log \sum_{i=1}^{n_t} 
-    \exp(q_i - C(\cdot, y_i)),\quad
-    g_t(\cdot) = - \log \sum_{i=1}^{n_t}
-    \exp(p_i - C(x_i, \cdot)).
-\end{align}
-%%%%%
+The optimization trajectory ${(f_t, g_t)}_t$ of the continuous Sinkhorn
+algorithm given by \eqref{eq:sinkhorn} is untractable as it cannot be
+represented in memory. The exp-potentials $u_t \triangleq \exp(- f_t)$ and $v_t
+\triangleq \exp(-g_t)$ are indeed infinite mixtures of kernel functions
+$\kappa_y(\cdot) \eqdef \exp(-C(\cdot, y))$ and $\kappa_x(\cdot) \eqdef \exp(-C(x, \cdot))$. 
 
-
-
-
-\paragraph{Randomized Sinkhorn.}
-Provided with fresh samples $(x_i, y_i)_{n_t < i \leq n_{t+1}}$, 
-corresponding to empirical measures $\hat \alpha_t$ and $\hat \beta_t$, a naive approach would 
- update the potentials using a noisy soft $C$-transform:
-\begin{equation}\label{eq:updates_naive}
-     f_{t+1} = \Ctrans{g_t}{\hat \beta_t},
-    \qquad g_{t+1} = \Ctrans{f_{t+1}}{\hat \alpha_t},
+We propose to construct finite-memory consistent estimates of $u_t$ and $v_t$ using
+ideas from stochastic approximation (SA) \cite{robbins1951stochastic}. We cast
+the regularized OT problem as a root-finding problem for a functional-valued
+objective $\Ff: \Cc_{+}(\Xx) \times \Cc_{+}(\Xx) \to \Cc(\Xx) \times \Cc(\Xx)$,
+for which we can obtained unbiased estimates. Optimal potentials are indeed
+exactly the roots of
+% 
+\begin{equation}
+    \Ff: (u, v) \to 
+    \Big(u(\cdot) - \int_{y \in \Xx}
+     \frac{1}{v(y)} \kappa_y(\cdot)  \d \beta(y),\quad
+    v(\cdot) - \int_{x \in \Xx}
+    \frac{1}{u(x)}  \kappa_x(\cdot)  \d \alpha(x)\Big).
 \end{equation}
-which is equivalent to setting all $(q_i)_{i \leq n_t}$ to $0$, and assigning each weight
- $q_i$ to $g_t(y_i) - \log(n)$ for $n_t < i \leq  n_{t+1}$, and similarly for~$p_i$.
+% 
+In particular, the simultaneous Sinkhorn updates rewrites as $(u_{t+1}, v_{t+1}) = (u_{t},
+v_{t}) - \Ff(u_t, v_t)$ for all $t$. Importantly, $\Ff$ can be
+evaluated without bias using two empirical measures $\hat \alpha$ and
+$\hat \beta$, defining
+% 
+\begin{equation}
+    \hat \Ff_{\hat \alpha, \hat \beta}(u, v) \triangleq 
+    \Big(u(\cdot) - \frac{1}{n} \sum_{i=1}^n
+    \frac{1}{v(y_i)} \kappa_{y_i}(\cdot)\quad
+    v(\cdot) - \frac{1}{n} \sum_{i=1}^n
+   \frac{1}{u(x_i)}  \kappa_{x_i}(\cdot) \Big).
+\end{equation}
+By construction, $\EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta} [\hat \Ff_{\hat
+\alpha, \hat \beta}] = \Ff$, and the images of $\hat \Ff$ admit a representation in memory.
+
+
+
+
+\paragraph{Randomized Sinkhorn.}To make use of a stream of samples $(\hat \alpha_t, \hat
+ \beta_t)_t$, we may simply replace $\Ff$ with $\hat \Ff$ in the Sinkhorn updates.
+ This amounts to use noisy soft $C$-transforms in \eqref{eq:sinkhorn}, as we set
+\begin{equation}\label{eq:updates_naive}
+    (u_{t+1}, v_{t+1}) \triangleq (u_{t},
+    v_{t}) - \hat \Ff_{\hat \alpha, \hat \beta}(u_t, v_t),\quad\text{i.e.}\quad
+     \hat f_{t+1} = \Ctrans{\hat g_t}{\hat \beta_t},
+    \qquad \hat g_{t+1} = \Ctrans{\hat f_{t+1}}{\hat \alpha_t}.
+\end{equation}
+% which is equivalent to setting all $(q_i)_{i \leq n_t}$ to $0$, and assigning each weight
+%  $q_i$ to $g_t(y_i) - \log(n)$ for $n_t < i \leq  n_{t+1}$, and similarly for~$p_i$.
 %
-The variance of the updates~\eqref{eq:updates_naive} does not decay through the
-iteration, hence \textit{random Sinkhorn} algorithm does nos converge.
-However, thanks to the contraction of the random operator $\Ctrans{\cdot}{\hat
-\beta_t}$ and $\Ctrans{\cdot}{\hat \alpha_t}$, we show in \autoref{prop:markov} that
-the Markov chain ${(f_t, g_t)}_t$ converges towards a
-stationary distribution independent of initialization.
+$\hat f_t$ and $\hat g_t$ are defined in memory by $(y_i, \hat g_{t-1}(y_i))_i$ and $(x_i,
+\hat f_{t-1}(x_i))_i$. Yet the variance of the updates~\eqref{eq:updates_naive} does not
+decay through time, hence this \textit{randomized Sinkhorn} algorithm does not
+converge. However, we show in
+\autoref{prop:markov} that the Markov chain ${(\hat f_t, \hat g_t)}_t$ converges
+towards a stationary distribution that is independent of the potentials $\hat f_0$ and $\hat g_0$ used for
+initialization.
 
 %%%%%
 \paragraph{Online Sinkhorn.}
 
-To ensure convergence towards the potentials $(f^\star, g^\star)$ (up to a
-constant factor), we must therefore take more cautious steps---in other words,
-we cannot afford to forget past iterates to obtain a consistent estimation of
-potentials. 
-
-
-
-
-We introduce a learning rate in Sinkhorn iterations, that averages
-the past representations and the newly computed noisy $C$-transforms
+To ensure convergence of $\hat f_t$, $\hat g_t$ towards some optimal pair of potentials
+$(f^\star, g^\star)$ (up to a constant factor), we must take more
+cautious steps---we cannot forget past iterates. We introduce a learning
+rate in Sinkhorn iterations, similar to the Robbins-Monro algorithm for finding
+roots of vector-valued functions:
 \begin{equation}\label{eq:updates}
-    \exp(-f_{t+1})
-    \eqdef (1 - \eta_t) \exp(-f_t) 
-    + \eta_t 
-    \exp(-\Ctrans{g_t}{\hat \beta_t}),
+    (\hat u_{t+1}, \hat v_{t+1}) \triangleq (1 - \eta_t) (\hat u_t, \hat v_t) 
+    - \eta_t \hat \Ff_{\hat \alpha_t, \hat \beta_t}(\hat u_t, \hat v_t),\quad\text{i.e.}\quad
+    e^{-\hat f_{t+1}} = (1 - \eta_t) e^{-\hat f_{t}} + 
+    \eta_t e^{-\Ctrans{\hat g_t}{\hat \beta_t}}
 \end{equation}
-and similarly for $g_t$. Performing the averaging over the space of inverse
-scalings $(e^{-\hat f_{t}},e^{-\hat g_{t}})$ yields simple updates for the
-weights ${(p_i,q_i)}_i$, and is crucial for our theoretical convergence
-analysis. In essence, the weights of past samples are reduced by a constant
-factor, while new weights are computed from the evaluation of $f_t(\cdot),
-g_t(\cdot)$ at random new points ${(x_i, y_i)}_i$. Note that we perform
-\textit{simultaneous updates} of $f_t$ and $g_t$, which is important for the
-convergence analysis.
+Through these updates, $\hat f_t$ and $\hat g_t$ remains continuous log-mixtures
+of kernel functions. They are materialized in-memory using some weights ${(p_i,
+q_i)}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i \leq n_t} \subset~\Xx$, as
+\begin{align}\label{eq:param}
+    \hat f_t(\cdot) = - \log \sum_{i=1}^{n_t} 
+    \exp(q_i - C(\cdot, y_i)),\quad
+    \hat g_t(\cdot) = - \log \sum_{i=1}^{n_t}
+    \exp(p_i - C(x_i, \cdot)).
+\end{align}
+The SA updates \eqref{eq:updates} yields simple updates for the weights
+${(p_i,q_i)}_i$, leading to \autoref{alg:online_sinkhorn}. We perform
+the updates for $q_i$ and $p_i$ in log-space, for numerical stability reasons.
 
-%%%%%
-\paragraph{Estimating Sinkhorn distance.} 
+\paragraph{Complexity.}
 
-The iterations \eqref{eq:updates} allow us to estimate potential functions up to a constant. As explained in~\autoref{sec:gradient},
-this estimation is sufficient for most applications aiming at minimizing a Sinkhorn loss, as it only requires the spatial derivatives of the potentials.
-%
-If required, it is however possible to estimate the Sinkhorn distance using our method, by performing a final soft $C$-transform, using $\Oo(n_T^2)$ operations:
-\begin{equation}\label{eq-dist-est}
-    \Ww_t = \frac{1}{2}\Big(\dotp{\bar \alpha_T}{f_T + \Ctrans{g_T}{\bar \alpha_T}}
-     {+} \dotp{\bar \beta_T}{g_T {+} \Ctrans{f_T}{\bar \alpha_T}}\Big),
-\end{equation}
-where $\bar \alpha_t \eqdef \frac{1}{n_{t+1}}\sum_{i=1}^{n_{t+1}} \delta_{x_i}$
-and $\bar \beta_t$ gather previously observed samples.
+Each iteration has complexity $\Oo(n_t\,n)$, due to the evaluation of the
+distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$ and $(y_i)_{(n_t, n_{t+1}]}$, and
+to the computation of the soft $C$-transforms. Online Sinkhorn computes a
+distance matrix $(C(x_i,y_j))_{i,j \leq n_t}$ on the fly, parallel to updating
+the potentials~$\hat f_t$ and~$\hat g_t$. In total, its computation cost after drawing
+$n_t$ samples is $\Oo(n_t^2)$, and its memory cost is $\Oo(n_t)$.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
@@ -122,9 +132,9 @@ and $\bar \beta_t$ gather previously observed samples.
         \For{$i \in (n_t, n_{t+1}]$}
             \State $q_i {\gets} 
             \log(\eta_t n_t) {-} \log 
-            \sum_{j=1}^{n_t} \exp(p_j {-} C(x_j, y_i)$,\: $p_i {\gets} 
+            \sum_{j=1}^{n_t} \exp(p_j {-} C(x_j, y_i))$,\: $p_i {\gets} 
             \log(\eta_t n_t) {-} \log 
-            \sum_{j=1}^{n_t} \exp(q_j {-} C(x_i, y_j)$
+            \sum_{j=1}^{n_t} \exp(q_j {-} C(x_i, y_j))$
         \EndFor
         \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (n_{t+1})$ \quad
          $p_i = f_t(x_i) - \log (n_{t+1})$
@@ -138,36 +148,46 @@ and $\bar \beta_t$ gather previously observed samples.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Algorithm, complexity and refinements}\label{sec:alg}
+\subsection{Refinements}
+\paragraph{Estimating Sinkhorn distance.} 
 
-The pseudo-code of online Sinkhorn is detailed in \autoref{alg:online_sinkhorn}.
-We perform the updates for $q_i$ and $p_i$ in log-space, for numerical stability reasons.
-Each iteration has complexity $\Oo(n_t\,n)$, due to the evaluation of the
-distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$, $(y_i)_{(n_t, n_{t+1}]}$
-and to the computation of the
-soft $C$-transforms. Online Sinkhorn computes a distance matrix
-$(C(x_i,y_j))_{i,j}$ on the fly, in parallel to the updates of the potentials
-$f_t$ and $g_t$. In total, its computation cost after drawing $n_t$ samples is
-$\Oo(n_t^2)$, and its memory cost is $\Oo(n_t)$.
-%
-We propose some heuristics to accelerate convergence and alleviate memory and computational cost.
+The iterations \eqref{eq:updates} only estimate potential functions up to a
+constant. This is sufficient for minimizing a loss function involving a Sinkhorn
+distance (e.g.for model training or barycenter estimation \citep{staib2017parallel}), as backpropagating through the Sinkhorn distance
+relies only on the gradients of the potentials $\nabla_x f^\star(\cdot)$,
+$\nabla_y g^\star(\cdot)$ \citep[e.g.][]{cuturi2018semidual}. With extra
+$\Oo(n_t^2)$ operations, $(\hat f_t, \hat g_t)$ may be used to
+estimate $\Ww(\alpha,\beta)$ through a final soft $C$-transform:
+\begin{equation}\label{eq-dist-est}
+    \hat \Ww_t \triangleq \frac{1}{2}\Big(\dotp{\bar \alpha_t}{f_t + \Ctrans{g_t}{\bar \alpha_t}}
+     {+} \dotp{\bar \beta_t}{g_t {+} \Ctrans{f_t}{\bar \alpha_t}}\Big),
+\end{equation}
+where $\bar \alpha_t \eqdef \frac{1}{n_{t+1}}\sum_{i=1}^{n_{t+1}} \delta_{x_i}$
+and $\bar \beta_t$ are formed of all previously observed samples.
+
+\paragraph{Out-of-loop averaging.} To reduce the estimation variance,
+we may compute averages of potentials
+\begin{equation}
+    \bar u_{t+1}, \bar v_{t+1} = (1 - \gamma_t) (\bar u_t, \bar v_t) + \gamma_t (\hat u_t, \hat v_t)
+\end{equation}
+We show in \autoref{sec:exp1} that
+this averaging is efficient in practice.  With $\gamma_t = 1/t$, this
+is similar to Polyak-Rupert averaging for stochastic approximation.
 
 
 %%%%%
 \paragraph{Fully-corrective scheme.} 
 
-The potentials $f_t$ and $g_t$ may be improved by refitting the weights
-$(p_i)_{(0, n_t]}$, $(q_j)_{(0, n_t]}$ based on all previously seen samples.  For this, we 
-may perform one step of the discrete Sinkhorn algorithm with
-distributions $\bar \alpha_t$ and $\bar \beta_t$.
-This amounts to replace, after iteration $t$, for all $i \in (0, n_{t+1}]$,
-$q_i \gets g_t(y_i) - \log(n_{t+1})$. and similarly for each $p_i$. This increases the dual cost
-$F_{ \bar \alpha, \bar \beta}(f_t, g_t)$, and ``on average'', the energy
-$F_{\alpha, \beta}$. This reweighted scheme (akin to the fully-corrective
-Frank-Wolfe scheme from \cite{lacoste2015global}) has a cost in $\Oo(n_t^2)$
-per iteration. In practice, it can be used every $k$ iterations, with $k$
-increasing with $t$. We study a combination of partial and full updates in
-\autoref{sec:accelerating}.
+The potentials $\hat f_t$ and $\hat g_t$ may be improved by refitting the
+weights $(p_i)_{(0, n_t]}$, $(q_j)_{(0, n_t]}$ based on all previously seen
+samples.  For this, we update $\hat f_{t+1} = \Ctrans{g_t}{\bar \beta_t}$ and
+$\hat g_{t+1} = \Ctrans{f_t}{\bar \alpha_t}$. This reweighted scheme (akin to
+the fully-corrective Frank-Wolfe scheme from \cite{lacoste2015global}) has a
+cost of $\Oo(n_t^2)$ per iteration, and requires to keep in memory or recompute
+the whole distance matrix. In practice, it can be used every $k$ iterations,
+with $k$ increasing with $t$. We study a combination of partial and full updates
+in \autoref{sec:accelerating}.
+
 
 %%%%%
 % \paragraph{Memory compression.} 
@@ -190,21 +210,11 @@ increasing with $t$. We study a combination of partial and full updates in
 % increasing in a first stage. This heuristic is important for applications but
 % requires significant engineering: we leave it for future work.
 
-% \paragraph{Out-of-loop averaging.} Optionally, we may also
-% compute out-of-loop averages of potentials
-% \begin{align}
-%     \exp(-\bar f_{t+1}) = (1 - \gamma_t) \exp(-\bar f_t) + \gamma_t \exp(-\hat f_t), \\
-%     \exp(-\bar g_{t+1}) = (1 - \gamma_t) \exp(-\bar g_t) + \gamma_t \exp(-\hat g_t),
-% \end{align}
-% to further reduce the estimation variance. We show in \autoref{sec:exp1} that
-% this averaging is efficient in practice. 
 
 \paragraph{Finite samples.}Finally, we note that our algorithm
 applies on both continuous or discrete distributions. When $\alpha$ and $\beta$
 are discrete distributions of size $N$, we can store $p$ and $q$ as fixed-size
-vectors of size~$N$, and subsample mini-batches of size $n < N$. The resulting
+vectors of size~$N$, and update at each iterations a set of coordinates of size $n < N$. The resulting
 algorithm is a \textit{subsampled} Sinkhorn algorithm for histograms, which is
 detailed in \autoref{sec:sinkhorn_discrete}, \autoref{alg:discrete_online}. We show in \autoref{sec:exps} that it
 is useful to accelerate the first phase of the Sinkhorn algorithm.
-
-

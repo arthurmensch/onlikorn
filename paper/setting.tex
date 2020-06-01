@@ -13,7 +13,6 @@ with a continuous cost function $C(x,y) \in \RR$ for any $(x,y) \in \Xx^2$ (assu
 Optimal transport lifts this \textit{ground cost} into a cost between probability
 distributions over the space $\Xx$. 
 %
-
 The Wasserstein cost between two probability distributions $(\alpha, \beta) \in \Pp(\Xx)^2$ is defined as the minimal cost required to move each element of mass of $\alpha$ to each element of mass of $\beta$. It rewrites as the solution of a
 linear problem (LP) over the set of transportation plans (which are probability distribution $\pi$ over $\Xx \times \Xx$):
 \begin{equation}\label{eq:wass_0}
@@ -27,10 +26,10 @@ where we denote $\dotp{C}{\pi} \eqdef \int C(x,y) \d\pi(x,y)$. Here,
 $\pi_1 = \int_{y\in \Xx} \d \pi(\cdot, y)$ and $\pi_2 = \int_{x\in \Xx} \d
 \pi(x, \cdot)$ are the first and second marginals of the transportation plan $\pi$. 
 %
-When $C=d^p(x,y)$ is the $p^{\text{th}}$ power of the ground distance, with $p
-\geq 1$, then $\Ww_{C,0}^{1/p}$ is itself a distance over $\Pp(\Xx)$, whose
-associated topology is the one of the convergence in
-law~\citep{santambrogio2015optimal}.
+% When $C=d^p(x,y)$ is the $p^{\text{th}}$ power of the ground distance, with $p
+% \geq 1$, then $\Ww_{C,0}^{1/p}$ is itself a distance over $\Pp(\Xx)$, whose
+% associated topology is the one of the convergence in
+% law~\citep{santambrogio2015optimal}.
 
 \paragraph{Entropic regularization and Sinkhorn algorithm.} 
 
@@ -53,7 +52,7 @@ $\Ww_{C,\varepsilon}$ approximates $\Ww_{C,0}(\alpha,\beta)$ up to an $\epsilon
 $\varepsilon$ to $1$ without loss of generality, as $\Ww_{C, \varepsilon} =
 \epsilon \Ww_{C / \varepsilon, 1}$, and simply write $\Ww$.
 %
-The regularized problem~\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous functions:
+\eqref{eq:wass} admits a dual form, which is a maximization problem over the space of continuous functions:
 \begin{equation}\label{eq:dual}
     F_{\alpha, \beta}(f, g) \eqdef \max_{(f, g) \in \Cc(\Xx)^2} \dotp{f}{\alpha} + 
     \dotp{g}{\beta}
@@ -64,7 +63,7 @@ where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 %  We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
 Problem \eqref{eq:dual} can be solved by close-form alternated maximization. At iteration $t$, the updates are simply
 \begin{equation}
-    f_{t+1}(\cdot) = \Ctrans{g_t}{\beta}, \:
+    f_{t+1}(\cdot) = \Ctrans{g_t}{\beta}, \quad
     g_{t+1}(\cdot) = \Ctrans{f_{t+1}}{\alpha},\quad
     \Ctrans{h}{\mu} \triangleq 
     - \log \int_{y \in \Xx}\!\! \exp(h(y) - C(\cdot, y))\d \mu(y).\label{eq:sinkhorn}
@@ -72,7 +71,8 @@ Problem \eqref{eq:dual} can be solved by close-form alternated maximization. At 
 The operation $h \mapsto \Ctrans{h}{\mu}$  maps a continuous function to another
 continuous function, and is a smooth approximation of the celebrated
 $C$-transform of OT~\citep{santambrogio2015optimal}. We thus refer to it as a
-\textit{soft C-transform}. 
+\textit{soft C-transform}. Note that we consider \textit{simultaneous} updates
+of $f_t$ and $g_t$ in this paper, as it simplifies our analysis.
 %
 The notation $f_t(\cdot)$ emphasizes the fact that $f_t$ and $g_t$ are
 \textit{functions}. 
@@ -90,28 +90,24 @@ $\Ctrans{\cdot}{\alpha}$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$
 
 \subsection{Estimating OT distances with realizations}
 
-Iterations~\eqref{eq:sinkhorn} cannot be implemented when dealing with generic distributions $(\al,\be)$, because they involve continuous functions ${(f_t,g_t)}_t$. 
-%
-When the input distributions are discrete (or equivalently when $\Xx$ is a finite
-set) then these function can be stored on discrete vectors;
-the iterations~\eqref{eq:sinkhorn} correspond to the celebrated
-\citet{sinkhorn1967concerning} algorithm, which is often implemented over the scaling
-variable $(e^{f_t},e^{g_t})$.
-%
-More precisely, with $\alpha =
-\frac{1}{n}\sum_{i=1}^n \delta_{x_i}$ and $\beta = \frac{1}{n} \sum_{i=1}^n
-\delta_{y_i}$, the Sinkohrn iterations~\eqref{eq:sinkhorn} update $u_t \eqdef
-(e^{f_t(x_i)})_{i=1}^n, v_t \eqdef (e^{g_t(y_i)})_{i=1}^n$ as
+When the input distributions are discrete (or equivalently when $\Xx$ is a
+finite set), i.e. $\alpha = \frac{1}{n}\sum_{i=1}^n \delta_{x_i}$ and $\beta =
+\frac{1}{n} \sum_{i=1}^n \delta_{y_i}$, the function $f_t$ and $g_t$ need only
+to be evaluated on $(x_i)_t$ and $(y_i)_i$, which allows a proper implementation. The
+iterations~\eqref{eq:sinkhorn} then correspond to the
+\citet{sinkhorn1967concerning} algorithm over the inverse scaling vectors $\u_t
+\triangleq {(e^{-f_t(x_i)})}_{i=1}^n, \v_t \triangleq
+{(e^{-g_t(y_i)})}_{i=1}^n$:
 \begin{equation*}
-	u_{t+1} = \frac{n}{ K v_t }
+	\u_{t+1} = \K \frac{1}{n \v_t}
 	\qandq
-	v_{t+1} = \frac{n}{ K^\top u_{t+1} }
+	\v_{t+1} = \K^\top \frac{1}{n \u_t}
 \end{equation*}
-where $K=(e^{-C(x_i,y_i)})_{i,j=1}^n \in \RR^{n \times n}$. The algorithm thus
-operates in two phases: first, the kernel matrix $K$ is computed, with a cost in
-$O(n^2 d)$, where $d$ is the dimension of $\Xx$; second, $K$ is balanced, each
+where $\K=(e^{-C(x_i,y_i)})_{i,j=1}^n \in \RR^{n \times n}$, and inversion is made pointwise. The Sinkhorn algorithm for OT thus
+operates in two phases: first, the kernel matrix $\K$ is computed, with a cost in
+$O(n^2 d)$, where $d$ is the dimension of $\Xx$; second, $\K$ is balanced, each
 iteration costing $O(n^2)$. The online Sinkhorn algorithm that we propose mixes
-these two phases to accelerate convergence (see \autoref{sec:accelerating}).
+these two phases to accelerate convergence (see results in \autoref{sec:accelerating}).
 
 % The goal of this paper is to go beyond this discrete setting, and handle generic distributions (possibly having continuous densities). In particular, our numerical scheme manipulates continuous functions though an adapted parameterization which is automatically refined during the iterations.
 
@@ -127,20 +123,20 @@ as $\Ww_{C,\epsilon}(\hat \alpha_n, \hat \beta_n) \to \Ww_{C,\epsilon}(\alpha,
 \beta)$. Although this is a reassuring result, the sample complexity of
 transport in high dimensions with low regularization remains high (see
 \autoref{sec:related}). For computational reasons, we cannot choose $n$ to be
-much more than $10^5$. We may wonder wether we can improve the estimation of
-$\Ww_{C,\epsilon}(\alpha,\beta)$ using several sets of samples $(\hat
-\alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of reasonable size to
-allow Sinkhorn estimation, and may for example come from a temporal stream.
-\citet{2018-Genevay-aistats} propose to use a Monte-Carlo estimate $\hat
-\Ww(\alpha, \beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t, \hat \beta_t)$.
-However, this yields a biased estimation as the distance $\Ww(\alpha,
-\beta)$ differs from its expectation under sampling $\EE_{\hat \alpha \sim
-\alpha, \hat \beta \sim \beta} [\Ww(\hat \alpha, \hat \beta)]$. To address this
-issue, our algorithm computes a consistent estimation of the Sinkhorn cost.
+much more than $10^5$. 
 
-Similarly, estimating the Sinkhorn potentials through sampling is biased, as
-the true optimal potential $f^\star=f^\star(\alpha, \beta)$ is not the expected
-optimal potential $\EE_{\hat \alpha_n \sim \alpha, \hat \beta_n
-\sim \beta}[f^\star(\hat \alpha_n, \hat \beta_n)]$ under sampling. Our algorithm estimates the
-true potential functions (up to a constant) and overcomes the sampling
-bias.
+
+An important question is whether we can improve the estimation of
+$\Ww_{C,\epsilon}(\alpha,\beta)$ using several i.i.d sets of samples $(\hat
+\alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of reasonable size to
+perform fast updates and may for example come from a temporal stream.
+\citet{2018-Genevay-aistats} use a Monte-Carlo estimate $\hat \Ww(\alpha, \beta)
+= \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t, \hat \beta_t)$. However, this
+yields a biased estimation as the distance $\Ww(\alpha, \beta)$ differs from its
+expectation under sampling $\EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta}
+[\Ww(\hat \alpha, \hat \beta)]$. The optimal potential
+$f^\star=f^\star(\alpha, \beta)$ also differs from the expected optimal
+potential $\EE_{\hat \alpha_n \sim \alpha, \hat \beta_n \sim \beta}[f^\star(\hat
+\alpha_n, \hat \beta_n)]$. Our algorithm estimates the true
+potential functions (up to a constant) and computes a consistent estimation of
+the Sinkhorn cost.
