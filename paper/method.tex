@@ -97,13 +97,13 @@ roots of vector-valued functions:
     e^{-\hat f_{t+1}} = (1 - \eta_t) e^{-\hat f_{t}} + 
     \eta_t e^{-\Ctrans{\hat g_t}{\hat \beta_t}}
 \end{equation}
-Each update brings new kernel functions into a non-parametric construction of
-$\hat u_t$ and $\hat v_t$. These potentials are defined by weights ${(p_{i,t},
+Each update adds new kernel functions to a non-parametric estimation of $
+u_t$ and $v_t$. The estimates $\hat u_t$ and $\hat v_t$ are defined by weights ${(p_{i,t},
 q_{i,t})}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i \leq n_t} \subset~\Xx$:
 \begin{align}\label{eq:param}
-    e^{-\hat f_t(\cdot)} \triangleq \hat u_t(\cdot) = \sum_{i=1}^{n_t} 
+    e^{-\hat f_t(\cdot)} = \hat u_t(\cdot) \triangleq \sum_{i=1}^{n_t} 
     \exp(q_{i,t} - C(\cdot, y_i)),\quad
-    e^{-\hat g_t(\cdot)} \triangleq \hat v_t(\cdot) = \sum_{i=1}^{n_t}
+    e^{-\hat g_t(\cdot)} = \hat v_t(\cdot) \triangleq \sum_{i=1}^{n_t}
     \exp(p_{i,t} - C(x_i, \cdot)).
 \end{align}
 The SA updates \eqref{eq:updates} yields simple vectorized updates for the weights
@@ -114,10 +114,11 @@ the updates for $q_i$ and $p_i$ in log-space, for numerical stability reasons.
 
 Each iteration has complexity $\Oo(n_t\,n)$, due to the evaluation of the
 distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$ and $(y_i)_{(n_t, n_{t+1}]}$,
-and the soft $C$-transforms in \eqref{eq:param}. Online Sinkhorn computes a distance matrix
-$(C(x_i,y_j))_{i,j \leq n_t}$ on the fly, parallel to updating~$\hat f_t$
-and~$\hat g_t$. In total, its computation cost after drawing $n_t$ samples is
-$\Oo(n_t^2)$. Its memory cost is $\Oo(n_t)$ and increases with iterations.
+and the soft $C$-transforms in \eqref{eq:param}. Online Sinkhorn computes a
+distance matrix $(C(x_i,y_j))_{i,j \leq n_t}$ on the fly, parallel to
+updating~$\hat f_t$ and~$\hat g_t$. In total, its computation cost after drawing
+$n_t$ samples is $\Oo(n_t^2)$. Its memory cost is $\Oo(n_t)$; it increases with
+iterations, as required for consistent estimation.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
