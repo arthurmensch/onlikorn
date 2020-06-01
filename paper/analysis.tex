@@ -60,7 +60,7 @@ We make the following \citet{robbins1951stochastic} assumption on the weight seq
 \end{assumption}
 
 \begin{proposition}\label{prop:convergence_approx}
-    Under \autoref{ass:lip} and \ref{ass:weights}, the online Sinkhorn algorithm without full-reweighting (\autoref{alg:online_sinkhorn}) yields a sequence $(f_t, g_t)$ that reaches a
+    Under \autoref{ass:lip} and \ref{ass:weights}, the online Sinkhorn algorithm (\autoref{alg:online_sinkhorn}) yields a sequence $(f_t, g_t)$ that reaches a
     ball centered around $f^\star, g^\star$ for the variational norm $\Vert
     \cdot \Vert_{\var}$.
      Namely, there exists $T > 0$, $A > 0$ such that for all $t > T$, almost surely
@@ -124,13 +124,12 @@ Online Sinkhorn thus provides estimators of potentials whose asymptotic sample
 complexity in variational norm is arbitrarily close to $\Oo(\frac{1}{N})$. To
 the best of our knowledge, this is an original property. It also results in a distance estimator $\hat \Ww_N$ whose
 complexity is arbitrarily close to $\Oo(\frac{1}{\sqrt{N}})$, recovering
-existing asymptotic rates from \cite{2019-Genevay-aistats} beyond Wasserstein-2
-distances. We derive non-asymptotic rates in \autoref{sec:proof_prop_convergence} (see \eqref{eq:non-asymptotic}), that explicits the
+existing asymptotic rates from \cite{2019-Genevay-aistats}, for any Lipschitz cost. We derive non-asymptotic rates in \autoref{sec:proof_prop_convergence} (see \eqref{eq:non-asymptotic}), that explicits the
 bias-variance trade-off when choosing the step-sizes and batch-sizes. They
 unfortunately rely on the non-explicit constant~$A$ from
 \autoref{prop:convergence_approx}. Note that using growing batch-sizes amounts
 to increase the budget of a single iteration over time: the overall
-computational complexity after seeing $N$ samples remain in $\Oo(N^2)$.
+computational complexity after seeing $N$ samples is always $\Oo(N^2)$.
 
 % \paragraph{Choosing batch-sizes.}
 
