@@ -15,15 +15,15 @@ expansions~\citep{2016-genevay-nips}. Numpy and Pytorch code are provided for ex
 
 \subsection{Better estimation of Sinkhorn distances}\label{sec:exp1}
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{comparison.pdf}
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=\linewidth]{comparison.pdf}
 
-    \vspace{-1em}
+%     \vspace{-1em}
 
-    \caption{Comparison of online, random and fixed sampling Sinkhorn performances. Online Sinkhorn overcomes the bias of sampling---especially with out-of-loop averaging. Random Sinkhorn gives fast estimations, whose variance does not decrease.}
-    \label{fig:convergence}
-\end{figure}
+%     \caption{Comparison of online, random and fixed sampling Sinkhorn performances. Online Sinkhorn overcomes the bias of sampling---especially with out-of-loop averaging. Random Sinkhorn gives fast estimations, whose variance does not decrease.}
+%     \label{fig:convergence}
+% \end{figure}
 
 
 We first consider a discrete distribution $(\alpha, \beta)$, to be able to
@@ -63,31 +63,31 @@ surprising that an averaging mechanism brings speed-up in a non-convex
 setting---we attribute this to the convexity of the original problem, although
 this should be further investigated.
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{early_compute}
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=\linewidth]{early_compute}
     
-    \vspace{-1em}
+%     \vspace{-1em}
 
-    \caption{Using online Sinkhorn during the initial computation of the cost
-     matrix accelerates the Sinkhorn algorithm: it provides good estimates of
-     the potentials $f$ and $g$ to warm start the full Sinkhorn algorithm.
-     Curves averaged over 5 runs. \label{fig:early_compute}}
-\end{figure}
+%     \caption{Using online Sinkhorn during the initial computation of the cost
+%      matrix accelerates the Sinkhorn algorithm: it provides good estimates of
+%      the potentials $f$ and $g$ to warm start the full Sinkhorn algorithm.
+%      Curves averaged over 5 runs. \label{fig:early_compute}}
+% \end{figure}
 
-\begin{figure*}[t]
-    \centering
-    \if\icml0
-    \begin{widepage}
-    \fi
-    \includegraphics[width=\linewidth]{continuous.pdf}
-    \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stages of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$). $\varepsilon = 10^{-2} \max \hat C$.
-    \label{fig:potentials}
-    }
-    \if\icml0
-    \end{widepage}
-    \fi
-\end{figure*}
+% \begin{figure*}[t]
+%     \centering
+%     \if\icml0
+%     \begin{widepage}
+%     \fi
+%     \includegraphics[width=\linewidth]{continuous.pdf}
+%     \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stages of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$). $\varepsilon = 10^{-2} \max \hat C$.
+%     \label{fig:potentials}
+%     }
+%     \if\icml0
+%     \end{widepage}
+%     \fi
+% \end{figure*}
 
 \subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
 
@@ -158,9 +158,9 @@ computational complexity of both algorithms are comparable. Online Sinkhorn does
 not require to set any hyperparameters, whereas we observed that SGD in RKHS is very
 sensitive to bandwidth selection.
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{continuous_francis-crop.pdf}
-    \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential \citep{2016-genevay-nips}, with best bandwidth parameter. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its more appropriate parametrization. $\varepsilon = 10^{-1} \max \hat C$.}
-    \label{fig:comparison_rkhs}
-\end{figure}
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=\linewidth]{continuous_francis-crop.pdf}
+%     \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential \citep{2016-genevay-nips}, with best bandwidth parameter. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its more appropriate parametrization. $\varepsilon = 10^{-1} \max \hat C$.}
+%     \label{fig:comparison_rkhs}
+% \end{figure}

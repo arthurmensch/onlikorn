@@ -13,8 +13,6 @@
 \usepackage[super]{nth}
 \usepackage{microtype}
 
-\usepackage{multibib}
-
 \usepackage[english]{babel}
 
 % Compact itemize
@@ -23,6 +21,15 @@
 % Tables
 \usepackage{booktabs}
 \usepackage{makecell}
+
+\usepackage[backend=biber,
+    style=numeric-comp,
+    natbib=true,%
+    url=false,isbn=false,doi=false,%
+    date=year,
+    maxcitenames=2,
+    maxbibnames=10]{biblatex}
+\addbibresource{biblio.bib}
 
 
 \usepackage{graphicx}

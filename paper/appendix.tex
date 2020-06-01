@@ -422,6 +422,89 @@ a new estimator of the Sinkhorn distance with the same sample complexity as the
 batch Sinkhorn estimator \citep{2019-Genevay-aistats}. Our estimator enjoys a
 refined rate in estimating the potentials.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Stochastic mirror descent interpretation}
+\label{sec-mirror}
+
+This online Sinkhorn can be understood as a stochastic mirror descent algorithm.
+%
+This equivalence is obtained by applying a change
+of variable in \eqref{eq:wass}, defining 
+\begin{equation}\label{eq-change-var}
+	\mu \triangleq \alpha \exp(f)
+	\qandq 
+	\nu \triangleq \beta \exp(g). 
+\end{equation}
+The dual problem~\eqref{eq:dual} 
+rewrites as a minimisation problem over positive measures on $\Xx$ and $\Yy$:
+\begin{equation}\label{eq:wass_reparam}
+    - \!\!\!\!\min_{(\mu,\nu) \in \Mm^+(\Xx)^2} \!\!\!\KL(\alpha | \mu)
+    + \KL(\beta | \nu) + \dotp{\mu \otimes \nu}{e^{-C}} - 1,
+\end{equation}
+where the function $\KL: \Pp(\Xx) \times \Mm^+(\Xx) \triangleq \dotp{\alpha}{ \log \frac{\d \alpha}{\d \mu}}$ is the Kullback-Leibler divergence between
+$\alpha$ and $\mu$. 
+%
+This objective is block convex in $\mu$, $\nu$, but not jointly convex. 
+%
+As we now detail, this problem can be solved using a stochastic mirror descent~\citep{beck2003mirror}, applied here over the Banach space of Radon measures on $\Xx$, equipped with the total variation norm. 
+
+%%%
+\paragraph{Mirror maps and gradient.}
+
+For this, we define the (convex) distance generating function $\Mm^+(\Xx)^2 \to \RR$:
+\begin{equation}
+    \omega(\mu, \nu) \triangleq \KL(\alpha | \mu) + \KL(\beta | \nu).
+\end{equation}
+The gradient of this function and of its Fenchel conjugate $\omega^\star:
+\Cc(\Xx)^2 \to \RR$ yields two \textit{mirror maps}. For all $(\mu, \nu) \in
+\Mm^+(\Xx)^2$, $(\varrho, \varphi) \in \Cc(\Xx)^2, \varrho < 0, \varphi < 0$,
+\begin{equation}
+    \nabla \omega(\mu, \nu) = (- \frac{\d \alpha}{\d \mu}, - \frac{\d \beta}{\d \nu} )
+    \qquad \nabla \omega^\star(\varrho, \varphi)
+     = (-\frac{\alpha}{\varrho}, -\frac{\beta}{\varphi}).
+\end{equation}
+The gradient $\nabla F(\mu, \nu)$ of the objective $F$ appearing
+in~\eqref{eq:wass_reparam} is a continuous function
+\begin{equation}
+    \nabla_\mu F(\mu, \nu) = - \frac{1}{\frac{\d\mu}{\d\alpha}} + \int_{y \in \Xx}
+    \frac{\d \nu}{\d \beta}(y) \exp(- C(\cdot, y)) \d \beta(y)
+\end{equation}
+and similarly for $\nabla_\nu F$.
+
+%%%
+\paragraph{Stochastic mirror descent.}
+
+To define stochastic mirror descent iterations, we may replace integration over $\beta$ is by an integration over a sampled measure $\hat \beta$. This in turn defines an \textit{unbiased gradient estimate} $\tilde \nabla F$ of $\nabla F$, which has bounded second order moments.
+%
+This absence of bias is crucial to prove convergence of SMD with high
+probability. Using the mirror maps and the stochastic estimation of the
+gradient, one has the following equivalence result, whose proofs stems from
+direct computations. 
+
+\begin{proposition}
+The stochastic mirror descent iterations
+\begin{equation}
+    (\mu_t, \nu_t) = \nabla \omega^\star\Big( \nabla \omega(\mu_t, \nu_t) - 
+    \eta_t \tilde \nabla F(\mu_t, \nu_t)\Big)
+\end{equation}
+are equal to the updates~\eqref{eq:updates} under the change of variable~\eqref{eq-change-var}.
+\end{proposition}
+
+%%%
+\paragraph{Interpretation.} 
+
+It is important to realize that $\mu_t$ and $\nu_t$ do not need to be stored in memory. Instead,
+their associated potentials $f_t$ and $g_t$ are parametrized as
+\eqref{eq:param}. In particular, $\mu_t$ and $\nu_t$ remain absolutely
+continuous with respect to $\alpha$ and $\beta$ respectively, so that the
+Kullbach-Leibler divergence terms are always finite. Note that the mirror descent
+we consider operates in an infinite-dimensional space, as in \citet{hsieh2018finding}.
+
+Finally, we mention that  when computing exact gradients (in the absence of noise) and when using constant step-size of
+$\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous updates of the dual variables. This provides a novel interpretation on the Sinkhorn algorithm, that differs from the usual Bregman projection \citep{benamou2015iterative}, and the related understanding of Sinkhorn as a constant step-size mirror descent on the primal objective~\citep{mishchenko2019sinkhorn} and on a semi-dual formulation~\citep{leger2019sinkhorn}. 
+
+Note that one can not directly apply the proofs of convergence of mirror descent to our problem, as the lack of convexity of problem \eqref{eq:wass_reparam} prevents their use.
+
 
 \section{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
 

@@ -7,8 +7,11 @@ term for tasks as diverse as supervised learning~\citep{frogner2015learning},
 unsupervised generative modeling~\citep{arjovsky2017wgan} or domain
 adaptation~\citep{courty2016optimal}.
 %
-OT lifts a given distance over data points living in space $\Xx$ into a distance
-on the space $\Pp(\Xx)$ of probability distributions over this data space $\Xx$. We refer to the monograph of~\citet{santambrogio2015optimal} for a detailed mathematical treatment.
+OT lifts a distance over data points living in a space $\Xx$ into a distance
+on the space $\Pp(\Xx)$ of probability distributions over the space $\Xx$.
+% 
+%  We refer to the monograph of~\citet{santambrogio2015optimal} for a detailed
+%  mathematical treatment.
 %
 This distance has many favorable geometrical properties. In particular it allows one to compare distributions having disjoint supports. 
 % 
@@ -20,8 +23,8 @@ sampling of points from the data. It is therefore not adapted to machine
 learning settings where data is resampled continuously (e.g. in GANs), or
 accessed in an online manner. The goal of this paper is to develop an efficient
 online method able to estimate OT distances between continuous distributions. It uses 
-a stream of data to refine an approximate optimal transport solution,
-adapting the celebrated Sinkhorn algorithm to an online setting.
+a stream of data to refine an approximate OT solution,
+adapting the Sinkhorn algorithm to an online setting.
   
 
 
@@ -47,7 +50,7 @@ This two-step approach does not estimate the true regularized OT
 distance, and cannot handle samples provided as a stream, e.g. renewed at each
 training iteration of an outer algorithm. A cheap fix is to use Sinkhorn over
 mini-batches (see for instance~\citet{2018-Genevay-aistats} for an application
-to GANs). Yet this introduces a strong estimation bias, especially in high
+to generative modelling). Yet this introduces a strong estimation bias, especially in high
 dimension ---see~\citet{fatras2019learning} for a mathematical analysis. In
 contrast, we use streams of mini-batches to progressively enrich a consistent representation of the
 transport plan.
@@ -76,7 +79,7 @@ write $(i, j]$ the sequence $[i+1, \dots, j]$.
 
 \section{Related work}\label{sec:related}
 
-We review recent works on Sinkhorn distances and on the general problem of estimating optimal transport distances. 
+We review recent works on estimating OT distances, in particular with the Sinkhorn algorithm.
 
 \paragraph{Sinkhorn properties.} Sinkhorn algorithm computes $\epsilon$-accurate
 approximations of OT in $O(n^2/\epsilon^3)$ operations for a number $n$ of
