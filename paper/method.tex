@@ -3,7 +3,7 @@
 \section{OT distances from sample streams}
 
 We now introduce an online adaptation of the Sinkhorn algorithm. We construct functional estimators of $f^\star$, $g^\star$
-and $\Ww(\alpha,\beta)$ using successive sets of samples ${(\hat \alpha_t)}_t$
+and $\Ww(\alpha,\beta)$ using successive discrete distributions of samples ${(\hat \alpha_t)}_t$
 and ${(\hat \beta_t)}_t$, where $\hat\alpha_t \triangleq \frac{1}{n} \sum_{i=n_t +
 1}^{n_{t+1}} \delta_{x_i}$, with  $n_0 \triangleq 0$ and $n_{t+1} \triangleq n_{t} +
 n$. The size of the mini-batch $n$ may potentially depends on $t$.
@@ -88,9 +88,9 @@ initialization.
 \paragraph{Online Sinkhorn.}
 
 To ensure convergence of $\hat f_t$, $\hat g_t$ towards some optimal pair of potentials
-$(f^\star, g^\star)$ (up to a constant factor), we must take more
+$(f^\star, g^\star)$, we must take more
 cautious steps---we cannot forget past iterates. We introduce a learning
-rate in Sinkhorn iterations, similar to the Robbins-Monro algorithm for finding
+rate in Sinkhorn iterations, akin to the Robbins-Monro algorithm for finding
 roots of vector-valued functions:
 \begin{equation}\label{eq:updates}
     (\hat u_{t+1}, \hat v_{t+1}) \triangleq (1 - \eta_t) (\hat u_t, \hat v_t) 

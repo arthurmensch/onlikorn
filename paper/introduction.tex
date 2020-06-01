@@ -18,10 +18,10 @@ This distance has many favorable geometrical properties. In particular it allows
 Computing OT distances is usually performed by sampling once from the input
 distributions and solving a discrete linear program (LP), due
 to~\citet{Kantorovich42}. This approach is numerically costly and statistically
-inefficient \citep{weed2019sharp}. The optimisation problem depends on a fixed
+inefficient \citep{weed2019sharp}. Furthermore, the optimisation problem depends on a fixed
 sampling of points from the data. It is therefore not adapted to machine
 learning settings where data is resampled continuously (e.g. in GANs), or
-accessed in an online manner. The goal of this paper is to develop an efficient
+accessed in an online manner. In this paper, we develop an efficient
 online method able to estimate OT distances between continuous distributions. It uses 
 a stream of data to refine an approximate OT solution,
 adapting the Sinkhorn algorithm to an online setting.
@@ -56,7 +56,7 @@ contrast, we use streams of mini-batches to progressively enrich a consistent re
 transport plan.
 
 \paragraph{Contributions.} Our paper proposes a new take on estimating optimal transport distances between continuous distributions. We make the following contributions:
-\begin{itemize}
+\begin{itemize}[topsep=0pt, partopsep=0pt]
     \item We introduce an online variant of the Sinkhorn algorithm, that relies on
     streams of samples to enrich a non-parametric
     functional representation of the dual regularized OT solution.
@@ -67,8 +67,8 @@ transport plan.
     distances between continuous distributions and for accelerating the early
     phase of discrete Sinkhorn iterations.
 \end{itemize}
-
-\paragraph{Notations.} We denote [$\Cc_+(\Xx)$] $\Cc(\Xx)$ the set of [strictly
+% 
+\paragraph{Notations.} We denote $\Cc(\Xx)$ [$\Cc_+(\Xx)$] the set of [strictly
 positive] continuous functions over a metric space $\Xx$, $\Mm^+(\Xx)$ and
 $\Pp(\Xx)$ the set of positive and probability measures on $\Xx$, respectively.
 We write $(i, j]$ the sequence $[i+1, \dots,

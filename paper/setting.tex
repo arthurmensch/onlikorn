@@ -22,14 +22,15 @@ linear problem (LP) over the set of transportation plans (which are probability 
     	\dotp{C}{\pi}
 	}{ \pi_1=\al, \pi_2=\be},
 \end{equation}
-where we denote $\dotp{C}{\pi} \eqdef \int C(x,y) \d\pi(x,y)$. Here,  
-$\pi_1 = \int_{y\in \Xx} \d \pi(\cdot, y)$ and $\pi_2 = \int_{x\in \Xx} \d
-\pi(x, \cdot)$ are the first and second marginals of the transportation plan $\pi$. 
+where we denote $\dotp{C}{\pi} \eqdef \int C(x,y) \d\pi(x,y)$. Here, $\pi_1 =
+\int_{y\in \Xx} \d \pi(\cdot, y)$ and $\pi_2 = \int_{x\in \Xx} \d \pi(x, \cdot)$
+are the first and second marginals of the transportation plan $\pi$. We refer to
+\cite{santambrogio2015optimal} for a review on OT.
 %
 % When $C=d^p(x,y)$ is the $p^{\text{th}}$ power of the ground distance, with $p
 % \geq 1$, then $\Ww_{C,0}^{1/p}$ is itself a distance over $\Pp(\Xx)$, whose
 % associated topology is the one of the convergence in
-% law~\citep{santambrogio2015optimal}.
+% law~.
 
 \paragraph{Entropic regularization and Sinkhorn algorithm.} 
 
@@ -93,8 +94,8 @@ $\Ctrans{\cdot}{\alpha}$ in the space $(\Cc(\Xx), \norm{\cdot}_{\text{var}})$
 When the input distributions are discrete (or equivalently when $\Xx$ is a
 finite set), i.e. $\alpha = \frac{1}{n}\sum_{i=1}^n \delta_{x_i}$ and $\beta =
 \frac{1}{n} \sum_{i=1}^n \delta_{y_i}$, the function $f_t$ and $g_t$ need only
-to be evaluated on $(x_i)_t$ and $(y_i)_i$, which allows a proper implementation. The
-iterations~\eqref{eq:sinkhorn} then correspond to the
+to be evaluated on $(x_i)_t$ and $(y_i)_i$, which allows a proper
+implementation. The iterations~\eqref{eq:sinkhorn} then correspond to the
 \citet{sinkhorn1967concerning} algorithm over the inverse scaling vectors $\u_t
 \triangleq {(e^{-f_t(x_i)})}_{i=1}^n, \v_t \triangleq
 {(e^{-g_t(y_i)})}_{i=1}^n$:
@@ -122,8 +123,9 @@ and ${(y_i)}_i$ are i.i.d samples from $\alpha$ and $\beta$.  Consistency holds,
 as $\Ww_{C,\epsilon}(\hat \alpha_n, \hat \beta_n) \to \Ww_{C,\epsilon}(\alpha,
 \beta)$. Although this is a reassuring result, the sample complexity of
 transport in high dimensions with low regularization remains high (see
-\autoref{sec:related}). For computational reasons, we cannot choose $n$ to be
-much more than $10^5$. 
+\autoref{sec:related}).
+%  For computational reasons, we cannot choose $n$ to be
+% much more than $10^5$. 
 
 
 An important question is whether we can improve the estimation of
