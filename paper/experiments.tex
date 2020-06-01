@@ -11,7 +11,7 @@ Sinkhorn accelerates the Sinkhorn algorithm, by progressively estimating
 sketches of the dual potentials, in parallel to the computation of the distance
 matrix. Finally, we show how online Sinkhorn allows one to estimate accurately
 the geometry of the dual, significantly improving the result using SGD with RKHS
-expansions~\citep{2016-genevay-nips}. Numpy and Pytorch code are provided for experiment reproduction\footnote{\url{github.com/arthurmensch/online_sinkhorn}}.
+expansions~\citep{2016-genevay-nips}. Numpy and Pytorch code are provided for experiment reproduction.
 
 \subsection{Better estimation of Sinkhorn distances}\label{sec:exp1}
 
@@ -75,19 +75,19 @@ this should be further investigated.
 %      Curves averaged over 5 runs. \label{fig:early_compute}}
 % \end{figure}
 
-% \begin{figure*}[t]
-%     \centering
-%     \if\icml0
-%     \begin{widepage}
-%     \fi
-%     \includegraphics[width=\linewidth]{continuous.pdf}
-%     \caption{Representation of the convergence path of online Sinkhorn: the blue curves represents the estimated potentials (continuous functions) at different stages of the algorithm. The estimated plan $\pi_t$ is very quickly accurate, while the shape of the potentials match nearly perfectly the true potentials (estimated on a grid $N = 5000$). $\varepsilon = 10^{-2} \max \hat C$.
-%     \label{fig:potentials}
-%     }
-%     \if\icml0
-%     \end{widepage}
-%     \fi
-% \end{figure*}
+\begin{figure*}[t]
+    \centering
+    \if\icml0
+    \begin{widepage}
+    \fi
+    \includegraphics[width=\linewidth]{continuous.pdf}
+    \caption{Convergence of online Sinkhorn for a 1D problem: the blue curves represents the estimated potentials (continuous functions) at different stages of the algorithm. The potentials and transport plan match nearly perfectly the true potentials (estimated on a grid $N = 5000$). $\varepsilon = 10^{-2} \max \hat C$.
+    \label{fig:potentials}
+    }
+    \if\icml0
+    \end{widepage}
+    \fi
+\end{figure*}
 
 \subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
 

@@ -120,7 +120,7 @@ $\Ww_{C,\epsilon}(\alpha,\beta)$ can be approximated by the (computable)
 distance between discrete realizations $\hat \alpha = \frac{1}{n} \sum_i
 \delta_{x_i}$, $\hat \beta = \frac{1}{n} \sum_i \delta_{y_i}$, where ${(x_i)}_i$
 and ${(y_i)}_i$ are i.i.d samples from $\alpha$ and $\beta$.  Consistency holds,
-as $\Ww_{C,\epsilon}(\hat \alpha_n, \hat \beta_n) \to \Ww_{C,\epsilon}(\alpha,
+as $\Ww(\hat \alpha_n, \hat \beta_n) \to \Ww(\alpha,
 \beta)$. Although this is a reassuring result, the sample complexity of
 transport in high dimensions with low regularization remains high (see
 \autoref{sec:related}).
@@ -128,17 +128,15 @@ transport in high dimensions with low regularization remains high (see
 % much more than $10^5$. 
 
 
-An important question is whether we can improve the estimation of
-$\Ww_{C,\epsilon}(\alpha,\beta)$ using several i.i.d sets of samples $(\hat
-\alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of reasonable size to
-perform fast updates and may for example come from a temporal stream.
-\citet{2018-Genevay-aistats} use a Monte-Carlo estimate $\hat \Ww(\alpha, \beta)
-= \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t, \hat \beta_t)$. However, this
-yields a biased estimation as the distance $\Ww(\alpha, \beta)$ differs from its
+The estimation of $\Ww(\alpha,\beta)$ may be improved using several i.i.d sets
+of samples $(\hat \alpha_t)_t$ and ${(\hat \beta_t)}_t$. Those should be of
+reasonable size to fit in memory and may for example come from a temporal
+stream. \cite{2018-Genevay-aistats} use a Monte-Carlo estimate $\hat \Ww(\alpha,
+\beta) = \frac{1}{T} \sum_{t=1}^T \Ww(\hat \alpha_t, \hat \beta_t)$. However,
+this yields a biased estimation as the distance $\Ww(\alpha, \beta)$ and the
+optimal potentials $f^\star=f^\star(\alpha, \beta)$ differ from their
 expectation under sampling $\EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta}
-[\Ww(\hat \alpha, \hat \beta)]$. The optimal potential
-$f^\star=f^\star(\alpha, \beta)$ also differs from the expected optimal
-potential $\EE_{\hat \alpha_n \sim \alpha, \hat \beta_n \sim \beta}[f^\star(\hat
-\alpha_n, \hat \beta_n)]$. Our algorithm estimates the true
-potential functions (up to a constant) and computes a consistent estimation of
-the Sinkhorn cost.
+[\Ww(\hat \alpha, \hat \beta)]$ and $\EE_{\hat \alpha \sim \alpha, \hat \beta
+\sim \beta}[f^\star(\hat \alpha, \hat \beta)]$.  Our algorithm estimates the
+true potential functions (up to a constant) and computes a consistent estimation
+of the Sinkhorn cost.

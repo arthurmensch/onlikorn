@@ -108,7 +108,7 @@ assumption.
 The proof is reported in \autoref{sec:proof_prop_convergence}. It relies on a uniform
 law of large number for functions \citep[][chapter
 19]{van_der_vaart_asymptotic_2000} and on the uniform contractance of soft
-$C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}. Inspired by derivations in \cite{moulines_non-asymptotic_2011}, we derive in \autoref{app:proof_rate} asymptotic rates of convergence for online Sinkhorn, with
+$C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}. Using bounds from \cite{moulines_non-asymptotic_2011}, we derive  asymptotic rates of convergence for online Sinkhorn (see \autoref{app:proof_rate}), with
 respect to the number of observed samples $N$. We write $\delta_N = \Vert \hat
 f_{t(N)} - f^\star \Vert_{\var} + \Vert \hat g_{t(N)} - g^\star \Vert_{\var}$,
 where $t(N)$ is the iteration number for which $n_t > N$ samples have been observed.
@@ -124,7 +124,7 @@ Online Sinkhorn thus provides estimators of potentials whose asymptotic sample
 complexity in variational norm is arbitrarily close to $\Oo(\frac{1}{N})$. To
 the best of our knowledge, this is an original property. It also results in a distance estimator $\hat \Ww_N$ whose
 complexity is arbitrarily close to $\Oo(\frac{1}{\sqrt{N}})$, recovering
-existing asymptotic rates from \cite{2019-Genevay-aistats}, for any Lipschitz cost. We derive non-asymptotic rates in \autoref{sec:proof_prop_convergence} (see \eqref{eq:non-asymptotic}), that explicits the
+existing asymptotic rates from \cite{2019-Genevay-aistats}, for any Lipschitz cost. We derive non-asymptotic rates in \autoref{app:proof_rate} (see \eqref{eq:non-asymptotic}), that explicits the
 bias-variance trade-off when choosing the step-sizes and batch-sizes. They
 unfortunately rely on the non-explicit constant~$A$ from
 \autoref{prop:convergence_approx}. Note that using growing batch-sizes amounts
