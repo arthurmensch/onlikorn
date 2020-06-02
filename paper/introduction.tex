@@ -43,7 +43,7 @@ This approach was pushed forward for ML applications by
 computations, which make them suitable as a loss function in model training \citep{frogner2015learning, mensch_geometric_2019}.
 The Sinkhorn algorithm operates in two distinct phases: draw samples from the
 distributions and evaluate a pairwise distance matrix in the first phase;
-balance this distances matrix using Sinkhorn-Knopp iterations in the second
+balance this matrix using Sinkhorn-Knopp iterations in the second
 phase.
 
 This two-step approach does not estimate the true regularized OT
@@ -71,21 +71,19 @@ transport plan.
 \paragraph{Notations.} We denote $\Cc(\Xx)$ [$\Cc_+(\Xx)$] the set of [strictly
 positive] continuous functions over a metric space $\Xx$, $\Mm^+(\Xx)$ and
 $\Pp(\Xx)$ the set of positive and probability measures on $\Xx$, respectively.
-We write $(i, j]$ the sequence $[i+1, \dots,
-j]$.
-
+% We write $(i, j]$ the sequence $[i+1, \dots,
+% j]$.
 
 \section{Related work}\label{sec:related}
 
-\paragraph{Sinkhorn properties.} Sinkhorn algorithm computes $\epsilon$-accurate
+\paragraph{Sinkhorn properties.} The Sinkhorn algorithm computes $\epsilon$-accurate
 approximations of OT in $O(n^2/\epsilon^3)$ operations for a number $n$ of
-samples~\citep{altschuler2017near} (in contrast to the $O(n^3)$ complexity for an
-exact solution). Moreover, these Sinkhorn distances do not suffer from the
+samples~\citep{altschuler2017near} (in contrast with the $\Oo(n^3)$ complexity of exact OT). Moreover, Sinkhorn distances suffer less from the
 curse of dimensionality~\citep{2019-Genevay-aistats}, since the average error
-using $n$ random samples decays like $O(\epsilon^{-d/2}/\sqrt{n})$ in dimension
-$d$, in sharp contrast with the slow $O(1/n^{1/d})$ error decay of
-OT~\citep{dudley_speed_1969,weed2019sharp}. These Sinkhorn distances can furthermore be sharpened
-by entropic debiasing~\citep{2019-Feydy-aistats}. Our work is rather orthogonal to these references, as it focuses on estimating distances between continuous distributions.
+using $n$ samples decays like $\Oo(\epsilon^{-d/2}/\sqrt{n})$ in dimension
+$d$, in contrast with the slow $\Oo(1/n^{1/d})$ error decay of
+OT~\citep{dudley_speed_1969,weed2019sharp}. Sinkhorn distances can further be sharpened
+by entropic debiasing~\citep{2019-Feydy-aistats}. Our work is orthogonal, as we focus on estimating distances between continuous distributions.
 
 \paragraph{Continuous optimal transport.} Extending OT computations to arbitrary
 distributions (possibly having continuous densities) without relying on a fixed
@@ -105,10 +103,11 @@ Adversarial Networks (GANs)~\citep{arjovsky2017wgan} (see
 also~\citet{seguy2018large} for an extension to the estimation of transportation
 maps). There is however no theoretical guarantees for this type of dual
 approximations, due to the non-convexity of the resulting optimization problem.
-To our knowledge, the only mathematically rigorous algorithm uses reproducing
-Hilbert space representations of potentials~\citep{2016-genevay-nips}. As this
+To our knowledge, the only mathematically rigorous algorithm represents potentials in reproducing
+Hilbert space~\citep{2016-genevay-nips}. As this
 construction is generic to all optimisation problems over functions, the convergence is slow. Online Sinkhorn outperform RKHS representations (\autoref{sec:compare}).
 
 \paragraph{Stochastic approximation (SA).} Our approach may be seen as SA \cite{robbins_stochastic_1951} for finding the roots of an
-operator valued in a non-Hilbertian space. \cite{alber_stochastic_2012} studies
-SA for solving fixed-points in Hilbert spaces. Lack of Hilbertian structure in online Sinkhorn requires an original convergence analysis.
+operator valued in a non-Hilbertian functional space. \cite{alber_stochastic_2012} studies
+SA for solving fixed-points that are contractant in Hilbert spaces. Online Sinkhorn convergence relies on the contractance of a certain operator in a non-Hilbertian metric, and requires an ad-hoc analysis. 
+As both are SA instances, the online Sinkhorn algorithm resembles stochastic EM \cite{celeux_stochastic_1992}, though it cannot be interpreted as such.
