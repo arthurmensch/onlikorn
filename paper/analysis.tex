@@ -7,10 +7,10 @@ We show a
 stationary distribution convergence property for the randomized Sinkhorn algorithm,
  an approximate convergence property for the online Sinkhorn algorithm with
 fixed batch-size and an exact convergence result for online Sinkhorn with
-increasing batch sizes, with asymptotic convergence rates. We make the following classical assumption on the cost regularity and compacity of $\alpha$ and $\beta$.
+increasing batch sizes, with asymptotic convergence rates. We make the following classical assumption on the cost regularity and compactness of $\alpha$ and $\beta$.
 
 \begin{assumption}\label{ass:lip}
-    The cost $C: \Xx \times \Xx \to \RR$ is $L$-lipschitz, and $\Xx$ is  compact.
+    The cost $C: \Xx \times \Xx \to \RR$ is $L$-Lipschitz, and $\Xx$ is  compact.
 \end{assumption}
 
 \subsection{Randomized Sinkhorn}
@@ -71,13 +71,13 @@ We make the following \citet{robbins1951stochastic} assumption on the weight seq
     \end{equation}
 \end{proposition}
 
-The proof is reported in \autoref{sec:proof_convergence_approx}. It is unfortunately not possible
+The proof is reported in \autoref{sec:proof_convergence_approx}. It is not possible
 to ensure the convergence of online Sinkhorn with constant batch-size. This is a
 fundamental difference with other SA algorithms, e.g. SGD on strongly convex
 objectives (see \cite{moulines_non-asymptotic_2011}). This stems from the fact
 that the metric for which $\text{Id} - \Ff$ is contracting is
-not a Hilbert norm. The non-explicit constant $A$ depends on $L$, the diameter of $\Xx$, and the measures $\alpha$ and
-$\beta$. In particular, it behaves as $\exp(-\frac{1}{\varepsilon})$ when the
+not a Hilbert norm. The constant $A$ depends on $L$, the diameter of $\Xx$, the measures $\alpha$ and
+$\beta$, and behaves as $\exp(-\frac{1}{\varepsilon})$ when the
 regularization $\varepsilon \to 0$.
 % 
 % This is comparable to the error obtained when performing Sinkhorn without resampling, as
@@ -93,13 +93,13 @@ with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly), a
 assumption.
 
 \begin{assumption}\label{ass:double_weights}
-    For all $t > 0$, the batch-size $n(t) = \frac{n}{w_t^2}$ is an integer. $\sum w_t \eta_t <
+    For all $t > 0$, the batch-size $n(t) = \frac{n}{w_t^2}$ is an integer, $\sum w_t \eta_t <
     \infty$ and $\sum \eta_t = \infty$.
 \end{assumption}
 
 \begin{proposition}\label{prop:convergence_true}
     Under \autoref{ass:lip} and
-    \ref{ass:double_weights}, the online Sinkhorn algorithm converge almost surely:
+    \ref{ass:double_weights}, the online Sinkhorn algorithm converges almost surely:
     \begin{equation}
         \Vert \hat f_t - f^\star \Vert_{\var} + \Vert \hat g_t - g^\star \Vert_{\var} \to 0.
     \end{equation}
@@ -107,7 +107,7 @@ assumption.
 
 The proof is reported in \autoref{sec:proof_prop_convergence}. It relies on a uniform
 law of large number for functions \citep[][chapter
-19]{van_der_vaart_asymptotic_2000} and on the uniform contractance of soft
+19]{van_der_vaart_asymptotic_2000} and on the uniform contractance of the soft
 $C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}. Using bounds from \cite{moulines_non-asymptotic_2011}, we derive  asymptotic rates of convergence for online Sinkhorn (see \autoref{app:proof_rate}), with
 respect to the number of observed samples $N$. We write $\delta_N = \Vert \hat
 f_{t(N)} - f^\star \Vert_{\var} + \Vert \hat g_{t(N)} - g^\star \Vert_{\var}$,
@@ -124,7 +124,7 @@ Online Sinkhorn thus provides estimators of potentials whose asymptotic sample
 complexity in variational norm is arbitrarily close to $\Oo(\frac{1}{N})$. To
 the best of our knowledge, this is an original property. It also results in a distance estimator $\hat \Ww_N$ whose
 complexity is arbitrarily close to $\Oo(\frac{1}{\sqrt{N}})$, recovering
-existing asymptotic rates from \cite{2019-Genevay-aistats}, for any Lipschitz cost. We derive non-asymptotic rates in \autoref{app:proof_rate} (see \eqref{eq:non-asymptotic}), that explicits the
+existing asymptotic rates from \cite{2019-Genevay-aistats}, for any Lipschitz cost. We derive non-asymptotic rates in \autoref{app:proof_rate} (see \eqref{eq:non-asymptotic}), which make explicit the
 bias-variance trade-off when choosing the step-sizes and batch-sizes. They
 unfortunately rely on the non-explicit constant~$A$ from
 \autoref{prop:convergence_approx}. Note that using growing batch-sizes amounts
