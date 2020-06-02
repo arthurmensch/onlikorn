@@ -93,7 +93,7 @@ with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly), a
 assumption.
 
 \begin{assumption}\label{ass:double_weights}
-    For all $t > 0$, the batch-size $n(t) = \frac{n}{w_t^2}$ is an integer. $\sum w_t \eta_t <
+    For all $t > 0$, the batch-size $n(t) = \frac{B}{w_t^2}$ is an integer. $\sum w_t \eta_t <
     \infty$ and $\sum \eta_t = \infty$.
 \end{assumption}
 
@@ -108,7 +108,7 @@ assumption.
 The proof is reported in \autoref{sec:proof_prop_convergence}. It relies on a uniform
 law of large number for functions \citep[][chapter
 19]{van_der_vaart_asymptotic_2000} and on the uniform contractance of soft
-$C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}. Using bounds from \cite{moulines_non-asymptotic_2011}, we derive  asymptotic rates of convergence for online Sinkhorn (see \autoref{app:proof_rate}), with
+$C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}. Finally, using bounds from \cite{moulines_non-asymptotic_2011}, we derive  asymptotic rates of convergence for online Sinkhorn (see \autoref{app:proof_rate}), with
 respect to the number of observed samples $N$. We write $\delta_N = \Vert \hat
 f_{t(N)} - f^\star \Vert_{\var} + \Vert \hat g_{t(N)} - g^\star \Vert_{\var}$,
 where $t(N)$ is the iteration number for which $n_t > N$ samples have been observed.
@@ -131,7 +131,9 @@ unfortunately rely on the non-explicit constant~$A$ from
 to increase the budget of a single iteration over time: the overall
 computational complexity after seeing $N$ samples is always $\Oo(N^2)$.
 
-% \paragraph{Choosing batch-sizes.}
+In practice, setting rates as in
+\autoref{prop:rate} is very inefficient at the algorithm start. Choosing $\eta_t = \frac{1}{\sqrt{t}}$ and $w_t = \lceil B t^{1 + \iota} \rceil$
+shows the overall best performance.
 
 % Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
 % provided that we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c >

@@ -75,19 +75,19 @@ this should be further investigated.
 %      Curves averaged over 5 runs. \label{fig:early_compute}}
 % \end{figure}
 
-\begin{figure*}[t]
+\begin{figure}[t]
     \centering
     \if\icml0
     \begin{widepage}
     \fi
     \includegraphics[width=\linewidth]{continuous.pdf}
-    \caption{Convergence of online Sinkhorn for a 1D problem: the blue curves represents the estimated potentials (continuous functions) at different stages of the algorithm. The potentials and transport plan match nearly perfectly the true potentials (estimated on a grid $N = 5000$). $\varepsilon = 10^{-2} \max \hat C$.
+    \caption{.
     \label{fig:potentials}
     }
     \if\icml0
     \end{widepage}
     \fi
-\end{figure*}
+\end{figure}
 
 \subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
 
@@ -158,9 +158,3 @@ computational complexity of both algorithms are comparable. Online Sinkhorn does
 not require to set any hyperparameters, whereas we observed that SGD in RKHS is very
 sensitive to bandwidth selection.
 
-% \begin{figure}[t]
-%     \centering
-%     \includegraphics[width=\linewidth]{continuous_francis-crop.pdf}
-%     \caption{Comparing online Sinkhorn with SGD over a RKHS representation of the potential \citep{2016-genevay-nips}, with best bandwidth parameter. Online Sinkhorn finds more accurate functional representations of potentials, thanks to its more appropriate parametrization. $\varepsilon = 10^{-1} \max \hat C$.}
-%     \label{fig:comparison_rkhs}
-% \end{figure}
