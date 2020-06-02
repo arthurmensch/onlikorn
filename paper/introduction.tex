@@ -93,7 +93,7 @@ regularization, over an Euclidean space, this can be solved efficiently using
 the computation of Voronoi-like diagrams~\citep{merigot2011multiscale}. This
 idea can be extended to entropic-regularized OT~\citep{cuturi2018semidual}, and
 can also be coupled with stochastic optimization
-method~\citep{2016-genevay-nips} to tackle high dimensional problems (see
+methods~\citep{2016-genevay-nips} to tackle high dimensional problems (see
  \cite{staib2017parallel} for an extension to Wasserstein barycenters). When dealing with arbitrary continuous densities, that are accessed through a
 stream of random samples, the challenge is to approximate  the (continuous) dual
 variables of the regularized Kantorovich LP using parametric or non-parametric
@@ -104,10 +104,10 @@ also~\citet{seguy2018large} for an extension to the estimation of transportation
 maps). There is however no theoretical guarantees for this type of dual
 approximations, due to the non-convexity of the resulting optimization problem.
 To our knowledge, the only mathematically rigorous algorithm represents potentials in reproducing
-Hilbert space~\citep{2016-genevay-nips}. As this
-construction is generic to all optimisation problems over functions, the convergence is slow. Online Sinkhorn outperform RKHS representations (\autoref{sec:compare}).
+Hilbert space~\citep{2016-genevay-nips}. This
+approach is generic and does not leverage the specific structure of the OT problem, so that in practice its convergence is slow. Section~\autoref{sec:compare} shows that online Sinkhorn outperform RKHS representations.
 
 \paragraph{Stochastic approximation (SA).} Our approach may be seen as SA \cite{robbins_stochastic_1951} for finding the roots of an
-operator valued in a non-Hilbertian functional space. \cite{alber_stochastic_2012} studies
-SA for solving fixed-points that are contractant in Hilbert spaces. Online Sinkhorn convergence relies on the contractance of a certain operator in a non-Hilbertian metric, and requires an ad-hoc analysis. 
+operator in a non-Hilbertian functional space. \cite{alber_stochastic_2012} studies
+SA for solving fixed-points that are contractant in Hilbert spaces. Online Sinkhorn convergence relies on the contractance of a certain operator in a non-Hilbertian metric, and requires a specific analysis. 
 As both are SA instances, the online Sinkhorn algorithm resembles stochastic EM \cite{celeux_stochastic_1992}, though it cannot be interpreted as such.
