@@ -443,13 +443,17 @@ At iteration $t(n)$, with empirical realization $\bar \alpha_t$ and $\bar
 \begin{equation}
     \hat \Ww(\alpha, \beta) = \frac{1}{n} \sum_{i=1}^n f_{t(n)}(x_i) + \frac{1}{n} \sum_{i=1}^n g_{t(n)}(y_i),
 \end{equation}
-We can bound the estimation error $|\hat \Ww(\alpha, \beta) - \Ww(\alpha, \beta) | =
-\Oo(\frac{1}{\sqrt{n}})$, dominated by the integral evaluation noise. We thus recover
-a new estimator of the Sinkhorn distance with the same sample complexity as the
-batch Sinkhorn estimator \citep{2019-Genevay-aistats}. Our estimator enjoys a
-refined rate in estimating the potentials.
+We can bound the estimation error $|\hat \Ww(\alpha, \beta) - \Ww(\alpha, \beta)
+| = \Oo(\frac{1}{\sqrt{n}})$, dominated by the integral evaluation noise. We
+thus recover a new estimator of the Sinkhorn distance with the same sample
+complexity as the batch Sinkhorn estimator \citep{2019-Genevay-aistats}. Our
+estimator enjoys an original rate for estimating the potentials in $\Vert \cdot
+\Vert_{\var}$.
 
-\section{Fully-corrective scheme}\label{app:fully_corrective}
+\pagebreak
+\section{Online Sinkhorn variants}
+
+\subsection{Fully-corrective scheme}\label{app:fully_corrective}
 
 We report the fully-corrective online Sinkhorn algorithm in \autoref{alg:full_corrective}. This algorithm also enjoys almost sure convergence, provided that the following assumption is met.
 
@@ -473,6 +477,32 @@ We report the fully-corrective online Sinkhorn algorithm in \autoref{alg:full_co
     \caption{Fully-corrective online Sinkhorn}\label{alg:full_corrective}
 \end{algorithm}
 
+\begin{algorithm}[t]
+    \begin{algorithmic}
+    \Input Distribution $\alpha \in \triangle^N$ and 
+    $\beta \in \triangle^N$, $x \in \RR^{n \times d}$, 
+    $y \in \RR^{n \times d}$, learning weights ${(\eta_t)}_t$
+    \State \textbf{Set} $p = q = - \infty \in \RR^n$.
+    \For{$t= 1, \dots, {T}$}
+        \State $q \gets q + \log(1 - \eta_t)$, $p \gets p + \log(1 - \eta_t)$.
+        \State Sample $J_t \subset [1, N]$, $I_t \subset [1, N]$ of size $n(t)$.
+        \For{$i \in J_t$}
+            \State $q_i \gets \log \Big( \exp(q_i)
+            + \exp\big(\log(\eta_t) - \log \frac{1}{N} 
+            \sum_{j=1}^{N} \exp(p_j - C(x_j, y_i)\big) \Big) $.
+        \EndFor
+        \For{$i \in I_t$}
+        \State $p_i \gets \log \Big( \exp(q_i)
+        + \exp \big( \log(\eta_t) - \log \frac{1}{M} 
+        \sum_{j=1}^{M} \exp(q_j - C(x_i, y_j)\big) \Big)$.
+        \EndFor
+    \EndFor
+    \State Returns $f_T : (q, y)$ and
+    $g_T : (p, x)$
+    \end{algorithmic}
+    \caption{Online Sinkhorn potentials in the discrete setting}\label{alg:discrete_online}
+\end{algorithm}
+
 \begin{assumption}\label{ass:total_growing}
     For all $t > 0$, the \textit{total} batch-size $n_t = \frac{B}{w_t^2}$ is an
         integer. The step-size $\eta_t$ and the batch-size $n_t$ grows so that
@@ -492,6 +522,145 @@ is sufficient to use a constant batch-size $n(t) = B$ to meet \autoref{ass:total
     \end{equation}
 \end{proposition}
 
+
+
+\subsection{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
+
+The online Sinkhorn algorithm takes a simpler form with discrete
+distributions. We derive it in \autoref{alg:discrete_online}. We set $\alpha$
+and $\beta$ to have size $N$ and $M$, respectively. We evaluate
+the potentials as
+\begin{align}
+    g_t(y) &= - \log \sum_{j=1}^N \exp(p_j - C(x_j, y)) \\
+    f_t(x) &= - \log \sum_{j=1}^M \exp(q_j - C(x, y_j)), \\
+\end{align}
+
+\vspace{-2em}
+where $(p_j)_{J \in [1, N]}$ and $(q_j)_{J \in [1, M]}$ are fixed-size vectors.
+Note that the computations written in \autoref{alg:discrete_online} are
+in log-space,as they should be implemented to prevent numerical overflows. The sets $|I|$ and $|J|$ can
+have varying sizes along the algorithm, which allows for example to speed-up the
+initial Sinkhorn iteration (\autoref{sec:accelerating}). In this case, the
+cost matrix $\hat C = C(x_i,y_j))_{i,j}$ should be progressively recorded along the algorithm iterations.
+
+\pagebreak
+\section{Supplementary numerical experiments}
+
+We report the supplementary figures mentionned in the main text, as well as experimental details.
+
+\subsection{All convergence curves for online Sinkhorn and variants}\label{app:online_exp}
+
+\paragraph{Grids and details for \autoref{sec:online_exp}.} We use $\eta_t, n(t)
+= \frac{1}{(1 + 0.1t)^a}, 100 (1 + 0.1t)^{b}$, with $a, b = 0, 2$, $a, b =
+\frac{1}{2}, 1$ and $a,b =1, 0$ (constant batch-sizes). We train Sinkhorn on $t
+= 5000$ iterations, and O-S to match the number of computations of the large
+Sinkhorn reference.
+
+\paragraph{All O-S convergence curves.} To complete \autoref{fig:convergence}, \autoref{fig:convergence_all} report the
+performance of online Sinkhorn for $\varepsilon \in [10^{-4}, 10^{-3}, 10^{-2},
+10^{-1}]$. The comparison of performance remains similar to the one produced in the main text.
+
+\paragraph{Fully-corrective online Sinkhorn.}\autoref{fig:convergence_refit} reports the performance of
+fully-corrected online Sinkhorn (FC-OS). We observe that the fully-corrective scheme is less noisy than the
+non-corrected one. It is less efficient than O-S on low-dimensional problems,
+but faster on the 10 dimensional problem. For GMM-10D, it outperforms the batch Sinkhorn algorithm
+with $N=100, 1000$. Note that we interrupt FC-OS for $n_t > 20,000$, as our implementation of the $C$-transform has a quadratic memory cost in $n_t$---that can be made linear with more care \cite{}.
+
+\paragraph{Randomized Sinkhorn.}\autoref{fig:convergence_randomized} reports
+the performance of randomized Sinkhorn.
+
+\paragraph{OT between Gaussians}\autoref{fig:gaussian} reports the performance of online Sinkhorn to transform one Gaussian distribution $\alpha$ to another $\beta$. Potentials are known exactly for this problem, which allows to have a strong golden standard.
+
+\subsection{All convergence curves for online Sinkhorn warmup}\label{app:online_exp}
+
+\paragraph{Grids and details for \autoref{sec:online_exp}.} We use $\eta_t, n(t)
+= \frac{1}{(1 + 0.1t)^a}, 100 (1 + 0.1t)^{b}$, with $a, b = 0, 2$, $a, b =
+\frac{1}{2}, 1$ and $a,b =1, 0$ (constant batch-sizes). We evaluated O-S and
+fully-corrective O-S, and found that fully-corrective was less efficient (due to
+its higher cost in the early iterations). We evaluated sampling with and without
+replacement in the warmyp phase, and found sampling without replacement to be
+more efficient.
+
+\paragraph{All warmup convergence curves.} To complete \autoref{fig:warmup}, we report convergence curves for different $\varepsilon$ in \autoref{fig:warmup_full}
+
+
+
+
+
+
+\begin{figure}[t]
+    \centering
+    $\varepsilon = 0.1$
+
+    \includegraphics{online_0.1_False_test}
+    
+    $\varepsilon = 0.01$
+    \includegraphics{online_0.01_False_test}
+
+    $\varepsilon = 0.001$
+
+    \includegraphics{online_0.001_False_test}
+
+    $\varepsilon = 0.0001$
+
+    \includegraphics{online_0.0001_False_test}
+    \caption{Performance of online Sinkhorn for various $\varepsilon$.}
+    \label{fig:convergence_all}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    $\varepsilon = 0.1$
+
+    \includegraphics{online_0.1_True_test}
+    
+    $\varepsilon = 0.01$
+    \includegraphics{online_0.01_True_test}
+
+    $\varepsilon = 0.001$
+
+    \includegraphics{online_0.001_True_test}
+
+    $\varepsilon = 0.0001$
+
+    \includegraphics{online_0.0001_True_test}
+    \caption{Performance of fully-corrective online Sinkhorn for various $\varepsilon$.}
+    \label{fig:convergence_refit}
+\end{figure}
+
+\begin{figure}[t]
+    
+    \caption{Performance of randomized Sinkhorn for various $\varepsilon$.}
+    \label{fig:convergence_randomized}
+\end{figure}
+
+\begin{figure}[t]
+    \caption{Performance of randomized Sinkhorn for various $\varepsilon$.}
+    \label{fig:gaussian}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    $\varepsilon = 0.1$
+
+    \includegraphics{online+full_0.1_err}
+    
+    $\varepsilon = 0.01$
+    
+    \includegraphics{online+full_0.01_err}
+
+    $\varepsilon = 0.001$
+
+    \includegraphics{online+full_0.001_err}
+
+    $\varepsilon = 0.0001$
+
+    \includegraphics{online+full_0.0001_err}
+    \caption{Performance of online-Sinkhorn as warmup for various $\varepsilon$.}
+    \label{fig:warmup_full}
+\end{figure}
+
+\pagebreak
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Stochastic mirror descent interpretation}
@@ -577,66 +746,22 @@ $\eta_t=1$, the algorithm matches exactly Sinkhorn iterations with simultaneous 
 Note that one can not directly apply the proofs of convergence of mirror descent to our problem, as the lack of convexity of problem \eqref{eq:wass_reparam} prevents their use.
 
 
-\section{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
 
-The online Sinkhorn algorithm takes a simpler form when dealing with discrete
-distributions. We derive it in \autoref{alg:discrete_online}. We set $\alpha$
-and $\beta$ to have size $N$ and $M$, respectively. In this case, we evaluate
-the potentials as
-\begin{align}
-    g_t(y) &= - \log \sum_{j=1}^N \exp(p_j - C(x_j, y)) \\
-    f_t(x) &= - \log \sum_{j=1}^M \exp(q_j - C(x, y_j)), \\
-\end{align}
-where $(p_j)_{J \in [1, N]}$ and $(q_j)_{J \in [1, M]}$ are fixed-size vectors.
-Note that the computations written in \autoref{alg:discrete_online} are
-in log-space,as they should be implemented to prevent numerical overflows. The sets $|I|$ and $|J|$ can
-have varying sizes along the algorithm, which allows for example to speed-up the
-initial Sinkhorn iteration (\autoref{sec:accelerating}). In this case, the
-cost matrix $\hat C = C(x_i,y_j))_{i,j}$ should be progressively computed along the algorithm iterations.
+% \section{Experiments}\label{sec:supp_exp}
 
-\begin{algorithm}[t]
-    \begin{algorithmic}
-    \Input Distribution $\alpha \in \triangle^N$ and 
-    $\beta \in \triangle^N$, $x \in \RR^{n \times d}$, 
-    $y \in \RR^{n \times d}$, learning weights ${(\eta_t)}_t$
-    \State \textbf{Set} $p = q = - \infty \in \RR^n$.
-    \For{$t= 1, \dots, {T}$}
-        \State $q \gets q + \log(1 - \eta_t)$, $p \gets p + \log(1 - \eta_t)$.
-        \State Sample $J_t \subset [1, N]$, $I_t \subset [1, N]$ of size $n(t)$.
-        \For{$i \in J_t$}
-            \State $q_i \gets \log \Big( \exp(q_i)
-            + \exp\big(\log(\eta_t) - \log \frac{1}{N} 
-            \sum_{j=1}^{N} \exp(p_j - C(x_j, y_i)\big) \Big) $.
-        \EndFor
-        \For{$i \in I_t$}
-        \State $p_i \gets \log \Big( \exp(q_i)
-        + \exp \big( \log(\eta_t) - \log \frac{1}{M} 
-        \sum_{j=1}^{M} \exp(q_j - C(x_i, y_j)\big) \Big)$.
-        \EndFor
-    \EndFor
-    \State Returns $f_T : (q, y)$ and
-    $g_T : (p, x)$
-    \end{algorithmic}
-    \caption{Online Sinkhorn potentials in the discrete setting}\label{alg:discrete_online}
-\end{algorithm}
+% We report the performance of online+full Sinkhorn for $\epsilon \sim 10^{-4}
+% \max C$ in \autoref{fig:early_compute_low_eps}. Although the gains are less
+% important than with higher $\varepsilon$, they remain significant in this low
+% regularization regime.
 
+% \paragraph{Grids in \autoref{sec:exp1}.} We run the online Sinkhorn algorithm
+% with step-sizes $\eta_t = \frac{1}{t^a}$, $a \in \{ \frac{1}{2}, 1 \}$
+% and $w_t = \frac{1}{{t^b}}$, $b \in \{ \frac{1}{2}, 1 \}$. In all
+% experiments, $a = b = \frac{1}{2}$ turned out to perform best.
 
-
-\section{Experiments}\label{sec:supp_exp}
-
-We report the performance of online+full Sinkhorn for $\epsilon \sim 10^{-4}
-\max C$ in \autoref{fig:early_compute_low_eps}. Although the gains are less
-important than with higher $\varepsilon$, they remain significant in this low
-regularization regime.
-
-\paragraph{Grids in \autoref{sec:exp1}.} We run the online Sinkhorn algorithm
-with step-sizes $\eta_t = \frac{1}{t^a}$, $a \in \{ \frac{1}{2}, 1 \}$
-and $w_t = \frac{1}{{t^b}}$, $b \in \{ \frac{1}{2}, 1 \}$. In all
-experiments, $a = b = \frac{1}{2}$ turned out to perform best.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=.8\textwidth]{early_compute_low_eps.pdf}
-    \caption{Online Sinkhorn accelerates the first Sinkhorn iterations even for low regularization. $\varepsilon = 10^{-4} \max C$.}
-    \label{fig:early_compute_low_eps}
-\end{figure}
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=.8\textwidth]{early_compute_low_eps.pdf}
+%     \caption{Online Sinkhorn accelerates the first Sinkhorn iterations even for low regularization. $\varepsilon = 10^{-4} \max C$.}
+%     \label{fig:early_compute_low_eps}
+% \end{figure}

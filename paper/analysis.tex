@@ -75,9 +75,8 @@ to ensure the convergence of online Sinkhorn with constant batch-size. This is a
 fundamental difference with other SA algorithms, e.g. SGD on strongly convex
 objectives (see \cite{moulines_non-asymptotic_2011}). This stems from the fact
 that the metric for which $\text{Id} - \Ff$ is contracting is
-not a Hilbert norm. The constant $A$ depends on $L$, the diameter of $\Xx$, the measures $\alpha$ and
-$\beta$, and behaves as $\exp(\frac{1}{\varepsilon})$ when the
-regularization $\varepsilon \to 0$.
+not a Hilbert norm. The constant $A$ depends on $L$, the diameter of $\Xx$ and the regularity of potentials $f^\star$ and $g^\star$, but not on the dimension. It behaves like $\exp(\frac{1}{\varepsilon})$ when the
+$\varepsilon \to 0$.
 Fortunately, we can show the almost sure convergence of the online Sinkhorn algorithm
 with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly for $\eta_t = \frac{1}{t}$), as specified in the following
 assumption.
@@ -98,7 +97,7 @@ assumption.
 The proof is reported in \autoref{sec:proof_prop_convergence}. It relies on a uniform
 law of large number for functions \citep[][chapter
 19]{van_der_vaart_asymptotic_2000} and on the uniform contractance of soft
-$C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}. Finally, using bounds from \cite{moulines_non-asymptotic_2011}, we derive  asymptotic rates of convergence for online Sinkhorn (see \autoref{app:proof_rate}), with
+$C$-transform operator \citep[e.g.][Proposition 19]{vialard2019elementary}. Consistency of the iterates is an original property---\cite{2016-genevay-nips} only show convergence of the OT value. Finally, using bounds from \cite{moulines_non-asymptotic_2011}, we derive  asymptotic rates of convergence for online Sinkhorn (see \autoref{app:proof_rate}), with
 respect to the number of observed samples $N$. We write $\delta_N = \Vert \hat
 f_{t(N)} - f^\star \Vert_{\var} + \Vert \hat g_{t(N)} - g^\star \Vert_{\var}$,
 where $t(N)$ is the iteration number for which $n_t > N$ samples have been observed.
@@ -115,14 +114,14 @@ complexity in variational norm is arbitrarily close to $\Oo(\frac{1}{N})$. To
 the best of our knowledge, this is an original property. It also results in a
 distance estimator $\hat \Ww_N$ whose complexity is arbitrarily close to
 $\Oo(\frac{1}{\sqrt{N}})$, recovering existing asymptotic rates from
-\cite{2019-Genevay-aistats}, for any Lipschitz cost. For low $\epsilon$, $D$ is proportional to $A
-\exp(\frac{1}{\epsilon})$, and therefore explodes for $\varepsilon \to 0$.
-We derive non-asymptotic rates in \autoref{app:proof_rate} (see
-\eqref{eq:non-asymptotic}), which make explicit the bias-variance trade-off when
-choosing the step-sizes and batch-sizes. Note that
-using growing batch-sizes amounts to increase the budget of a single iteration
-over time: the overall computational complexity after seeing $N$ samples is
-always $\Oo(N^2)$.
+\cite{2019-Genevay-aistats}, for any Lipschitz cost. We give the explicit form
+of $D$ in the appendix. It does not depend on the dimension. For low $\epsilon$,
+$D$ is proportional to $A \exp(\frac{1}{\epsilon})$, and therefore explodes for
+$\varepsilon \to 0$. We derive non-asymptotic rates in \autoref{app:proof_rate}
+(see \eqref{eq:non-asymptotic}), which make explicit the bias-variance trade-off
+when choosing the step-sizes and batch-sizes. Note that using growing
+batch-sizes amounts to increase the budget of a single iteration over time: the
+overall computational complexity after seeing $N$ samples is always $\Oo(N^2)$.
 
 % Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
 % provided that we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c >
