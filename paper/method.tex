@@ -28,7 +28,7 @@ seen as mini-batches of size $n$ within a training procedure.
 The optimization trajectory ${(f_t, g_t)}_t$ of the continuous Sinkhorn
 algorithm given by \eqref{eq:sinkhorn} is untractable as it cannot be
 represented in memory. The exp-potentials $u_t \triangleq \exp(- f_t)$ and $v_t
-\triangleq \exp(-g_t)$ are indeed infinite mixtures of kernel functions
+\triangleq \exp(-g_t)$ are indeed infinitesimal mixtures of kernel functions
 $\kappa_y(\cdot) \eqdef \exp(-C(\cdot, y))$ and $\kappa_x(\cdot) \eqdef \exp(-C(x, \cdot))$. 
 
 We propose to construct finite-memory consistent estimates of $u_t$ and $v_t$ using

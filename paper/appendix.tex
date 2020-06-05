@@ -231,27 +231,26 @@ converges towards the scalar expected value
 \end{equation}
 We now relate $r_\infty$ to the number of samples $n$ using
 a uniform law of large number result on parametric functions.
-
-We now write $\hat \beta = \hat \beta_n$ to make explicit the dependency of the
-quantities on the batch size $n$. We choose $g^\star = g^\star_0$ such that
-$\max_{x \in X} g^\star_0(x) = 0$ without loss of generality.
+We write $\hat \beta = \hat \beta_n$ to make explicit the dependency of the
+quantities on the batch size $n$.
 
 Using \autoref{lemma:lln}, we bound the quantity
 \begin{align}
-    E_n &\triangleq \EE_{\hat \beta_n} {\Vert \exp(-\Ctrans{g^\star}{\beta})
-    - \exp(-\Ctrans{g^\star}{\hat \beta_n}) \Vert}_{\infty} \\
+    E_n &\triangleq \EE_{\hat \beta_n} {\Vert \epsilon_{\hat \beta_n} \Vert}_{\var}
+     = \EE_{\hat \beta_n} {\Vert \exp(-\Ctrans{g^\star_0}{\beta})
+    - \exp(-\Ctrans{g^\star_0}{\hat \beta_n}) \Vert}_{\infty} \\
     &= \EE_{Y_1, \dots Y_n \sim \beta} 
     \sup_{x \in \Xx}
      \Big| \frac{1}{n} \sum_{i=1}^n \exp(g^\star(Y_i)) - C(x, Y_i)) \\
-      &\phantom{=}\qquad\qquad\qquad\quad- \EE_{Y \sim \beta}[\exp(g^\star(Y)) - C(x, Y)] \Big| \\
+      &\phantom{=}\qquad\qquad\qquad\quad- \EE_{Y \sim \beta}[\exp(g^\star_0(Y)) - C(x, Y)] \Big| \\
       &= \EE \sup_{x \in \Xx} | \frac{1}{n} \sum_{i=1}^n \phi_i(x) - \phi(x) | ,
 \end{align}
 where we have defined $\phi_i: x \to \exp(g^\star(Y_i) - C(x, Y_i))$ and set
 $\phi$ to be the expected value of each $\phi_i$. The compactness of $\Xx$
 ensures that the functions  are square integrable and uniformly bounded.
-\autoref{lemma:lln} ensures that there exists $S(g^\star_0)$ such that
+\autoref{lemma:lln} ensures that there exists $S(g^\star)$ such that
 \begin{equation}
-    E_n \leq \frac{S(g^\star_0)}{\sqrt{n}}.
+    E_n \leq \frac{S(g^\star)}{\sqrt{n}}.
 \end{equation}
 We now bound $\EE_{\hat \beta_n} {|| \epsilon_{\hat \beta_n} ||}_\var$ using the
  quantity $E_n$. First, we observe that $\Vert_{\var} = g^\star_{\min} < g^\star
@@ -302,9 +301,11 @@ and \eqref{eq:const_ineq} on each conditional expectation:
     + \PP\left[\tilde E_n > \frac{1}{2}\right]      \EE \left[ {|| \varepsilon_{\hat \beta_n} ||}_{\var}
     \Big| \tilde E_n > \frac{1}{2}\right] \\
     &\leq \frac{2 \phi({\Vert g^\star \Vert}_{\var} + C_{\max}) 
-    S(g^\star_0)}{\sqrt{n}} \triangleq \frac{A(g^\star)}{\sqrt{n}}
+    S(g^\star)}{\sqrt{n}}\\
+    &\leq \frac{4 \exp({\Vert g^\star \Vert}_{\var} + C_{\max}) 
+    S(g^\star)}{\sqrt{n}} \triangleq \frac{A(g^\star)}{\sqrt{n}}
 \end{align}
-where $\phi: x \to e^x +x$. The constants $S$ and therefore $A$ depends on the complexity of estimating
+The constants $S$ depends on the complexity of estimating
 the functional $x \to \int_y \exp(g^\star(y) - C(x,y)) \d \beta(y)$ with samples from $\beta$.
 A parallel
 result holds for $\EE_{\hat \alpha_n} {\Vert \iota_{\hat \alpha_n}
@@ -312,8 +313,8 @@ result holds for $\EE_{\hat \alpha_n} {\Vert \iota_{\hat \alpha_n}
 \frac{A(f^\star) + A(g^\star)}{\sqrt{n}}$. As for all $t >0$, $e_t \leq r_t \to_{t \to \infty}
 r_\infty$, the proposition follows,  writing $A = A(f^\star) + A(g^\star)$.
 
-The constant $A$ is in therefore in $\Omega(\exp(C_{\max}))$ when $C_{\max} \to
-\infty$, and hence in $\Omega(\exp(\frac{1}{\varepsilon}))$ when~$\varepsilon
+The constant $A$ is larger than $\exp(C_{\max})$ when $C_{\max} \to
+\infty$; Hence it behaves at least like $\exp(\frac{1}{\varepsilon})$ when~$\varepsilon
 \to 0$.
 
 Note that we have used twice a corollary of the law of large numbers: once when
@@ -372,12 +373,12 @@ almost surely.
 \subsection{Proof of \autoref{prop:rate}}\label{app:proof_rate}
 
 \begin{proof}
-The proof of \autoref{prop:convergence_true} allows us to derive non-asymptotic rates for potential estimations using the online Sinkhorn algorithm. Let us set $\eta_t = \frac{S}{t^a}$, $n(t) = \lceil B t^{2b} \rceil$ in \eqref{eq:Et_rec}, so that \autoref{ass:double_weights} is met.
+The proof of \autoref{prop:convergence_true} allows us to derive non-asymptotic rates for potential estimations using the online Sinkhorn algorithm. Let us set $\eta_t = \frac{\lambda}{t^a}$, $n(t) = \lceil B t^{2b} \rceil$ in \eqref{eq:Et_rec}, so that \autoref{ass:double_weights} is met.
 $\lceil \cdot \rceil$ denotes the ceiling function.
 We are left to study the recursion \eqref{eq:recursion}:
 \begin{equation}
-    \delta_{t+1} \triangleq \EE e_{t+1} \leq (1 - \frac{S(1 - \kappa)}{t^a}) \delta_t + 
-    \frac{A S}{\sqrt{B}{t^{a + b}}}
+    \delta_{t+1} \triangleq \EE e_{t+1} \leq (1 - \frac{\lambda(1 - \kappa)}{t^a}) \delta_t + 
+    \frac{A \lambda}{\sqrt{B}{t^{a + b}}}
 \end{equation}
 
 Following the derivations of \citet[Theorem 2]{moulines_non-asymptotic_2011}, we have the following
@@ -408,9 +409,9 @@ Therefore, when we have seen $N$ samples, the iteration number is superior to $t
 We write $\delta_N = \delta_{t(N)}$. Replacing \eqref{eq:tn} in \eqref{eq:rates} yields
 \begin{equation}\label{eq:non-asymptotic}
     \delta_n \leq 
-    (\delta_0 + \frac{A S}{(a + b - 1)\sqrt{B}})
-    \exp\left(- \frac{S(1 - \kappa)}{2} {(n /2)}^{\frac{1 - a}{2b+1}}\right)
-    + \frac{2 A S}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{a}{2b+1}}}.
+    (\delta_0 + \frac{A \lambda}{(a + b - 1)\sqrt{B}})
+    \exp\left(- \frac{\lambda(1 - \kappa)}{2} {(n /2)}^{\frac{1 - a}{2b+1}}\right)
+    + \frac{2 A \lambda}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{a}{2b+1}}}.
 \end{equation}
 We note that $b$ and $a$ should be as close to $0$ as possible to reduce the bias term, while $a$
 should be as close to $1$ and $b$ as close to $0$ as possible to reduce the variance
@@ -419,9 +420,9 @@ term. Of course, $b$ should remain larger than $1 - a$ to ensure convergence.
 To obtain the best asymptotical rates (the error is always dominated by the variance term), we set $a = 1 - \iota$, $ b = 2 \iota$, with $\iota \succsim 0$. This yields
 \begin{align}
     \delta_n &\leq 
-    (\delta_0 + \frac{A S}{\iota \sqrt{B}})
-    \exp\left(- \frac{S(1 - \kappa)}{2} {(n/2)}^{\frac{\iota}{1 + 4\iota}}\right)
-    + \frac{2 A S}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{1 - \iota}{1 + 4\iota}}} \\
+    (\delta_0 + \frac{A \lambda}{\iota \sqrt{B}})
+    \exp\left(- \frac{\lambda(1 - \kappa)}{2} {(n/2)}^{\frac{\iota}{1 + 4\iota}}\right)
+    + \frac{2 A \lambda}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{1 - \iota}{1 + 4\iota}}} \\
     &= \Oo(n^{-\frac{1 - \iota}{1 + 4 \iota}}).
 \end{align}
 

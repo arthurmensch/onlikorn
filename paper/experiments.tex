@@ -39,11 +39,11 @@
 
 
 The major purpose of online Sinkhorn (O-S) is to handle OT between continuous
-distributions.  We first show that it is a valid alternative to applying Sinkhorn on a single realization, using Gaussian mixture distributions of dimension
-1, 2 and 10. We illustrate how O-S accurately estimates the geometry of
+distributions.  We first show that it is a valid alternative to applying Sinkhorn on a single realization of continuous distributions, using Gaussian mixture of distributions of various dimension
+. We illustrate how O-S accurately estimates the geometry of
 the Kantorovich dual in 1 and 2D, significantly improving the result using SGD with RKHS
-expansions~\citep{2016-genevay-nips}. Finally, we show how online Sinkhorn
-provides an efficient warmup method to accelerate Sinkhorn on real discrete problems (from the Stanford 3D shape repository).
+expansions~\citep{2016-genevay-nips}. Finally, we show that O-S
+provides an efficient warmup method to accelerate Sinkhorn on real discrete problems (shapes from Stanford repository).
 
 
 \subsection{Consistent estimation of continuous OT}\label{sec:exp1}
@@ -72,10 +72,24 @@ provides an efficient warmup method to accelerate Sinkhorn on real discrete prob
 
 \subsection{Continuous potential estimation}
 
-\paragraph{Setting.}We measure the performance of our algorithm in a truly continuous
-setting, where $\alpha$ and $\beta$ are  parametric distributions (Gaussian
-mixtures in 1D and 2D), from which we draw samples. In the absence of a reference distance (which cannot be computed
-without a method akin to ours), we monitor the
+\paragraph{Data and validation.}We measure the performance of our algorithm in a
+truly continuous setting, where $\alpha$ and $\beta$ are  parametric
+distributions (Gaussian mixtures in 1D and 2D and 10D, with 3, 3 and 5 modes),
+from which we draw samples. In the absence of reference potentials $(f^\star,
+g^\star)$ (which cannot be computed without a method akin to ours), we compute
+"test" potentials $(\tilde f^\star, \tilde g^\star)$ on $\hat \alpha_0$ and
+$\hat \beta_0$ of size $N=10000$, using Sinkhorn. We then compare O-S to
+Sinkhorn algorithms of various size ($N=100,1000, 10000)$, trained on
+realizations independent from the reference grid. To measure convergence, we
+compute $\delta_t = \Vert \hat f_t - \tilde f^\star \Vert_{\var} + \Vert \hat f_t - \tilde
+f^\star \Vert_{\var}$. This distance is not expected to go to $0$, as we use
+test potentials. On the other hand, we expect it to converge with time to a
+certain value $\Vert f_\infty - \tilde f^\star \Vert_{\var} + \Vert g_\infty -
+\tilde g^\star \Vert_{\var}$. We plot
+
+
+
+we monitor the
 trajectories of the potentials, and compare them to the discrete potentials for
 realization $\hat \alpha$ and $\hat \beta$ of size $N=5000$. We set $n_T = 5000$,
 $\epsilon = 10^{-1} \max C$, $\eta_t = \frac{1}{\sqrt{t}}$ and $n(t) = 50 t$.
