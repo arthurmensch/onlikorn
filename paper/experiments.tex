@@ -29,12 +29,12 @@
 
 
 The major purpose of online Sinkhorn (O-S) is to handle OT between continuous
-distributions.  We first show that it is a valid alternative to applying Sinkhorn 
-on a single realization of continuous distributions, using examples of Gaussian mixtures of varying dimensions. 
+distributions.  We first show that it is a valid alternative to applying Sinkhorn
+on a single realization of continuous distributions, using examples of Gaussian mixtures of varying dimensions.
 %
-We then illustrate that O-S is able to estimate precisely 
+We then illustrate that O-S is able to estimate precisely
 Kantorovich dual potentials, significantly improving the result obtained using SGD with RKHS
-expansions~\citep{2016-genevay-nips}. 
+expansions~\citep{2016-genevay-nips}.
 %
 Finally, we show that O-S is an efficient warmup strategy to accelerate Sinkhorn for discrete problems on several datasets.
 
@@ -60,7 +60,7 @@ Finally, we show that O-S is an efficient warmup strategy to accelerate Sinkhorn
 % computation units. We further report the performance of using out-of-loop
 % averaging with $\gamma_t = \frac{1}{\sqrt{t}}$.
 
-\subsection{Continuous potentials estimation}\label{sec:continuous}
+\subsection{Continuous potential estimation with online Sinkhorn}\label{sec:continuous}
 
 \paragraph{Data and quantitative evaluation.}\label{sec:online_exp}
 
@@ -68,7 +68,7 @@ We measure the performance of our algorithm in a
  continuous setting, where $\alpha$ and $\beta$ are  parametric
 distributions (Gaussian mixtures in 1D, 2D and 10D, with 3, 3 and 5 modes, so
 that $C_{\max} \sim 1$), from which we draw samples. In the absence of reference
-potentials $(f^\star, g^\star)$ (which cannot be computed in closed form), 
+potentials $(f^\star, g^\star)$ (which cannot be computed in closed form),
 we compute ``test'' potentials $(f^\star_0, g^\star_0)$ on realizations $\hat
 \alpha_0$ and $\hat \beta_0$ of size $10000$, using Sinkhorn. We then compare
 O-S to Sinkhorn runs of various size , trained on realizations $N=(100,1000,
@@ -76,7 +76,7 @@ O-S to Sinkhorn runs of various size , trained on realizations $N=(100,1000,
 discrete problem between $\hat \alpha_0$ and $\hat \beta_0$). To measure
 convergence, we compute $\delta_t = \Vert \hat f_t - f^\star_0 \Vert_{\var} +
 \Vert \hat g_t -  g_0^\star \Vert_{\var}$, evaluated on the grid defined by
-$\hat \alpha_0$ and $\hat \beta_0$, which constitutes a Monte-Carlo approximation of the error. 
+$\hat \alpha_0$ and $\hat \beta_0$, which constitutes a Monte-Carlo approximation of the error.
 %
 We evaluate O-S with and without full-correction, with
 different batch-size schedules (see \autoref{app:online_exp}), as well as the randomized Sinkhorn algorithm. Quantitative results are average over 5 runs. We report quantitative results for $\epsilon = 10^{-3}$ and non fully-corrective online Sinkhorn in the main text, and all other curves in Supp.~\autoref{fig:convergence_all}. In
@@ -91,10 +91,10 @@ $\kappa$ is a reproducing kernel (typically a Gaussian). This differs
 significantly from online Sinkhorn, where we express $e^{-f_t}$ as a Gaussian
 mixture. The dual problem \eqref{eq:sinkhorn} is solved using SGD, with convergence guarantees on the dual energy.  As advocated
 by the authors, we run a grid search over the bandwidth parameter~$\sigma$ of
-the Gaussian kernel to select the best performing runs. 
+the Gaussian kernel to select the best performing runs.
 
 
-\paragraph{Earlier potential convergence.} 
+\paragraph{Earlier potential convergence.}
 We report convergence curves in \autoref{fig:convergence}, comparing algorithms
 at equal number of multiplications. For readability, we only report non
 fully-corrective O-S results. Online Sinkhorn outperforms or matches Sinkhorn for $N=100$
@@ -110,7 +110,7 @@ randomized O-S with batch-size $N$ performs on par with Sinkhorn of size $N$ (Su
 
 \paragraph{Better-extrapolated potentials.} As illustrated in
 \autoref{fig:potentials}, in 1D, online Sinkhorn refines the potentials $(\hat f_t, \hat g_t)_t$
-until convergence toward $(f^\star, g^\star)$. Supp.~\autoref{fig:potentials_2d} shows a visualisation for 2D GMM. As the parametrization~\eqref{eq:param} is 
+until convergence toward $(f^\star, g^\star)$. Supp.~\autoref{fig:potentials_2d} shows a visualisation for 2D GMM. As the parametrization~\eqref{eq:param} is
 adapted to the dual problem, the algorithm quickly identifies the correct shape of
 the optimal potentials---as predicted by \autoref{prop:convergence_true}. In
 particular, O-S estimates potentials with much less errors than SGD in a RKHS in
@@ -121,25 +121,27 @@ Sinkhorn does not require to set a bandwidth.
 \begin{figure}[t]
     \begin{minipage}{.7\textwidth}
     \includegraphics{online+full_0.001_err.pdf}
-    \caption{Online Sinkhorn allows to warmup Sinkhorn during the evaluation of the cost matrix, and to speed discrete optimal transport.}
-    \label{fig:warmup}
     \end{minipage}%
     \hfill
-    \begin{minipage}{.25\textwidth}
-        \small
-        \begin{tabular}{lc}
-            Dataset & Speed-up\\
+    \begin{minipage}{.3\textwidth}
+        \tiny
+        \begin{tabular}{lrrrr}
             \toprule
-            2D GMM & \\
-            10D GMM & \\
-            Stanford 3D & \\
+            $- \log(\varepsilon)$
+            &  4 & 3 & 2 & 1 \\
+            \midrule
+            Stanford      &     5.3 &    4.4 &    2.3 &    1.2 \\
+            10D GMM     &     1.4 &    1.5 &    1.3 &    1.2 \\
+            2D GMM      &    16.6 &    3.7 &    1.3 &    2.0 \\
             \bottomrule
-        \end{tabular}
+            \end{tabular}
     \end{minipage}
+    \caption{Online Sinkhorn allows to warmup Sinkhorn during the evaluation of the cost matrix, and to speed discrete optimal transport. Table 1: Speed-ups provided by OS vs S to reach a $10^{-3}$ precision.}
+    \label{fig:warmup}
 \end{figure}
 
 
-\subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
+\subsection{Accelerating Sinkhorn through online Sinkhorn warmup}\label{sec:accelerating}
 
 The discrete Sinkhorn algorithm requires to compute the full cost matrix $\Cz
 \eqdef (C(x_i,y_i))_{i,j}$  of size $N \times N$, prior to estimating the
