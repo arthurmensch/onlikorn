@@ -1,6 +1,4 @@
 %!TEX root = article.tex
-We report the proofs of the different propositions (\autoref{sec:proofs}), an instantiation of online Sinkhorn for discrete measures (\autoref{sec:sinkhorn_discrete}), and a supplementary experiment (\autoref{sec:supp_exp}).
-
 \section{Proofs}\label{sec:proofs}
 
 We first introduce two useful known lemmas, and prove the propositions in their order of appearance.
@@ -604,18 +602,18 @@ We report the supplementary figures mentionned in the main text, as well as expe
 \paragraph{Grids and details for \autoref{sec:online_exp}.} We use $\eta_t, n(t)
 = \frac{1}{(1 + 0.1t)^a}, 100 (1 + 0.1t)^{b}$, with $a, b = 0, 2$, $a, b =
 \frac{1}{2}, 1$ and $a,b =1, 0$ (constant batch-sizes). We train Sinkhorn on $t
-= 5000$ iterations, and O-S to match the number of computations of the large
+= 5000$ iterations, and OS to match the number of computations of the large
 Sinkhorn reference.
 
-\paragraph{All O-S convergence curves.} To complete \autoref{fig:convergence}, \autoref{fig:convergence_all} report the
+\paragraph{All OS convergence curves.} To complete \autoref{fig:convergence}, \autoref{fig:convergence_all} report the
 performance of online Sinkhorn for $\varepsilon \in [10^{-4}, 10^{-3}, 10^{-2},
 10^{-1}]$. The comparison of performance remains similar to the one produced in the main text.
 
 \paragraph{Fully-corrective online Sinkhorn.}\autoref{fig:convergence_refit} reports the performance of
-fully-corrected online Sinkhorn (FC-OS). We observe that the fully-corrective scheme is less noisy than the
-non-corrected one. It is less efficient than O-S on low-dimensional problems,
+fully-corrected online Sinkhorn (FCOS). We observe that the fully-corrective scheme is less noisy than the
+non-corrected one. It is less efficient than OS on low-dimensional problems,
 but faster on the 10 dimensional problem. For GMM-10D, it outperforms the batch Sinkhorn algorithm
-with $N=100, 1000$. Note that we interrupt FC-OS for $n_t > 20,000$, as our implementation of the $C$-transform has a quadratic memory cost in $n_t$---that can be made linear with more care \cite{}.
+with $N=100, 1000$. Note that we interrupt FCOS for $n_t > 20,000$, as our implementation of the $C$-transform has a quadratic memory cost in $n_t$---that can be made linear with more care \footnote{Using e.g. \url{https://www.kernel-operations.io/keops/index.html}}.
 
 \paragraph{Randomized Sinkhorn.}\autoref{fig:convergence_randomized} reports
 the performance of randomized Sinkhorn.
@@ -632,7 +630,7 @@ the performance of randomized Sinkhorn.
 \end{figure}
 
 
-\subsection{All convergence curves for online Sinkhorn as a warmup process}\label{app:online_exp}
+\subsection{All convergence curves for online Sinkhorn as a warmup process}\label{app:warmup_exp}
 
 
 \begin{figure}[t]
@@ -656,10 +654,10 @@ the performance of randomized Sinkhorn.
     \label{fig:warmup_full}
 \end{figure}
 
-\paragraph{Grids and details for \autoref{sec:online_exp}.} We use $\eta_t, n(t)
+\paragraph{Grids and details for \autoref{sec:accelerating}.} We use $\eta_t, n(t)
 = \frac{1}{(1 + 0.1t)^a}, 100 (1 + 0.1t)^{b}$, with $a, b = 0, 2$, $a, b =
-\frac{1}{2}, 1$ and $a,b =1, 0$ (constant batch-sizes). We evaluated O-S and
-fully-corrective O-S, and found that fully-corrective was less efficient (due to
+\frac{1}{2}, 1$ and $a,b =1, 0$ (constant batch-sizes). We evaluated OS and
+fully-corrective OS, and found that fully-corrective was less efficient (due to
 its higher cost in the early iterations). We evaluated sampling with and without
 replacement in the warmyp phase, and found sampling without replacement to be
 more efficient.

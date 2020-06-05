@@ -75,7 +75,7 @@ to ensure the convergence of online Sinkhorn with constant batch-size. This is a
 fundamental difference with other SA algorithms, e.g. SGD on strongly convex
 objectives (see \cite{moulines_non-asymptotic_2011}). This stems from the fact
 that the metric for which $\text{Id} - \Ff$ is contracting is
-not a Hilbert norm. The constant $A$ depends on $L$, the diameter of $\Xx$ and the regularity of potentials $f^\star$ and $g^\star$, but not on the dimension. It behaves like $\exp(\frac{1}{\varepsilon})$ when the
+not a Hilbert norm. The constant $A$ depends on $L$, the diameter of $\Xx$ and the regularity of potentials $f^\star$ and $g^\star$, but not on the dimension. It behaves like $\exp(\frac{1}{\varepsilon})$ when
 $\varepsilon \to 0$.
 Fortunately, we can show the almost sure convergence of the online Sinkhorn algorithm
 with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly for $\eta_t = \frac{1}{t}$), as specified in the following
@@ -116,7 +116,7 @@ distance estimator $\hat \Ww_N$ whose complexity is arbitrarily close to
 $\Oo(\frac{1}{\sqrt{N}})$, recovering existing asymptotic rates from
 \cite{2019-Genevay-aistats}, for any Lipschitz cost. We give the explicit form
 of $D$ in the appendix. It does not depend on the dimension. For low $\epsilon$,
-$D$ is proportional to $A \exp(\frac{1}{\epsilon})$, and therefore explodes for
+$D$ is proportional to $\exp(\frac{2}{\epsilon})$, and therefore explodes for
 $\varepsilon \to 0$. We derive non-asymptotic rates in \autoref{app:proof_rate}
 (see \eqref{eq:non-asymptotic}), which make explicit the bias-variance trade-off
 when choosing the step-sizes and batch-sizes. Note that using growing
