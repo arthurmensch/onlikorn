@@ -7,10 +7,10 @@ We show a
 stationary distribution convergence property for the randomized Sinkhorn algorithm,
  an approximate convergence property for the online Sinkhorn algorithm with
 fixed batch-size and an exact convergence result for online Sinkhorn with
-increasing batch sizes, with asymptotic convergence rates. We make the following classical assumption on the cost regularity and compacity of $\alpha$ and $\beta$.
+increasing batch sizes, with asymptotic convergence rates. We make the following classical assumption on the cost regularity and compactness of $\alpha$ and $\beta$.
 
 \begin{assumption}\label{ass:lip}
-    The cost $C: \Xx \times \Xx \to \RR$ is $L$-lipschitz, and $\Xx$ is  compact.
+    The cost $C: \Xx \times \Xx \to \RR$ is $L$-Lipschitz, and $\Xx$ is  compact.
 \end{assumption}
 
 \subsection{Randomized Sinkhorn}
@@ -29,23 +29,22 @@ This result follows from \citet{diaconis_iterated} convergence theorem on
 iterated random functions which are contracting on average. We use the
 fact that $\Ctrans{\cdot}{\hat \beta}$ and $\Ctrans{\cdot}{\hat \alpha}$ are
 \textit{uniformly} contracting, independently of the distributions $\hat \alpha$ and
-$\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$. 
-
+$\hat \beta$, for the variational norm $\Vert \cdot \Vert_{\text{var}}$.
 Using the law of large number for Markov chains
-\citep{breiman_strong_1960}, the out-of-loop average $\exp(-\bar f_t)$
-converges almost surely to $\EE[\exp(-f_\infty)]
- \in \Cc(\Xx)$ for $\gamma_t = 
- \frac{1}{t}$. This expectation verifies the fixed point equations
+\citep{breiman_strong_1960}, the (tractable) average $\frac{1}{t} \sum_{s=1}^t \exp(-\bar f_s)$
+converges almost surely to $\EE[e^{-f_\infty}]
+ \in \Cc(\Xx)$. This expectation verifies the functional equations
 \begin{equation}
-    \EE[\exp(-f_\infty)] =
-     \dotp{\beta}{\EE[\exp(g_\infty)] \exp(-C)},\quad
-    \EE[\exp(-g_\infty)] =
-     \dotp{\alpha}{\EE[\exp(f_\infty)] \exp(-C)}.
+    \EE[e^{-f_\infty}] =
+     \int_{y} \EE[e^{g_\infty(y) -C(\cdot, y)}]\d \beta(y) 
+     \quad
+    \EE[e^{-g_\infty}] =
+    \int_{x} \EE[e^{f_\infty(x) -C(x, \cdot)}]\d \alpha(x) 
 \end{equation}
 These equations are close to the Sinkhorn fixed point equations, and
 get closer as $\varepsilon$ increases, since $\varepsilon \EE[\exp(\pm f_\infty /
 \varepsilon)] \to \EE[\pm f_\infty]$ as $\varepsilon \to \infty$. Running the random
-Sinkhorn algorithm with out-of-loop averaging fails to provide exactly the dual solution, but solves an approximate problem.
+Sinkhorn algorithm with averaging fails to provide exactly the dual solution, but solves an approximate problem.
 %
 % We leave the quantification of this approximation for future work.
 
@@ -71,25 +70,16 @@ We make the following \citet{robbins1951stochastic} assumption on the weight seq
     \end{equation}
 \end{proposition}
 
-The proof is reported in \autoref{sec:proof_convergence_approx}. It is unfortunately not possible
+The proof is reported in \autoref{sec:proof_convergence_approx}. It is not possible
 to ensure the convergence of online Sinkhorn with constant batch-size. This is a
 fundamental difference with other SA algorithms, e.g. SGD on strongly convex
 objectives (see \cite{moulines_non-asymptotic_2011}). This stems from the fact
 that the metric for which $\text{Id} - \Ff$ is contracting is
-not a Hilbert norm. The non-explicit constant $A$ depends on $L$, the diameter of $\Xx$, and the measures $\alpha$ and
-$\beta$. In particular, it behaves as $\exp(-\frac{1}{\varepsilon})$ when the
+not a Hilbert norm. The constant $A$ depends on $L$, the diameter of $\Xx$, the measures $\alpha$ and
+$\beta$, and behaves as $\exp(-\frac{1}{\varepsilon})$ when the
 regularization $\varepsilon \to 0$.
-% 
-% This is comparable to the error obtained when performing Sinkhorn without resampling, as
-% in~\citep{2019-Genevay-aistats}.  We show in experiments
-% $(\autoref{sec:exps})$ that online Sinkhorn outperforms the regular Sinkhorn
-% algorithm thanks to repeated sampling. 
-% %
-% This suggests that the constants appearing in the bounds of online Sinkhorn are
-% better than the ones appearing in the sample complexity of regular Sinkhorn.
-
-We therefore show the almost sure convergence of the online Sinkhorn algorithm
-with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly), as specified in the following
+Fortunately, we can show the almost sure convergence of the online Sinkhorn algorithm
+with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly for $\eta_t = \frac{1}{t}$), as specified in the following
 assumption.
 
 \begin{assumption}\label{ass:double_weights}
@@ -99,7 +89,7 @@ assumption.
 
 \begin{proposition}\label{prop:convergence_true}
     Under \autoref{ass:lip} and
-    \ref{ass:double_weights}, the online Sinkhorn algorithm converge almost surely:
+    \ref{ass:double_weights}, the online Sinkhorn algorithm converges almost surely:
     \begin{equation}
         \Vert \hat f_t - f^\star \Vert_{\var} + \Vert \hat g_t - g^\star \Vert_{\var} \to 0.
     \end{equation}
@@ -124,7 +114,7 @@ Online Sinkhorn thus provides estimators of potentials whose asymptotic sample
 complexity in variational norm is arbitrarily close to $\Oo(\frac{1}{N})$. To
 the best of our knowledge, this is an original property. It also results in a distance estimator $\hat \Ww_N$ whose
 complexity is arbitrarily close to $\Oo(\frac{1}{\sqrt{N}})$, recovering
-existing asymptotic rates from \cite{2019-Genevay-aistats}, for any Lipschitz cost. We derive non-asymptotic rates in \autoref{app:proof_rate} (see \eqref{eq:non-asymptotic}), that explicits the
+existing asymptotic rates from \cite{2019-Genevay-aistats}, for any Lipschitz cost. We derive non-asymptotic rates in \autoref{app:proof_rate} (see \eqref{eq:non-asymptotic}), which make explicit the
 bias-variance trade-off when choosing the step-sizes and batch-sizes. They
 unfortunately rely on the non-explicit constant~$A$ from
 \autoref{prop:convergence_approx}. Note that using growing batch-sizes amounts
@@ -132,7 +122,7 @@ to increase the budget of a single iteration over time: the overall
 computational complexity after seeing $N$ samples is always $\Oo(N^2)$.
 
 In practice, setting rates as in
-\autoref{prop:rate} is very inefficient at the algorithm start. Choosing $\eta_t = \frac{1}{\sqrt{t}}$ and $w_t = \lceil B t^{1 + \iota} \rceil$
+\autoref{prop:rate} is very inefficient at the beginning of optimisation. Choosing $\eta_t = \frac{1}{\sqrt{t}}$ and $w_t = \lceil B t^{1 + \iota} \rceil$
 shows the overall best performance.
 
 % Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,

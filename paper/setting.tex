@@ -62,7 +62,7 @@ $\varepsilon$ to $1$ without loss of generality, as $\Ww_{C, \varepsilon} =
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 \eqdef f(x)+g(y)-C(x,y)$.
 %  We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
-Problem \eqref{eq:dual} can be solved by close-form alternated maximization. At iteration $t$, the updates are simply
+Problem \eqref{eq:dual} can be solved by close-form alternated maximization, which corresponds to Sinkhorn's algorithm. At iteration $t$, the updates are simply
 \begin{equation}
     f_{t+1}(\cdot) = \Ctrans{g_t}{\beta}, \quad
     g_{t+1}(\cdot) = \Ctrans{f_{t+1}}{\alpha},\quad
@@ -99,15 +99,15 @@ implementation. The iterations~\eqref{eq:sinkhorn} then correspond to the
 \citet{sinkhorn1967concerning} algorithm over the inverse scaling vectors $\u_t
 \triangleq {(e^{-f_t(x_i)})}_{i=1}^n, \v_t \triangleq
 {(e^{-g_t(y_i)})}_{i=1}^n$:
-\begin{equation*}
+\begin{equation}\label{eq-sinkhorn}
 	\u_{t+1} = \K \frac{1}{n \v_t}
 	\qandq
 	\v_{t+1} = \K^\top \frac{1}{n \u_t}
-\end{equation*}
+\end{equation}
 where $\K=(e^{-C(x_i,y_i)})_{i,j=1}^n \in \RR^{n \times n}$, and inversion is made pointwise. The Sinkhorn algorithm for OT thus
 operates in two phases: first, the kernel matrix $\K$ is computed, with a cost in
-$O(n^2 d)$, where $d$ is the dimension of $\Xx$; second, $\K$ is balanced, each
-iteration costing $O(n^2)$. The online Sinkhorn algorithm that we propose mixes
+$O(n^2 d)$, where $d$ is the dimension of $\Xx$; then each
+iteration~\eqref{eq-sinkhorn} costs $O(n^2)$. The online Sinkhorn algorithm that we propose mixes
 these two phases to accelerate convergence (see results in \autoref{sec:accelerating}).
 
 % The goal of this paper is to go beyond this discrete setting, and handle generic distributions (possibly having continuous densities). In particular, our numerical scheme manipulates continuous functions though an adapted parameterization which is automatically refined during the iterations.

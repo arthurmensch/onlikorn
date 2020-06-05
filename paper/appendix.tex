@@ -95,7 +95,7 @@ For presentation purpose, we first show that the ``slowed-down'' online Sinkhorn
 
 \subsubsection{Noise-free online Sinkhorn}
 
-\begin{proposition}\label{eq:deterministic}
+\begin{proposition}\label{prop:deterministic}
     We suppose that $\hat \alpha_t = \alpha$, $\hat \beta_t = \beta$ for all
     $t$. Then the updates \eqref{eq:updates} yields a (deterministic) sequence $(f_t, g_t)_t$ such
     that 
@@ -183,7 +183,7 @@ so that the updates can be rewritten as
 We denote $u_t \triangleq -f_{t} + f^\star$, $v_t \triangleq -g_{t} + g^\star$, $u_t^T \triangleq
 \Ctrans{f_t}{\hat \beta_t} - \Ctrans{f^\star}{\hat \beta_t}$, $v_t^T \triangleq
 \Ctrans{g_t}{\hat \beta_t} - \Ctrans{g^\star}{\hat \beta_t}$. Reusing the same
-derivations as in the proof of \autoref{eq:deterministic}, we obtain
+derivations as in the proof of \autoref{prop:deterministic}, we obtain
     \label{eq:pre_ineq_var}
     \begin{align}
     \Vert u_{t+1} \Vert_{\var} &\leq
@@ -426,7 +426,7 @@ To obtain the best asymptotical rates (the error is always dominated by the vari
 \end{align}
 
 This rate is as close to the rate $\Oo(\frac{1}{n})$ as desired. We may then
-perform a last soft $C$-transform (using the $n$ seen samples) over the
+perform a last soft $C$-transform (using the $n_t$ seen samples) over the
 estimated $f_{t(n)}, g_{t(n)}$ to obtain a estimated solution of the dual
 optimisation problem \eqref{eq:dual}. The Sinkhorn potentials can therefore be
 estimated with \textit{fast rates}. Note that the upper bound explodes when $\varepsilon
@@ -448,11 +448,55 @@ a new estimator of the Sinkhorn distance with the same sample complexity as the
 batch Sinkhorn estimator \citep{2019-Genevay-aistats}. Our estimator enjoys a
 refined rate in estimating the potentials.
 
+\section{Fully-corrective scheme}\label{app:fully_corrective}
+
+We report the fully-corrective online Sinkhorn algorithm in \autoref{alg:full_corrective}. This algorithm also enjoys almost sure convergence, provided that the following assumption is met.
+
+\begin{algorithm}[t]
+    \begin{algorithmic}
+    \State \textbf{Input:} Distribution $\alpha$ and $\beta$, learning weights ${(\eta_t)}_t$ and batch-sizes ${(n(t))}_t$. 
+    \textbf{Set} $p_{i,1} = q_{i,1} = 0$ for $i \in (0, n_1]$
+    \For{$t= 0, \dots, {T-1}$}
+        \State Sample $(x_i)_{(n_t, n_{t+1}]} \sim \alpha$, $(y_j)_{(n_t, n_{t+1}]} \sim \beta$.
+            \State Evaluate $(\hat f_t(x_i))_{i=(0, n_{t+1}]}$,
+             $(\hat g_t(y_i))_{i=(0, n_{t+1}]}$ using $(q_{i,t}, p_{i,t}, x_i, y_i)_{i=(0,n_{t}]}$ in \eqref{eq:param}.
+             \State $q_{(0, n_{t+1}],t+1} {\gets} \log \frac{1}{n}
+             + (\hat g_t(y_i))_{(0, n_{t+1}]}$,
+             \qquad $p_{(n_t, n_{t+1}],t+1} {\gets} \log \frac{1}{n} 
+             + (\hat f_t(x_i))_{(n_t, n_{t+1}]}$.
+    \EndFor
+    \State \textbf{Returns:} $\hat f_T : (q_{i,T}, y_i)_{(0, n_T]}$ and
+    $\hat g_T : (p_{i,T}, x_i)_{(0, n_T]}$
+    \end{algorithmic}
+    \vspace{-.4em}
+    \caption{Fully-corrective online Sinkhorn}\label{alg:full_corrective}
+\end{algorithm}
+
+\begin{assumption}\label{ass:total_growing}
+    For all $t > 0$, the \textit{total} batch-size $n_t = \frac{B}{w_t^2}$ is an
+        integer. The step-size $\eta_t$ and the batch-size $n_t$ grows so that
+        $\sum w_t \eta_t < \infty$ and $\sum \eta_t = \infty$.
+\end{assumption}
+
+With full correction, the total number of observed samples $n_t$ needs to grow
+at the same rate as the single-iteration batch-size $n(t)$ in
+\autoref{ass:double_weights}. For $\eta_t = \frac{1}{t^a}$, $a \in (1/2, 1]$, it
+is sufficient to use a constant batch-size $n(t) = B$ to meet \autoref{ass:total_growing}. We then have the following property
+
+\begin{proposition}
+    Under \autoref{ass:lip} and
+    \ref{ass:total_growing}, the fully-corrective online Sinkhorn algorithm converges almost surely:
+    \begin{equation}
+        \Vert \hat f_t - f^\star \Vert_{\var} + \Vert \hat g_t - g^\star \Vert_{\var} \to 0.
+    \end{equation}
+\end{proposition}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Stochastic mirror descent interpretation}
 \label{sec-mirror}
 
-The online Sinkhorn can be understood as a stochastic mirror descent algorithm.
+The online Sinkhorn can be understood as a stochastic mirror descent algorithm for a non-convex problem.
 %
 This equivalence is obtained by applying a change
 of variable in \eqref{eq:wass}, defining 
@@ -551,26 +595,23 @@ cost matrix $\hat C = C(x_i,y_j))_{i,j}$ should be progressively computed along 
 
 \begin{algorithm}[t]
     \begin{algorithmic}
-    \Input Distribution $\alpha \in \triangle^n$ and 
-    $\beta \in \triangle^n$, $x \in \RR^{n \times d}$, 
+    \Input Distribution $\alpha \in \triangle^N$ and 
+    $\beta \in \triangle^N$, $x \in \RR^{n \times d}$, 
     $y \in \RR^{n \times d}$, learning weights ${(\eta_t)}_t$
-    \State Set $p = q = - \infty \in \RR^n$
-    \For{$t= 0, \dots, {T-1}$}
-        \State $q \gets q + \log(1 - \eta_t)$, $p \gets p + \log(1 - \eta_t)$,
-        \State Sample $J \subset [1, M]$, 
-        $I \subset [1, N]$
-        \For{$i \in J$}
+    \State \textbf{Set} $p = q = - \infty \in \RR^n$.
+    \For{$t= 1, \dots, {T}$}
+        \State $q \gets q + \log(1 - \eta_t)$, $p \gets p + \log(1 - \eta_t)$.
+        \State Sample $J_t \subset [1, N]$, $I_t \subset [1, N]$ of size $n(t)$.
+        \For{$i \in J_t$}
             \State $q_i \gets \log \Big( \exp(q_i)
             + \exp\big(\log(\eta_t) - \log \frac{1}{N} 
-            \sum_{j=1}^{N} \exp(p_j - C(x_j, y_i)\big) \Big) $
+            \sum_{j=1}^{N} \exp(p_j - C(x_j, y_i)\big) \Big) $.
         \EndFor
-        \For{$i \in I$}
+        \For{$i \in I_t$}
         \State $p_i \gets \log \Big( \exp(q_i)
         + \exp \big( \log(\eta_t) - \log \frac{1}{M} 
-        \sum_{j=1}^{M} \exp(q_j - C(x_i, y_j)\big) \Big)$
+        \sum_{j=1}^{M} \exp(q_j - C(x_i, y_j)\big) \Big)$.
         \EndFor
-        \State \textit{Optional}: refit all $q_i = g_t(y_i) - \log (M)$
-        \State\hspace{2.45cm} $p_i = f_t(x_i) - \log (N)$
     \EndFor
     \State Returns $f_T : (q, y)$ and
     $g_T : (p, x)$

@@ -87,9 +87,10 @@ initialization.
 \paragraph{Online Sinkhorn.}
 
 To ensure convergence of $\hat f_t$, $\hat g_t$ towards some optimal pair of potentials
-$(f^\star, g^\star)$, we must take more
-cautious steps---we cannot forget past iterates. We introduce a learning
-rate in Sinkhorn iterations, akin to the Robbins-Monro algorithm for finding
+$(f^\star, g^\star)$, one must take more cautious steps, in particular past iterates should not be discarded. 
+%
+We introduce a learning
+rate $\eta_t$ in Sinkhorn iterations, akin to the Robbins-Monro algorithm for finding
 roots of vector-valued functions:
 \begin{equation}\label{eq:updates}
     (\hat u_{t+1}, \hat v_{t+1}) \triangleq (1 - \eta_t) (\hat u_t, \hat v_t) 
@@ -99,7 +100,7 @@ roots of vector-valued functions:
 \end{equation}
 Each update adds new kernel functions to a non-parametric estimation of $
 u_t$ and $v_t$. The estimates $\hat u_t$ and $\hat v_t$ are defined by weights ${(p_{i,t},
-q_{i,t})}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i \leq n_t} \subset~\Xx$:
+q_{i,t})}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i \leq n_t} \subset~\Xx^2$:
 \begin{align}\label{eq:param}
     e^{-\hat f_t(\cdot)} = \hat u_t(\cdot) \triangleq \sum_{i=1}^{n_t} 
     \exp(q_{i,t} - C(\cdot, y_i)),\quad
@@ -115,7 +116,7 @@ the updates for $q_i$ and $p_i$ in log-space, for numerical stability reasons.
 Each iteration of online Sinkhorn has complexity $\Oo(n_t\,n)$, due to the evaluation of the
 distances $C(x_i, y_i)$ for all $(x_i)_{(0, n_t]}$ and $(y_i)_{(n_t, n_{t+1}]}$,
 and the soft $C$-transforms in \eqref{eq:param}. Online Sinkhorn computes a
-distance matrix $(C(x_i,y_j))_{i,j \leq n_t}$ on the fly, parallel to
+distance matrix $(C(x_i,y_j))_{i,j \leq n_t}$ on the fly, in parallel to
 updating~$\hat f_t$ and~$\hat g_t$. In total, its computation cost after drawing
 $n_t$ samples is $\Oo(n_t^2)$. Its memory cost is $\Oo(n_t)$; it increases with
 iterations, which is a requirement for consistent estimation. Randomized
@@ -124,8 +125,8 @@ single-iteration computational cost of $\Oo(n^2)$.
 
 \begin{algorithm}[t]
     \begin{algorithmic}
-    \State \textbf{Input:} Distribution $\alpha$ and $\beta$, learning weights ${(\eta_t)}_t$. 
-    \textbf{Set} $p_i = q_i = 0$ for $i \in (0, n_t]$
+    \State \textbf{Input:} Dist. $\alpha$ and $\beta$, learning weights ${(\eta_t)}_t$, batch sizes ${(n(t))}_t$
+    \textbf{Set} $p_i = q_i = 0$ for $i \in (0, n_1]$
     \For{$t= 0, \dots, {T-1}$}
         \State Sample $(x_i)_{(n_t, n_{t+1}]} \sim \alpha$, $(y_j)_{(n_t, n_{t+1}]} \sim \beta$.
             \State Evaluate $(\hat f_t(x_i))_{i=(n_t, n_{t+1}]}$,
@@ -169,16 +170,6 @@ estimate $\Ww(\alpha,\beta)$ through a final soft $C$-transform:
 where $\bar \alpha_t \eqdef \frac{1}{n_{t}}\sum_{i=1}^{n_{t}} \delta_{x_i}$
 and $\bar \beta_t$ are formed of all previously observed samples.
 
-% \paragraph{Out-of-loop averaging.} To reduce the estimation variance, we may
-% compute averages of potentials \begin{equation} (\bar u_{t+1}, \bar v_{t+1}) =
-% (1 - \gamma_t) (\bar u_t, \bar v_t) + \gamma_t (\hat u_t, \hat v_t),
-% \end{equation} which amounts to update some weights $(\bar p_t, \bar q_t)$. We
-% show in \autoref{sec:exp1} that this averaging is efficient in practice.  With
-% $\gamma_t = 1/t$, this is similar to Polyak-Ruppert  averaging
-% \cite{ruppert1988efficient} for stochastic approximation. We evaluate
-% averaging performance in experiments but leave its analysis for future
-% investigation.
-
 
 %%%%%
 \paragraph{Fully-corrective scheme.} 
@@ -191,7 +182,7 @@ the fully-corrective Frank-Wolfe scheme from \cite{lacoste2015global}) has a
 cost of $\Oo(n_t^2)$ per iteration. It requires to keep in memory (or recompute
 on-the-fly) the whole distance matrix. Fully-corrective online Sinhorn  enjoys
 similar convergence properties as regular online Sinkhorn, and permits the use
-of non-increasing batch-sizes---we report and prove these properties in
+of non-increasing batch-sizes---see
 \autoref{app:fully_corrective}. In practice, it can be used every $k$
 iterations, with $k$ increasing with $t$. Combining partial and full updates can
 accelerate the estimation of Sinkhorn distances (see \autoref{sec:accelerating}).
