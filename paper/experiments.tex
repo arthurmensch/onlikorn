@@ -103,7 +103,7 @@ randomized O-S with batch-size $N$ performs on par with Sinkhorn of size $N$ (su
 
 \paragraph{Better-extrapolated potentials.} As illustrated in
 \autoref{fig:potentials}, in 1D, online Sinkhorn refines the potentials $(\hat f_t, \hat g_t)_t$
-until convergence toward $(f^\star, g^\star)$. We report a similar visualisation on 2D GMM in \autoref{supp. fig:potentials_2d}. As the parametrization~\eqref{eq:param} is 
+until convergence toward $(f^\star, g^\star)$. Supp. \autoref{fig:potentials_2d} shows a visualisation for 2D GMM. As the parametrization~\eqref{eq:param} is 
 adapted to the dual problem, the algorithm quickly identify the correct shape of
 the optimal potentials---as predicted by \autoref{prop:convergence_true}. In
 particular, O-S estimates potentials with much less errors than SGD in a RKHS in
@@ -146,8 +146,8 @@ in a discrete setting. Online Sinkhorn is run with batch-size $n$ during the
 first iterations, until observing each sample of $[1,N]$, i.e. until the cost
 matrix $\Cz$ is completely evaluated. From then, the
 successor potentials are obtained using full Sinkhorn updates. We consider the
-GMMs of \autoref{sec:continuous}, as well as a 3D dragon and a sphere of size $N=12000$ from
-the Stanford 3D repository \cite{}. We measure
+GMMs of \autoref{sec:continuous}, as well as a 3D dragon from Stanford 3D scans
+\cite{turk1994zippered} and a sphere of size $N=12000$. We measure
 convergence of the potentials in term with the error $\Vert
 \Ctrans{\hat f_t}{\alpha} - \hat g_t \Vert_{\var} + \Vert \Ctrans{\hat
 g_t}{\beta} - \hat f_t \Vert_{\var}$, evaluated on $\alpha$ and $\beta$; this error
@@ -157,7 +157,7 @@ goes to $0$. We use $n(t) = \frac{N}{100} (1+0.1t)^{1/2}$---results vary little 
 \paragraph{Results.} We report convergence curves for for $\varepsilon =
 10^{-3}$ in \autoref{fig:warmup}. Convergence curves for different
 $\varepsilon$ are reported in supp. \autoref{fig:warmup_full}. We report the speed-up
-provided by online Sinkhorn in \autoref{table:}. The proposed scheme provides an
+provided by online Sinkhorn in \autoref{table}. The proposed scheme provides an
 improvement upon the standard Sinkhorn algorithm. After $N^2 d$ computations
 (the cost of estimating the full matrix $C$), both the function value and
 distance to optimum are lower using O-S: the full Sinkhorn updates then
