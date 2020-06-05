@@ -13,27 +13,7 @@
     \label{fig:potentials}
 \end{figure}
 
-\begin{figure}[t]
-    \begin{minipage}{.7\textwidth}
-    \includegraphics{online+full_0.001_err.pdf}
-    \caption{Online Sinkhorn allows to warmup Sinkhorn during the evaluation of the cost matrix, and to speed discrete OT.}
-    \label{fig:warmup}
-    \end{minipage}%
-    \hfill
-    \begin{minipage}{.25\textwidth}
-        \small
-        \begin{tabular}{lc}
-            Dataset & Speed-up\\
-            \toprule
-            2D GMM & \\
-            10D GMM & \\
-            Stanford 3D & \\
-            \bottomrule
-        \end{tabular}
-    \end{minipage}
-\end{figure}
-
-\section{Experiments}\label{sec:exps}
+\section{Numerical experiments}\label{sec:exps}
 
 % We have introduced and stated convergence results on the online Sinkhorn
 % algorithm. These convergence results are non-quantitative and therefore
@@ -49,11 +29,10 @@
 
 
 The major purpose of online Sinkhorn (O-S) is to handle OT between continuous
-distributions.  We first show that it is a valid alternative to applying Sinkhorn on a single realization of continuous distributions, using Gaussian mixture of distributions of various dimension
-. We illustrate how O-S accurately estimates the geometry of
-the Kantorovich dual in 1 and 2D, significantly improving the result using SGD with RKHS
+distributions.  We first show that it is a valid alternative to applying Sinkhorn on a single realization of continuous distributions, using Gaussian mixtures. We illustrate how O-S accurately estimates the geometry of
+the Kantorovich dual, significantly improving the result using SGD with RKHS
 expansions~\citep{2016-genevay-nips}. Finally, we show that O-S
-provides an efficient warmup method to accelerate Sinkhorn on real discrete problems (shapes from Stanford repository).
+is an efficient warmup for accelerating Sinkhorn on real discrete problems.
 
 
 % We first consider a discrete distribution $(\alpha, \beta)$, to be able to
@@ -98,13 +77,12 @@ potentials are known.
 
 \paragraph{Comparison to SGD.}\label{sec:compare}
 %
-For qualitative illustration, on the 1D problem, we consider a competing
+For qualitative illustration, on the 1D and 2D problem, we consider a competing
 approach \citep{2016-genevay-nips}, in which $f_t(\cdot)$ is parametrized as
 $\sum_{i=1}^{n_t} \alpha_t \kappa(\cdot, x_i)$ (and similarly for $g_t$), where
 $\kappa$ is a reproducing kernel (typically a Gaussian). This differs
 significantly from online Sinkhorn, where we express $e^{-f_t}$ as a Gaussian
-mixture. The dual problem \eqref{eq:sinkhorn} is solved using stochastic
-gradient descent, with convergence guarantees on the dual energy.  As advocated
+mixture. The dual problem \eqref{eq:sinkhorn} is solved using SGD, with convergence guarantees on the dual energy.  As advocated
 by the authors, we run a grid search over the bandwidth parameter~$\sigma$ of
 the Gaussian kernel to select the best performing runs. 
 
@@ -120,19 +98,39 @@ beginning. Indeed, it starts potential computation early, while the Sinkhorn
 algorithm must wait for the cost matrix to be filled;  this observation leads us
 to study online Sinkhorn as a catalyser of Sinkhorn in the next paragraph. O-S
 convergence is slower (but still happens) for the high dimensional problem.
-Fully-corrective O-S performs better in this case (see \autoref{fig:convergence_refit}). We note that
-randomized O-S with batch-size $n$ performs on par with Sinkhorn of size $n$ (\autoref{fig:convergence_randomized}).
+Fully-corrective O-S performs better in this case (see supp. \autoref{fig:convergence_refit}). We note that
+randomized O-S with batch-size $N$ performs on par with Sinkhorn of size $N$ (supp. \autoref{fig:convergence_randomized}).
 
-\paragraph{Better behaved potentials.} As illustrated in
+\paragraph{Better-extrapolated potentials.} As illustrated in
 \autoref{fig:potentials}, in 1D, online Sinkhorn refines the potentials $(\hat f_t, \hat g_t)_t$
-until convergence toward $(f^\star, g^\star)$. Thanks to using the parametrization~\eqref{eq:param}
+until convergence toward $(f^\star, g^\star)$. We report a similar visualisation on 2D GMM in \autoref{supp. fig:potentials_2d}. As the parametrization~\eqref{eq:param} is 
 adapted to the dual problem, the algorithm quickly identify the correct shape of
 the optimal potentials---as predicted by \autoref{prop:convergence_true}. In
-particular, O-S estimates potentials with much less errors than SGD on RKHS in
-areas where the mass of $\alpha$ and $\beta$ is low. This allow to consistently estimate the transport plan, unlike SGD. The SGD method did not converge
+particular, O-S estimates potentials with much less errors than SGD in a RKHS in
+areas where the mass of $\alpha$ and $\beta$ is low. This allow to consistently estimate the transport plan, which SGD cannot do. SGD did not converge
 for $\epsilon < 10^{-1}$, while online Sinkhorn remains stable. Online
-Sinkhorn has the further advantage of not requiring to set a bandwidth parameter.
+Sinkhorn does not require to set a bandwidth.
 
+
+\begin{figure}[t]
+    \begin{minipage}{.7\textwidth}
+    \includegraphics{online+full_0.001_err.pdf}
+    \caption{Online Sinkhorn allows to warmup Sinkhorn during the evaluation of the cost matrix, and to speed discrete optimal transport.}
+    \label{fig:warmup}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{.25\textwidth}
+        \small
+        \begin{tabular}{lc}
+            Dataset & Speed-up\\
+            \toprule
+            2D GMM & \\
+            10D GMM & \\
+            Stanford 3D & \\
+            \bottomrule
+        \end{tabular}
+    \end{minipage}
+\end{figure}
 
 
 \subsection{Accelerating the first Sinkhorn iteration}\label{sec:accelerating}
@@ -158,7 +156,7 @@ goes to $0$. We use $n(t) = \frac{N}{100} (1+0.1t)^{1/2}$---results vary little 
 
 \paragraph{Results.} We report convergence curves for for $\varepsilon =
 10^{-3}$ in \autoref{fig:warmup}. Convergence curves for different
-$\varepsilon$ are reported in \autoref{fig:warmup_full}. We report the speed-up
+$\varepsilon$ are reported in supp. \autoref{fig:warmup_full}. We report the speed-up
 provided by online Sinkhorn in \autoref{table:}. The proposed scheme provides an
 improvement upon the standard Sinkhorn algorithm. After $N^2 d$ computations
 (the cost of estimating the full matrix $C$), both the function value and
