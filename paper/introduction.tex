@@ -77,8 +77,8 @@ $\Pp(\Xx)$ the set of positive and probability measures on $\Xx$, respectively.
 \section{Related work}\label{sec:related}
 
 \paragraph{Sinkhorn properties.} The Sinkhorn algorithm computes $\epsilon$-accurate
-approximations of OT in $O(n^2/\epsilon^3)$ operations for a number $n$ of
-samples~\citep{altschuler2017near} (in contrast with the $\Oo(n^3)$ complexity of exact OT). Moreover, Sinkhorn distances suffer less from the
+approximations of OT in $O(n^2/\epsilon^3)$ operations for $n$
+samples~\citep{altschuler2017near} (in contrast with the $\Oo(n^3)$ complexity of exact OT \cite{goldberg1989finding}). Moreover, Sinkhorn distances suffer less from the
 curse of dimensionality~\citep{2019-Genevay-aistats}, since the average error
 using $n$ samples decays like $\Oo(\epsilon^{-d/2}/\sqrt{n})$ in dimension
 $d$, in contrast with the slow $\Oo(1/n^{1/d})$ error decay of

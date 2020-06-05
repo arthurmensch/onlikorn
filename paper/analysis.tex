@@ -114,12 +114,12 @@ complexity in variational norm is arbitrarily close to $\Oo(\frac{1}{N})$. To
 the best of our knowledge, this is an original property. It also results in a
 distance estimator $\hat \Ww_N$ whose complexity is arbitrarily close to
 $\Oo(\frac{1}{\sqrt{N}})$, recovering existing asymptotic rates from
-\cite{2019-Genevay-aistats}, for any Lipschitz cost. We give the explicit form
-of $D$ in the appendix. It does not depend on the dimension. For low $\epsilon$,
-$D$ is proportional to $\exp(\frac{2}{\epsilon})$, and therefore explodes for
-$\varepsilon \to 0$. We derive non-asymptotic rates in \autoref{app:proof_rate}
+\cite{2019-Genevay-aistats}, for any Lipschitz cost. We derive non-asymptotic rates in \autoref{app:proof_rate}
 (see \eqref{eq:non-asymptotic}), which make explicit the bias-variance trade-off
-when choosing the step-sizes and batch-sizes. Note that using growing
+when choosing the step-sizes and batch-sizes. We also give the explicit form
+of $D$; it does not depend on the dimension. For low $\epsilon$,
+$D$ is proportional to $\exp(\frac{2}{\epsilon})$; the bound is therefore vacuous for
+$\varepsilon \to 0$. Note that using growing
 batch-sizes amounts to increase the budget of a single iteration over time: the
 overall computational complexity after seeing $N$ samples is always $\Oo(N^2)$.
 

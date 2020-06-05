@@ -416,12 +416,12 @@ should be as close to $1$ and $b$ as close to $0$ as possible to reduce the vari
 term. Of course, $b$ should remain larger than $1 - a$ to ensure convergence.
 
 To obtain the best asymptotical rates (the error is always dominated by the variance term), we set $a = 1 - \iota$, $ b = 2 \iota$, with $\iota \succsim 0$. This yields
-\begin{align}
+\begin{align}\label{eq:D_constant}
     \delta_n &\leq 
     (\delta_0 + \frac{A \lambda}{\iota \sqrt{B}})
     \exp\left(- \frac{\lambda(1 - \kappa)}{2} {(n/2)}^{\frac{\iota}{1 + 4\iota}}\right)
     + \frac{2 A \lambda}{\sqrt{B}(1 - \kappa) {(n/2)}^{\frac{1 - \iota}{1 + 4\iota}}} \\
-    &= \Oo(n^{-\frac{1 - \iota}{1 + 4 \iota}}).
+    &= \Oo(n^{-\frac{1 - \iota}{1 + 4 \iota}}). 
 \end{align}
 
 This rate is as close to the rate $\Oo(\frac{1}{n})$ as desired. We may then
@@ -659,7 +659,7 @@ the performance of randomized Sinkhorn.
 \frac{1}{2}, 1$ and $a,b =1, 0$ (constant batch-sizes). We evaluated OS and
 fully-corrective OS, and found that fully-corrective was less efficient (due to
 its higher cost in the early iterations). We evaluated sampling with and without
-replacement in the warmyp phase, and found sampling without replacement to be
+replacement in the warmup phase, and found sampling without replacement to be
 more efficient.
 
 \paragraph{All warmup convergence curves.} To complete \autoref{fig:warmup}, we report convergence curves for different $\varepsilon$ in \autoref{fig:warmup_full}
