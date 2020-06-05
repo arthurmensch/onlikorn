@@ -10,7 +10,7 @@ First, under \autoref{ass:lip}, we note that the soft $C$-transforms are
  in the following lemma, extracted from \citet{vialard2019elementary},
  Proposition 19. We refer the reader to the original references for proofs.
 
-\begin{lemma}\label{lemma:contractance}
+\begin{lemma}\label{lemma:contractivity}
     Unser \autoref{ass:lip}, let $\kappa = 1 - \exp(-L
     \textnormal{diam}(\Xx))$. For all $\hat \alpha \in \Pp(\Xx)$ and $\hat \beta \in
     \Pp(\Xx)$, for all $f, f', g, g' \in \Cc(\Xx)$,
@@ -63,7 +63,7 @@ Finally, we need a result on running averages using the sequence ${(\eta_t)}_t$.
         x_{t+2} = A_{\theta_t}(x_t).
     \end{equation}
     
-    From \autoref{lemma:contractance}, for all $\hat \alpha \in \Pp(\Xx)$, $\hat \beta \in \Pp(\Xx)$, $A_{\theta}$
+    From \autoref{lemma:contractivity}, for all $\hat \alpha \in \Pp(\Xx)$, $\hat \beta \in \Pp(\Xx)$, $A_{\theta}$
     with $\theta = (\hat \alpha, \hat \beta)$ is contracting, with module
     $\kappa_\theta < \kappa < 1$. Therefore
     \begin{equation}
@@ -146,7 +146,7 @@ contraction factor that decreases sufficiently slowly.
         (1 - \eta_t) ( \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var})
         + \eta_t \kappa ( \Vert u_t \Vert_{\var} + \Vert v_t \Vert_{\var}),
     \end{align}
-    where we use the contractance of the soft-$C$-transform, that guarantees that
+    where we use the contractivity of the soft-$C$-transform, that guarantees that
     there exists $\kappa < 1$ such that $\Vert v_t^T\Vert_{\var} \leq \kappa \Vert
     v_t\Vert_{\var}$ and $\Vert u_t^T\Vert_{\var} \leq \kappa \Vert
     u_t\Vert_{\var}$ \citep{peyre2019computational}.
@@ -196,7 +196,7 @@ derivations as in the proof of \autoref{prop:deterministic}, we obtain
     + \eta_t \Vert \epsilon_{\hat \beta_t} \Vert_{\var},
 \end{align}
 where we have used $\max_x f(x) g(x) \leq \max_x f(x) \max_x f(x)$ on the second line. Therefore,
-using the contractance of the soft $C$-transform,
+using the contractivity of the soft $C$-transform,
 \begin{equation}
     \label{eq:ineq_var}
     e_{t+1} \leq 
@@ -210,7 +210,7 @@ $\tilde \eta_t = \eta_t (1-\kappa)$ and $\kappa$ is set to be the biggest
 contraction factor over all empirical realizations $\hat \alpha_t$, $\hat
 \beta_t$ of the distributions $\alpha$ and $\beta$. It is upper bounded by $1 -
 e^{- L\text{diam}(\Xx)}$, thanks to \autoref{ass:lip} and
-\autoref{lemma:contractance}.
+\autoref{lemma:contractivity}.
 
 The realizations $\hat \beta_t$ and $\hat \alpha_t$
 are sampled according to the same distribution $\hat \alpha$ and $\hat \beta$. We

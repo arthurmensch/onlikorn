@@ -8,7 +8,7 @@ We first recall the definition of optimal transport distances between arbitrary 
 \paragraph{Wasserstein distances.} 
 
 We consider a complete metric space $(\Xx,d)$ (assumed to be compact for simplicity), equipped
-with a continuous cost function $C(x,y) \in \RR$ for any $(x,y) \in \Xx^2$ (assumed to be symmetric also for simplicity). 
+with a continuous cost function $(x,y) \in \Xx^2 \to C(x, y) \in \RR$ for any $(x,y) \in \Xx^2$ (assumed to be symmetric also for simplicity). 
 %
 Optimal transport lifts this \textit{ground cost} into a cost between probability
 distributions over the space $\Xx$. 
@@ -34,7 +34,7 @@ are the first and second marginals of the transportation plan $\pi$. We refer to
 
 \paragraph{Entropic regularization and Sinkhorn algorithm.} 
 
-The solutions of~\eqref{eq:wass} can be approximated by a strictly convex optimisation problem, where an entropic term is added to the linear objective to force curvature. The so-called Sinkhorn cost is then
+The solutions of~\eqref{eq:wass} can be approximated by a strictly convex optimisation problem, where an entropic term is added to the linear objective to force strict convexity. The so-called Sinkhorn cost is then
 \begin{equation}\label{eq:wass}
     \Ww_{C,\varepsilon}(\alpha, \beta) \eqdef 
     \min_{
@@ -62,7 +62,7 @@ $\varepsilon$ to $1$ without loss of generality, as $\Ww_{C, \varepsilon} =
 where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 \eqdef f(x)+g(y)-C(x,y)$.
 %  We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
-Problem \eqref{eq:dual} can be solved by close-form alternated maximization, which corresponds to Sinkhorn's algorithm. At iteration $t$, the updates are simply
+Problem \eqref{eq:dual} can be solved by closed-form alternated maximization, which corresponds to Sinkhorn's algorithm. At iteration $t$, the updates are simply
 \begin{equation}
     f_{t+1}(\cdot) = \Ctrans{g_t}{\beta}, \quad
     g_{t+1}(\cdot) = \Ctrans{f_{t+1}}{\alpha},\quad
