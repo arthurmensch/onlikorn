@@ -121,9 +121,9 @@ unfortunately rely on the non-explicit constant~$A$ from
 to increase the budget of a single iteration over time: the overall
 computational complexity after seeing $N$ samples is always $\Oo(N^2)$.
 
-In practice, setting rates as in
-\autoref{prop:rate} is very inefficient at the beginning of optimisation. Choosing $\eta_t = \frac{1}{\sqrt{t}}$ and $w_t = \lceil B t^{1 + \iota} \rceil$
-shows the overall best performance.
+% In practice, setting rates as in
+% \autoref{prop:rate} is very inefficient at the beginning of optimisation. Choosing $\eta_t = \frac{1}{\sqrt{t}}$ and $w_t = \lceil B t^{1 + \iota} \rceil$
+% shows the overall best performance.
 
 % Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
 % provided that we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c >
