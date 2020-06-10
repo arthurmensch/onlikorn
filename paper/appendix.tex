@@ -542,11 +542,11 @@ initial Sinkhorn iteration (\autoref{sec:accelerating}). In this case, the
 cost matrix $\hat C = C(x_i,y_j))_{i,j}$ should be progressively recorded along the algorithm iterations.
 
 \pagebreak
-\section{Supplementary numerical experiments}
+\section{Extra numerical experiments}
 
-We report the supplementary figures mentionned in the main text, as well as experimental details.
+We display and describe the supplementary figures mentionned in the main text, as well as experimental details useful for reproduction.
 
-\subsection{All convergence curves for online Sinkhorn and variants}\label{app:online_exp}
+\subsection{Online Sinkhorn and variants}\label{app:online_exp}
 
 \begin{figure}[t]
     \centering
@@ -589,48 +589,132 @@ We report the supplementary figures mentionned in the main text, as well as expe
 \end{figure}
 
 \begin{figure}[t]
-    
+    \centering
+
     \caption{Performance of randomized Sinkhorn for various $\varepsilon$.}
     \label{fig:convergence_randomized}
 \end{figure}
 
-\begin{figure}[t]
-    \caption{Performance of online-Sinkhorn on two Gaussians.}
-    \label{fig:gaussian}
-\end{figure}
 
-\paragraph{Grids and details for \autoref{sec:online_exp}.} We use $\eta_t, n(t)
-= \frac{1}{(1 + 0.1t)^a}, 100 (1 + 0.1t)^{b}$, with $a, b = 0, 2$, $a, b =
-\frac{1}{2}, 1$ and $a,b =1, 0$ (constant batch-sizes). We train Sinkhorn on $t
-= 5000$ iterations, and OS to match the number of computations of the large
-Sinkhorn reference.
 
-\paragraph{All OS convergence curves.} To complete \autoref{fig:convergence}, \autoref{fig:convergence_all} report the
-performance of online Sinkhorn for $\varepsilon \in [10^{-4}, 10^{-3}, 10^{-2},
-10^{-1}]$. The comparison of performance remains similar to the one produced in the main text.
+\paragraph{Grids and details for \autoref{sec:online_exp}.} We set $(\eta_t,
+n(t)) = \big(\frac{1}{(1 + 0.1t)^a}, 100 (1 + 0.1t)^{b}\big)$, with $(a, b) =
+(0, 2)$, $(a, b) = (\frac{1}{2}, 1)$ and $(a,b =1, 0)$ (constant batch-sizes).
+Batch Sinkhorn algorithms uses $N=~100,1000,10000$. We train Sinkhorn on $t =
+5000$ iterations, and train online Sinkhorn long enough to match the number of
+computations of the large Sinkhorn reference. 
+
+\paragraph{All OS convergence curves.} To complete \autoref{fig:convergence},
+\autoref{fig:convergence_all} report the performance of online Sinkhorn for
+$\varepsilon \in \{10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}]\}$. The comparison of
+performance remains similar to the one produced in the main text.
 
 \paragraph{Fully-corrective online Sinkhorn.}\autoref{fig:convergence_refit} reports the performance of
 fully-corrected online Sinkhorn (FCOS). We observe that the fully-corrective scheme is less noisy than the
 non-corrected one. It is less efficient than OS on low-dimensional problems,
 but faster on the 10 dimensional problem. For GMM-10D, it outperforms the batch Sinkhorn algorithm
-with $N=100, 1000$. Note that we interrupt FCOS for $n_t > 20,000$, as our implementation of the $C$-transform has a quadratic memory cost in $n_t$---that can be made linear with more care \footnote{Using e.g. \url{https://www.kernel-operations.io/keops/index.html}}.
+with $N=100, 1000$. Note that we interrupt FCOS for $n_t > 20,000$, as our implementation of the $C$-transform has a quadratic memory cost in $n_t$---this cost can be reduced to a linear cost with more careful implementation \footnote{Using e.g. \url{https://www.kernel-operations.io/keops/index.html}}.
 
-\paragraph{Randomized Sinkhorn.}\autoref{fig:convergence_randomized} reports
-the performance of randomized Sinkhorn.
+\paragraph{Randomized Sinkhorn.}\autoref{fig:convergence_randomized} reports the
+performance of randomized Sinkhorn.
 
-\paragraph{OT between Gaussians}\autoref{fig:gaussian} reports the performance of online Sinkhorn to transform one Gaussian distribution $\alpha$ to another $\beta$. Potentials are known exactly for this problem, which allows to have a strong golden standard.
+\subsection{OT between Gaussians}
 
-\subsection{Illustration of online-Sinkhorn potentials on a 2D GMM}
+We measure the performance of online Sinkhorn to transport one Gaussian
+distribution $\alpha$ to another $\beta$. The potentials $f^\star, g^\star$ are
+known exactly for this problem, which allows to have a strong golden standard.
+More precisely, adapting the formulae from \cite{janati_entropic_2020}, assuming
+$\alpha \sim \Nn(\mu, A)$ and $\beta \sim \Nn(\nu, \beta)$ and writing $I$ the
+identity matrix in $\RR^d$, we have
+\begin{gather}
+    C \triangleq (A B + \frac{\epsilon^2}{4} I)^{1/2}, \quad
+    U \triangleq B (C + \frac{\varepsilon}{2} I)^{-1} - I,\quad
+    V \triangleq A (C + \frac{\varepsilon}{2} I)^{-1} - I \\
+    f^\star: x \to - \frac{1}{2} (x - \mu)^\top U (x - \mu) + x^\top (\mu - \nu) \\
+    g^\star: y \to - \frac{1}{2} (y - \nu)^\top V (y - \nu) + y^\top (\nu - \mu) \\
+\end{gather}
+
+We compare batch Sinkhorn $(N=100, 1000, 10000)$ to (non fully-corrected) online
+Sinkhorn, with $n(t) = B$, and $n(t) = B (1 + 0.1 t)^{1/2}$, $B=100$, and
+$\varepsilon \in \{ 10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}\}$.
+
+\begin{figure}[t]
+        \centering
+        $\varepsilon = 0.1$
+    
+        \includegraphics{online_0.1_False_test_gaussian}
+        
+        $\varepsilon = 0.01$
+        \includegraphics{online_0.01_False_test_gaussian}
+    
+        $\varepsilon = 0.001$
+    
+        \includegraphics{online_0.001_False_test_gaussian}
+    
+        $\varepsilon = 0.0001$
+    
+        \includegraphics{online_0.0001_False_test_gaussian}
+    \caption{Performance of online-Sinkhorn to estimate OT between two Gaussians. Online Sinkhorn systematically outperforms batch Sinkhorn, but in term of speed and correction.}
+    \label{fig:gaussian}
+\end{figure}
 
 \begin{figure}[htbp]
     \centering
     
-    \caption{Displacement field as defined by the potentials estimated by online-Sinkhorn on a 2D GMM.}
+    \includegraphics{quiver_os_1e8}
+
+    \includegraphics{quiver_subsampled_1e8}
+
+    \includegraphics{quiver_ref}
+    
+    \caption{Displacement field as defined by the potentials estimated by online-Sinkhorn and Sinkhorn on a 2D GMM. With the same computational budget, online Sinkhorn finds smoother displacement fields than Sinkhorn. Those are closer to the true reference displacement field (we use Sinkhorn on $N=10000$ to estimate this reference).}
     \label{fig:potentials_2d}
 \end{figure}
 
+\paragraph{Results.} As displayed in \autoref{fig:gaussian},
+online Sinkhorn outperforms batch Sinkhorn for all tested batch sizes and all $\varepsilon$. It is faster and does not converge towards biased potentials. This suggests that the performance of online Sinkhorn may be underestimated in the previous analyses due to poor potential reference.
 
-\subsection{All convergence curves for online Sinkhorn as a warmup process}\label{app:warmup_exp}
+\subsection{Illustration of online Sinkhorn potentials on a 2D GMM}
+
+The estimate $\hat f_t$ is useful to compute the gradient of the Sinkhorn
+distance $\Ww(\alpha, \beta)$ with respect to the distribution $\alpha$. This is
+useful when $\alpha$ is a parametric distribution $\alpha_\theta$, as it allows
+to compute the gradient of the Sinkhorn distance with respect to $\theta$ using
+backpropagation. For simplicity, let us assume that $\alpha = \frac{1}{n} \sum_{i=1}^n \delta_{x_i}$,
+we have
+\begin{equation}
+    \frac{\partial \Ww}{\partial x_i} = \nabla_x \big(x \to f^\star(\alpha, \beta)\big) (x_i),
+\end{equation}
+so that $\nabla_x f^\star(\alpha, \beta)$ provides a \textit{displacement field} that can be
+descended to minimize $\alpha \to \Ww(\alpha, \beta)$. Such point of view can be
+extended to general distributions using the mean-field point of view, see e.g.
+\cite{santambrogio2015optimal,chizat2019sparse}.
+% 
+Estimating $\nabla_x f^\star(\alpha, \beta)$ is therefore crucial to train e.g.
+generator networks. Both the online Sinkhorn and the batch Sinkhorn algorithm
+allow to estimate this vector field, through the plug-in estimator $x \to
+\nabla_x \hat f_t$, easily computed using the form \eqref{eq:param} of $\hat
+f_t$. 
+
+\paragraph{Experiment.} With 2D GMMs, we estimate a reference vector field
+$\nabla f^\star_0$ using Sinkhorn on $N=10,000$ samples and qualitatively
+compare the estimations provided by online Sinkhorn and batch Sinkhorn
+$(N=1,000)$.
+
+\paragraph{Results.}We represent the estimations $\nabla_x \hat f_t$ in
+\autoref{fig:potentials_2d}, for $10^8$ computations. We compare them to a
+reference displacement field, estimated wityh $10^10$ computations. We observe
+that online Sinkhorn estimates a smoother displacement field than batch Sinkhorn
+for the same computational budget, that is closer to the reference displacement
+field. In particular, it is less noisy in low-mass areas. This suggest that
+online Sinkhorn would be a interesting replacement for batch Sinkhorn in
+training generative architectures (used by e.g. \citet{2018-Genevay-aistats}).
+$\alpha_\theta$ is then defined as the push-forward of some simple
+measure with a neural network $g_\theta$. We leave this direction for future
+work.
+
+
+\subsection{Online Sinkhorn as a warmup process}\label{app:warmup_exp}
 
 
 \begin{figure}[t]
@@ -654,15 +738,22 @@ the performance of randomized Sinkhorn.
     \label{fig:warmup_full}
 \end{figure}
 
-\paragraph{Grids and details for \autoref{sec:accelerating}.} We use $\eta_t, n(t)
-= \frac{1}{(1 + 0.1t)^a}, 100 (1 + 0.1t)^{b}$, with $a, b = 0, 2$, $a, b =
-\frac{1}{2}, 1$ and $a,b =1, 0$ (constant batch-sizes). We evaluated OS and
-fully-corrective OS, and found that fully-corrective was less efficient (due to
-its higher cost in the early iterations). We evaluated sampling with and without
-replacement in the warmup phase, and found sampling without replacement to be
-more efficient.
+\paragraph{Grids and details for \autoref{sec:accelerating}.} 
+We set $(\eta_t, n(t)) = \big(\frac{1}{(1 + 0.1t)^a}, 100 (1 + 0.1t)^{b}\big)$,
+with $(a, b) = (0, 2)$, $(a, b) = (\frac{1}{2}, 1)$ and $(a,b =1, 0)$ (constant
+batch-sizes). The batch Sinkhorn algorithm that is used for reference and after
+warmup uses $N=10000$. In the reference algorithm, we precompute the distance
+matrix to save computation. In the warmup algorithm, this distance matrix is
+filled progressively and then kept in memory to perform $C$-transforms.
 
-\paragraph{All warmup convergence curves.} To complete \autoref{fig:warmup}, we report convergence curves for different $\varepsilon$ in \autoref{fig:warmup_full}
+We evaluated OS and fully-corrective OS, and found that fully-corrective was
+less efficient (due to its higher cost in the early iterations). We evaluated
+sampling with and without replacement in the warmup phase, and found sampling
+without replacement to be more efficient.
+
+\paragraph{All warmup convergence curves.} To complete \autoref{fig:warmup}, we
+report convergence curves for different $\varepsilon$ in
+\autoref{fig:warmup_full}. We find that speed-up increased with $\varepsilon$ and both the 2D and 3D problems, but remains limited for the 10D problem.
 
 
 \pagebreak
