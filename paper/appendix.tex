@@ -625,14 +625,27 @@ We display and describe the supplementary figures mentionned in the main text, a
     $\varepsilon = 0.0001$
 
     \includegraphics{online_0.0001_True_test}
-    \caption{Performance of fully-corrective online Sinkhorn for various $\varepsilon$.}
+    \caption{Performance of fully-corrective online Sinkhorn (O-S) for various $\varepsilon$.}
     \label{fig:convergence_refit}
 \end{figure}
 
 \begin{figure}[t]
     \centering
 
-    \caption{Performance of randomized Sinkhorn for various $\varepsilon$.}
+    \includegraphics{random_0.1_test_}
+    
+    $\varepsilon = 0.01$
+    \includegraphics{random_0.01_test_}
+
+    $\varepsilon = 0.001$
+
+    \includegraphics{random_0.001_test_}
+
+    $\varepsilon = 0.0001$
+
+    \includegraphics{random_0.0001_test_}
+
+    \caption{Performance of randomized Sinkhorn (R-S) for various $\varepsilon$.}
     \label{fig:convergence_randomized}
 \end{figure}
 
@@ -657,7 +670,10 @@ but faster on the 10 dimensional problem. For GMM-10D, it outperforms the batch 
 with $N=100, 1000$. Note that we interrupt FCOS for $n_t > 20,000$, as our implementation of the $C$-transform has a quadratic memory cost in $n_t$---this cost can be reduced to a linear cost with more careful implementation \footnote{Using e.g. \url{https://www.kernel-operations.io/keops/index.html}}.
 
 \paragraph{Randomized Sinkhorn.}\autoref{fig:convergence_randomized} reports the
-performance of randomized Sinkhorn.
+performance of randomized Sinkhorn. In low dimension, randomized Sinkhorn is a
+reasonable alternative to batch Sinkhorn, as it often outperforms it on average,
+for the same memory complexity (compare purple to orange curve for instance). In
+high dimension, batch Sinkhorn tend to perform slightly better.
 
 \subsection{OT between Gaussians}
 
@@ -708,7 +724,7 @@ $\varepsilon \in \{ 10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}\}$.
 
     \includegraphics{quiver_ref}
     
-    \caption{Displacement field as defined by the potentials estimated by online-Sinkhorn and Sinkhorn on a 2D GMM. With the same computational budget, online Sinkhorn finds smoother displacement fields than Sinkhorn. Those are closer to the true reference displacement field (we use Sinkhorn on $N=10000$ to estimate this reference).}
+    \caption{Displacement field as defined by the potentials estimated by online-Sinkhorn and Sinkhorn on a 2D GMM. With the same computational budget, online Sinkhorn finds smoother displacement fields than Sinkhorn. Those are closer to the true reference displacement field (we use Sinkhorn on $N=10000$ to estimate this reference). $\alpha$ and $\beta$ log-likelihood level-lines are displayed in red and blue, while the arrows are proportional to $\nabla_x \hat f_t(x) \d \alpha(x)$.}
     \label{fig:potentials_2d}
 \end{figure}
 
@@ -721,10 +737,9 @@ The estimate $\hat f_t$ is useful to compute the gradient of the Sinkhorn
 distance $\Ww(\alpha, \beta)$ with respect to the distribution $\alpha$. This is
 useful when $\alpha$ is a parametric distribution $\alpha_\theta$, as it allows
 to compute the gradient of the Sinkhorn distance with respect to $\theta$ using
-backpropagation. For simplicity, let us assume that $\alpha = \frac{1}{n} \sum_{i=1}^n \delta_{x_i}$,
-we have
+backpropagation. For simplicity, let us assume that $\alpha = \frac{1}{n} \sum_{i=1}^n \delta_{x_i}$. Then, for all $i \in [1, n]$,
 \begin{equation}
-    \frac{\partial \Ww}{\partial x_i} = \nabla_x \big(x \to f^\star(\alpha, \beta)\big) (x_i),
+    \frac{\partial \Ww(\alpha, \beta)}{\partial x_i} = \nabla_x \big(x \to f^\star(\alpha, \beta)\big) (x_i),
 \end{equation}
 so that $\nabla_x f^\star(\alpha, \beta)$ provides a \textit{displacement field} that can be
 descended to minimize $\alpha \to \Ww(\alpha, \beta)$. Such point of view can be
@@ -740,7 +755,7 @@ f_t$.
 \paragraph{Experiment.} With 2D GMMs, we estimate a reference vector field
 $\nabla f^\star_0$ using Sinkhorn on $N=10,000$ samples and qualitatively
 compare the estimations provided by online Sinkhorn and batch Sinkhorn
-$(N=1,000)$.
+$(N=1,000)$, for the same number of computations.
 
 \paragraph{Results.}We represent the estimations $\nabla_x \hat f_t$ in
 \autoref{fig:potentials_2d}, for $10^8$ computations. We compare them to a
