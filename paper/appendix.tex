@@ -307,7 +307,7 @@ The constants $S$ depends on the complexity of estimating
 the functional $x \to \int_y \exp(g^\star(y) - C(x,y)) \d \beta(y)$ with samples from $\beta$.
 A parallel
 result holds for $\EE_{\hat \alpha_n} {\Vert \iota_{\hat \alpha_n}
-\Vert}_{\var}$. There exists $A(f^\star), A(g^\star) > 0$ such that $r_\infty \leq
+\Vert}_{\var}$. Therefore, there exists $A(f^\star), A(g^\star) > 0$ such that $r_\infty \leq
 \frac{A(f^\star) + A(g^\star)}{\sqrt{n}}$. As for all $t >0$, $e_t \leq r_t \to_{t \to \infty}
 r_\infty$, the proposition follows,  writing $A = A(f^\star) + A(g^\star)$.
 
@@ -520,6 +520,12 @@ is sufficient to use a constant batch-size $n(t) = B$ to meet \autoref{ass:total
     \end{equation}
 \end{proposition}
 
+\begin{proof}
+    Using the fully-corrective scheme allows to replace $n(t)$ by $n_t =
+    \sum_{s=0}^t n(s)$ in \eqref{eq:recursion}. The proposition is then obtained
+    in the same way as \autoref{prop:rate}.
+\end{proof}
+
 
 
 \subsection{Online Sinkhorn for discrete distributions}\label{sec:sinkhorn_discrete}
@@ -541,7 +547,42 @@ have varying sizes along the algorithm, which allows for example to speed-up the
 initial Sinkhorn iteration (\autoref{sec:accelerating}). In this case, the
 cost matrix $\hat C = C(x_i,y_j))_{i,j}$ should be progressively recorded along the algorithm iterations.
 
+\subsection{Recapitulation on batch-sizes and learning rates}
+
+To provide practical guidance on choosing rates in batch-sizes $n(t)$ and
+step-sizes $\eta_t$, we can parametrize $\eta_t = \frac{1}{t^a}$ and $n(t) = B
+t^b$ and study what is implied by \autoref{ass:double_weights} and
+\autoref{ass:total_growing}. We summarize the schedules for which convergence is
+guarantees in \autoref{table:growing}. Note that in practice, it is useful to
+replace $t$ by $(1 + r\, t)$ in these schedules. We set $r=0.1$ in all
+experiments.
+
+\begin{table}[t]
+    \centering
+    \caption{Schedules of batch-sizes and learning rates that ensures online Sinkhorn convergence.}
+
+    \begin{tabular}{ccc}
+        \toprule
+        Param. schedule &Online Sinkhorn & Fully-corrective online Sinkhorn \\
+        \midrule
+        Batch size $\displaystyle n(t) = B t^b$ & $0 < b $ & $0 \leq b$ \\
+        Step size $\displaystyle \eta_t = \frac{1}{t^a}$ &$\displaystyle a \geq 1 - \frac{b}{2}$ & 
+        \parbox{5cm}{
+        \begin{equation}
+            \left\{
+                \begin{aligned}
+            a &> \frac{1}{2} - \frac{b}{2} \qandq b <1 \\
+            a &\geq 0 \qandq b \geq 1
+                \end{aligned}
+                \right.
+        \end{equation}}\\
+        \bottomrule
+    \end{tabular}
+    \label{table:growing}
+\end{table}
+\vfill
 \pagebreak
+
 \section{Extra numerical experiments}
 
 We display and describe the supplementary figures mentionned in the main text, as well as experimental details useful for reproduction.
@@ -755,7 +796,7 @@ without replacement to be more efficient.
 report convergence curves for different $\varepsilon$ in
 \autoref{fig:warmup_full}. We find that speed-up increased with $\varepsilon$ and both the 2D and 3D problems, but remains limited for the 10D problem.
 
-
+\vfill
 \pagebreak
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

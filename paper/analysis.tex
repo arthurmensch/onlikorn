@@ -54,8 +54,8 @@ Sinkhorn algorithm with averaging fails to provide exactly the dual solution, bu
 We make the following \citet{robbins1951stochastic} assumption on the weight sequence. We then state an approximate convergence result for the online Sinkhorn algorithm with fixed batch-size $n(t) = n$.
 
 \begin{assumption}\label{ass:weights}
-    The sequence ${(\eta_t)}_t$ is such that
-    $\sum \eta_t = \infty$ and $\sum \eta_t^2 < \infty$.
+    ${(\eta_t)}_t$ is such that
+    $\sum \eta_t = \infty$ and $\sum \eta_t^2 < \infty$, $0 \leq \eta_t \leq 1$ for all $t > 0$.
 \end{assumption}
 
 \begin{proposition}\label{prop:convergence_approx}
@@ -82,7 +82,7 @@ with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly for
 assumption.
 
 \begin{assumption}\label{ass:double_weights}
-    For all $t > 0$, the batch-size $n(t) = \frac{B}{w_t^2}$ is an integer. $\sum w_t \eta_t <
+    For all $t > 0$, $n(t) = \frac{B}{w_t^2} \in \NN$ and $0 \leq \eta_t \leq 1$. $\sum w_t \eta_t <
     \infty$ and $\sum \eta_t = \infty$.
 \end{assumption}
 
