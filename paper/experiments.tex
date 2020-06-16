@@ -1,14 +1,18 @@
 %!TEX root = article.tex
 \begin{figure}[t]
     \centering
-    \includegraphics{online_0.01_False_test.pdf}
+    \begin{widepage}
+    \includegraphics[width=\linewidth]{online_0.01_False_test.pdf}
+    \end{widepage}
     \caption{Online Sinkhorn consistently estimate the true regularized OT potentials. Convergence here is measured in term of distance with potentials evaluated on a "test" grid of size $n=10^4$. Online-Sinkhorn can estimate potentials faster than sampling then scaling the cost matrix.}
     \label{fig:convergence}
 \end{figure}
 
 \begin{figure}[t]
     \centering
+    \begin{widepage}
     \includegraphics[width=\linewidth]{continuous.pdf}
+    \end{widepage}
     \caption{Online Sinhkorn finds the correct potentials over all space, unlike SGD over a RKHS parametrization of the potentials. The plan is therefore correctly estimated everywhere.}
     \label{fig:potentials}
     \vspace{-1em}
@@ -109,7 +113,7 @@ Fully-corrective OS performs better in this case (see Supp.~\autoref{fig:converg
 
 \paragraph{Better-extrapolated potentials.} As illustrated in
 \autoref{fig:potentials}, in 1D, online Sinkhorn refines the potentials $(\hat f_t, \hat g_t)_t$
-until convergence toward $(f^\star, g^\star)$. Supp.~\autoref{fig:potentials_2d} shows a visualisation for 2D GMM. As the parametrization~\eqref{eq:param} is
+until convergence toward $(f^\star, g^\star)$. Supp. \autoref{fig:potentials_2d} shows a visualisation for 2D GMM. As the parametrization~\eqref{eq:param} is
 adapted to the dual problem, the algorithm quickly identifies the correct shape of
 the optimal potentials---as predicted by \autoref{prop:convergence_true}. In
 particular, OS estimates potentials with much less errors than SGD in a RKHS in
@@ -118,13 +122,14 @@ areas where the mass of $\alpha$ and $\beta$ is low. This allows to consistently
 \setlength{\tabcolsep}{2pt}
 
 \begin{figure}[t]
-    \begin{minipage}{.7\textwidth}
-    \includegraphics{online+full_0.001_err.pdf}
+    \begin{widepage}
+    \begin{minipage}{.7\linewidth}
+    \includegraphics[width=\linewidth]{online+full_0.001_err.pdf}
     \end{minipage}%
     \hfill
-    \begin{minipage}{.3\textwidth}
+    \begin{minipage}{.3\linewidth}
         \centering
-        \scriptsize
+        \small
         \begin{tabular}{lrrrr}
             \toprule
             $- \log \varepsilon$
@@ -136,13 +141,15 @@ areas where the mass of $\alpha$ and $\beta$ is low. This allows to consistently
             \bottomrule
             \end{tabular}
     \end{minipage}
-    \caption{Online Sinkhorn allows to warmup Sinkhorn during the evaluation of the cost matrix, and to speed discrete optimal transport. Table 1: Speed-ups provided by OS vs S to reach a $10^{-3}$ precision.}
+    \end{widepage}
+    \stepcounter{table}
+    \caption{Online Sinkhorn allows to warmup Sinkhorn during the evaluation of the cost matrix, and to speed discrete optimal transport. Table \thetable: Speed-ups provided by OS vs S to reach a $10^{-3}$ precision.}
     \label{fig:warmup}
     \vspace{-.8em}
 \end{figure}
 
 
-\subsection{Accelerating Sinkhorn through online Sinkhorn warmup}\label{sec:accelerating}
+\subsection{Accelerating Sinkhorn with online Sinkhorn warmup}\label{sec:accelerating}
 
 The discrete Sinkhorn algorithm requires to compute the full cost matrix $\Cz
 \eqdef (C(x_i,y_i))_{i,j}$  of size $N \times N$, prior to estimating the

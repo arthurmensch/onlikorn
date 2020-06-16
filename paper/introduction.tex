@@ -107,7 +107,7 @@ To our knowledge, the only mathematically rigorous algorithm represents potentia
 Hilbert space~\citep{2016-genevay-nips}. This
 approach is generic and does not leverage the specific structure of the OT problem, so that in practice its convergence is slow. We show in Section~\autoref{sec:compare} that online Sinkhorn finds better potential estimates than SGD on RKHS representations.
 
-\paragraph{Stochastic approximation (SA).} Our approach may be seen as SA \cite{robbins1951stochastic} for finding the roots of an
+\paragraph{Stochastic approximation (SA).} Our approach may be seen as SA \citep{robbins1951stochastic} for finding the roots of an
 operator in a non-Hilbertian functional space. \cite{alber_stochastic_2012} studies
 SA for solving fixed-points that are contractant in Hilbert spaces. Online Sinkhorn convergence relies on the contractivity of a certain operator in a non-Hilbertian metric, and requires a specific analysis. 
-As both are SA instances, the online Sinkhorn algorithm resembles stochastic EM \cite{celeux_stochastic_1992}, though it cannot be interpreted as such.
+As both are SA instances, the online Sinkhorn algorithm resembles stochastic EM \citep{celeux_stochastic_1992}, though it cannot be interpreted as such.

@@ -547,6 +547,7 @@ have varying sizes along the algorithm, which allows for example to speed-up the
 initial Sinkhorn iteration (\autoref{sec:accelerating}). In this case, the
 cost matrix $\hat C = C(x_i,y_j))_{i,j}$ should be progressively recorded along the algorithm iterations.
 
+\if\icml1
 \subsection{Recapitulation on batch-sizes and learning rates}
 
 To provide practical guidance on choosing rates in batch-sizes $n(t)$ and
@@ -556,7 +557,7 @@ t^b$ and study what is implied by \autoref{ass:double_weights} and
 guarantees in \autoref{table:growing}. Note that in practice, it is useful to
 replace $t$ by $(1 + r\, t)$ in these schedules. We set $r=0.1$ in all
 experiments.
-
+\setcounter{table}{1}
 \begin{table}[t]
     \centering
     \caption{Schedules of batch-sizes and learning rates that ensures online Sinkhorn convergence.}
@@ -580,6 +581,7 @@ experiments.
     \end{tabular}
     \label{table:growing}
 \end{table}
+\fi
 \vfill
 \pagebreak
 
@@ -590,60 +592,70 @@ We display and describe the supplementary figures mentionned in the main text, a
 \subsection{Online Sinkhorn and variants}\label{app:online_exp}
 
 \begin{figure}[t]
+    \begin{widepage}
+        
     \centering
     $\varepsilon = 0.1$
 
-    \includegraphics{online_0.1_False_test}
+    \includegraphics[width=\linewidth]{online_0.1_False_test}
     
     $\varepsilon = 0.01$
-    \includegraphics{online_0.01_False_test}
+
+    \includegraphics[width=\linewidth]{online_0.01_False_test}
 
     $\varepsilon = 0.001$
 
-    \includegraphics{online_0.001_False_test}
+    \includegraphics[width=\linewidth]{online_0.001_False_test}
 
     $\varepsilon = 0.0001$
 
-    \includegraphics{online_0.0001_False_test}
+    \includegraphics[width=\linewidth]{online_0.0001_False_test}
+    \end{widepage}
     \caption{Performance of online Sinkhorn for various $\varepsilon$.}
     \label{fig:convergence_all}
 \end{figure}
 
 \begin{figure}[t]
+    \begin{widepage}
     \centering
     $\varepsilon = 0.1$
 
-    \includegraphics{online_0.1_True_test}
+    \includegraphics[width=\linewidth]{online_0.1_True_test}
     
     $\varepsilon = 0.01$
-    \includegraphics{online_0.01_True_test}
+
+    \includegraphics[width=\linewidth]{online_0.01_True_test}
 
     $\varepsilon = 0.001$
 
-    \includegraphics{online_0.001_True_test}
+    \includegraphics[width=\linewidth]{online_0.001_True_test}
 
     $\varepsilon = 0.0001$
 
-    \includegraphics{online_0.0001_True_test}
+    \includegraphics[width=\linewidth]{online_0.0001_True_test}
+    \end{widepage}
+
     \caption{Performance of fully-corrective online Sinkhorn (O-S) for various $\varepsilon$.}
     \label{fig:convergence_refit}
 \end{figure}
 
 \begin{figure}[t]
+    \begin{widepage}
     \centering
-
-    \includegraphics{random_0.1_test_}
+    \includegraphics[width=\linewidth]{random_0.1_test_}
     
     $\varepsilon = 0.01$
-    \includegraphics{random_0.01_test_}
+
+    \includegraphics[width=\linewidth]{random_0.01_test_}
 
     $\varepsilon = 0.001$
 
-    \includegraphics{random_0.001_test_}
+    \includegraphics[width=\linewidth]{random_0.001_test_}
 
     $\varepsilon = 0.0001$
 
-    \includegraphics{random_0.0001_test_}
+    \includegraphics[width=\linewidth]{random_0.0001_test_}
+    \end{widepage}
 
     \caption{Performance of randomized Sinkhorn (R-S) for various $\varepsilon$.}
     \label{fig:convergence_randomized}
@@ -696,21 +708,24 @@ Sinkhorn, with $n(t) = B$, and $n(t) = B (1 + 0.1 t)^{1/2}$, $B=100$, and
 $\varepsilon \in \{ 10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}\}$.
 
 \begin{figure}[t]
+    \begin{widepage}
         \centering
         $\varepsilon = 0.1$
     
-        \includegraphics{online_0.1_False_test_gaussian}
+        \includegraphics[width=\linewidth]{online_0.1_False_test_gaussian}
         
         $\varepsilon = 0.01$
-        \includegraphics{online_0.01_False_test_gaussian}
+        
+        \includegraphics[width=\linewidth]{online_0.01_False_test_gaussian}
     
         $\varepsilon = 0.001$
     
-        \includegraphics{online_0.001_False_test_gaussian}
+        \includegraphics[width=\linewidth]{online_0.001_False_test_gaussian}
     
         $\varepsilon = 0.0001$
     
-        \includegraphics{online_0.0001_False_test_gaussian}
+        \includegraphics[width=\linewidth]{online_0.0001_False_test_gaussian}
+    \end{widepage}
     \caption{Performance of online-Sinkhorn to estimate OT between two Gaussians. Online Sinkhorn systematically outperforms batch Sinkhorn, but in term of speed and correction.}
     \label{fig:gaussian}
 \end{figure}
@@ -718,11 +733,11 @@ $\varepsilon \in \{ 10^{-4}, 10^{-3}, 10^{-2}, 10^{-1}\}$.
 \begin{figure}[htbp]
     \centering
     
-    \includegraphics{quiver_os_1e8}
+    \includegraphics[width=\linewidth]{quiver_os_1e8}
 
-    \includegraphics{quiver_subsampled_1e8}
+    \includegraphics[width=\linewidth]{quiver_subsampled_1e8}
 
-    \includegraphics{quiver_ref}
+    \includegraphics[width=\linewidth]{quiver_ref}
     
     \caption{Displacement field as defined by the potentials estimated by online-Sinkhorn and Sinkhorn on a 2D GMM. With the same computational budget, online Sinkhorn finds smoother displacement fields than Sinkhorn. Those are closer to the true reference displacement field (we use Sinkhorn on $N=10000$ to estimate this reference). $\alpha$ and $\beta$ log-likelihood level-lines are displayed in red and blue, while the arrows are proportional to $\nabla_x \hat f_t(x) \d \alpha(x)$.}
     \label{fig:potentials_2d}
@@ -777,19 +792,19 @@ work.
     \centering
     $\varepsilon = 0.1$
 
-    \includegraphics{online+full_0.1_err}
+    \includegraphics[width=\linewidth]{online+full_0.1_err}
     
     $\varepsilon = 0.01$
 
-    \includegraphics{online+full_0.01_err}
+    \includegraphics[width=\linewidth]{online+full_0.01_err}
 
     $\varepsilon = 0.001$
 
-    \includegraphics{online+full_0.001_err}
+    \includegraphics[width=\linewidth]{online+full_0.001_err}
 
     $\varepsilon = 0.0001$
 
-    \includegraphics{online+full_0.0001_err}
+    \includegraphics[width=\linewidth]{online+full_0.0001_err}
     \caption{Performance of online-Sinkhorn as warmup for various $\varepsilon$.}
     \label{fig:warmup_full}
 \end{figure}

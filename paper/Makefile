@@ -46,8 +46,8 @@ hal.zip:
 	bash tools/make_hal.sh
 
 paper.pdf supp/supp.pdf: $(MAIN).pdf
-	pdftk $(MAIN).pdf cat 1-10 output main.pdf
-	pdftk $(MAIN).pdf cat 11-end output supp/supp.pdf
+	pdftk $(MAIN).pdf cat 1-11 output main.pdf
+	pdftk $(MAIN).pdf cat 12-end output supp.pdf
 
 watch: $(MAIN).tex $(SOURCES)
 	$(LATEXMK) $(LATEXMKOPT) -pdflatex="$(LATEX) $(LATEXOPT) %O %S" $(MAIN)

@@ -82,8 +82,8 @@ with slightly increasing batch-size $n(t)$ (that may grow arbitrarily slowly for
 assumption.
 
 \begin{assumption}\label{ass:double_weights}
-    For all $t > 0$, $n(t) = \frac{B}{w_t^2} \in \NN$ and $0 \leq \eta_t \leq 1$. $\sum w_t \eta_t <
-    \infty$ and $\sum \eta_t = \infty$.
+    For all $t > 0$, $n(t) = \frac{B}{w_t^2} \in \NN$ and $0 \leq \eta_t \leq
+    1$. $\sum w_t \eta_t < \infty$ and $\sum \eta_t = \infty$.
 \end{assumption}
 
 \begin{proposition}\label{prop:convergence_true}
@@ -121,10 +121,46 @@ of $D$; it does not depend on the dimension. For low $\epsilon$,
 $D$ is proportional to $\exp(\frac{2}{\epsilon})$; the bound is therefore vacuous for
 $\varepsilon \to 0$. Note that using growing
 batch-sizes amounts to increase the budget of a single iteration over time: the
-overall computational complexity after seeing $N$ samples is always $\Oo(N^2)$.
+overall computational complexity after seeing $N$ samples is always $\Oo(N^2)$. 
+
+\if\icml0
+\paragraph{Batch-sizes and step-sizes.}
+
+To provide practical guidance on choosing rates in batch-sizes $n(t)$ and
+step-sizes $\eta_t$, we can parametrize $\eta_t = \frac{1}{t^a}$ and $n(t) = B
+t^b$ and study what is implied by \autoref{ass:double_weights} and
+\autoref{ass:total_growing}. We summarize the schedules for which convergence is
+guarantees in \autoref{table:growing}. Note that in practice, it is useful to
+replace $t$ by $(1 + r\, t)$ in these schedules. We set $r=0.1$ in all
+experiments.
+\begin{table}[t]
+    \centering
+    \caption{Schedules of batch-sizes and learning rates that ensures online Sinkhorn convergence.}
+
+    \begin{tabular}{ccc}
+        \toprule
+        Param. schedule &Online Sinkhorn & Fully-corrective online Sinkhorn \\
+        \midrule
+        Batch size $\displaystyle n(t) = B t^b$ & $0 < b $ & $0 \leq b$ \\
+        Step size $\displaystyle \eta_t = \frac{1}{t^a}$ &$\displaystyle a \geq 1 - \frac{b}{2}$ & 
+        \parbox{5cm}{
+        \begin{equation}
+            \left\{
+                \begin{aligned}
+            a &> \frac{1}{2} - \frac{b}{2} \qandq b <1 \\
+            a &\geq 0 \qandq b \geq 1
+                \end{aligned}
+                \right.
+        \end{equation}}\\
+        \bottomrule
+    \end{tabular}
+    \label{table:growing}
+\end{table}
+
+\paragraph{Mirror descent interpretation.} Online Sinkhorn can be interpreted as a non-convex stochastic mirror-descent, as detailed in \autoref{sec-mirror}. It provides an original interpretation of the Sinkhorn algorithm, different from recent work \citep{leger2019sinkhorn,mishchenko2019sinkhorn}.
+\fi
 
 % Online Sinkhorn thus works for $\eta_t = \frac{1}{t^a}$ with $a \in [0, 1]$,
 % provided that we use batch-sizes of size $n(t) = n\, t^{2(1-a)} \log^c t$, with $c >
 % 1$. Slowing down Sinkhorn iterations thus permits to work with batches whose
-% size increases more slowly. The limit case when $a = 1$ requires only $b > 0$
-% can accommodate batch-sizes growing arbitrarily slowly. 
+% size increases more slowly. 

@@ -63,12 +63,12 @@ where $\dotp{f}{\alpha} \eqdef \int f(x) \d\al(x)$ and $(f \oplus g - C)(x,y)
 \eqdef f(x)+g(y)-C(x,y)$.
 %  We write $F_{\alpha, \beta}(f, g)$ the dual objective. 
 Problem \eqref{eq:dual} can be solved by closed-form alternated maximization, which corresponds to Sinkhorn's algorithm. At iteration $t$, the updates are simply
-\begin{equation}
-    f_{t+1}(\cdot) = \Ctrans{g_t}{\beta}, \quad
-    g_{t+1}(\cdot) = \Ctrans{f_{t+1}}{\alpha},\quad
-    \Ctrans{h}{\mu} \triangleq 
+\begin{align}
+    f_{t+1}(\cdot) &= \Ctrans{g_t}{\beta}, \quad
+    g_{t+1}(\cdot) = \Ctrans{f_{t+1}}{\alpha},\\
+    \Ctrans{h}{\mu} &\triangleq 
     - \log \int_{y \in \Xx}\!\! \exp(h(y) - C(\cdot, y))\d \mu(y).\label{eq:sinkhorn}
-\end{equation}
+\end{align}
 The operation $h \mapsto \Ctrans{h}{\mu}$  maps a continuous function to another
 continuous function, and is a smooth approximation of the celebrated
 $C$-transform of OT~\citep{santambrogio2015optimal}. We thus refer to it as a

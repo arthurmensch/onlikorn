@@ -66,12 +66,12 @@ By construction, $\EE_{\hat \alpha \sim \alpha, \hat \beta \sim \beta} [\hat \Ff
 \paragraph{Randomized Sinkhorn.}To make use of a stream of samples $(\hat \alpha_t, \hat
  \beta_t)_t$, we may simply replace $\Ff$ with $\hat \Ff$ in the Sinkhorn updates.
  This amounts to use noisy soft $C$-transforms in \eqref{eq:sinkhorn}, as we set
-\begin{equation}\label{eq:updates_naive}
-    (u_{t+1}, v_{t+1}) \triangleq (u_{t},
-    v_{t}) - \hat \Ff_{\hat \alpha, \hat \beta}(u_t, v_t),\quad\text{i.e.}\quad
-     \hat f_{t+1} = \Ctrans{\hat g_t}{\hat \beta_t},
+\begin{align}\label{eq:updates_naive}
+    (u_{t+1}, v_{t+1}) &\triangleq (u_{t},
+    v_{t}) - \hat \Ff_{\hat \alpha, \hat \beta}(u_t, v_t),\quad\text{i.e.}\\
+     \hat f_{t+1} &= \Ctrans{\hat g_t}{\hat \beta_t},
     \qquad \hat g_{t+1} = \Ctrans{\hat f_{t+1}}{\hat \alpha_t}.
-\end{equation}
+\end{align}
 % which is equivalent to setting all $(q_i)_{i \leq n_t}$ to $0$, and assigning each weight
 %  $q_i$ to $g_t(y_i) - \log(n)$ for $n_t < i \leq  n_{t+1}$, and similarly for~$p_i$.
 %
@@ -92,19 +92,19 @@ $(f^\star, g^\star)$, one must take more cautious steps, in particular past iter
 We introduce a learning
 rate $\eta_t$ in Sinkhorn iterations, akin to the Robbins-Monro algorithm for finding
 roots of vector-valued functions:
-\begin{equation}\label{eq:updates}
-    (\hat u_{t+1}, \hat v_{t+1}) \triangleq (1 - \eta_t) (\hat u_t, \hat v_t) 
-    - \eta_t \hat \Ff_{\hat \alpha_t, \hat \beta_t}(\hat u_t, \hat v_t),\quad\text{i.e.}\quad
-    e^{-\hat f_{t+1}} = (1 - \eta_t) e^{-\hat f_{t}} + 
+\begin{align}\label{eq:updates}
+    (\hat u_{t+1}, \hat v_{t+1}) &\triangleq (1 - \eta_t) (\hat u_t, \hat v_t) 
+    - \eta_t \hat \Ff_{\hat \alpha_t, \hat \beta_t}(\hat u_t, \hat v_t),\quad\text{i.e.}\\
+    e^{-\hat f_{t+1}} &= (1 - \eta_t) e^{-\hat f_{t}} + 
     \eta_t e^{-\Ctrans{\hat g_t}{\hat \beta_t}}
-\end{equation}
+\end{align}
 Each update adds new kernel functions to a non-parametric estimation of $
 u_t$ and $v_t$. The estimates $\hat u_t$ and $\hat v_t$ are defined by weights ${(p_{i,t},
 q_{i,t})}_{i \leq n_t}$ and positions ${(x_i, y_i)}_{i \leq n_t} \subseteq~\Xx^2$:
 \begin{align}\label{eq:param}
-    e^{-\hat f_t(\cdot)} = \hat u_t(\cdot) \triangleq \sum_{i=1}^{n_t} 
-    \exp(q_{i,t} - C(\cdot, y_i)),\quad
-    e^{-\hat g_t(\cdot)} = \hat v_t(\cdot) \triangleq \sum_{i=1}^{n_t}
+    e^{-\hat f_t(\cdot)} &= \hat u_t(\cdot) \triangleq \sum_{i=1}^{n_t} 
+    \exp(q_{i,t} - C(\cdot, y_i)),\\
+    e^{-\hat g_t(\cdot)} &= \hat v_t(\cdot) \triangleq \sum_{i=1}^{n_t}
     \exp(p_{i,t} - C(x_i, \cdot)).
 \end{align}
 The SA updates \eqref{eq:updates} yields simple vectorized updates for the weights
