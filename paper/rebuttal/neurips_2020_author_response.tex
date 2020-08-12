@@ -15,7 +15,7 @@
 
 \begin{document}
 
-We thank the reviewers for their insightful comments. We will address all comments in the final version.
+We thank the reviewers for their insightful comments. We address their interrogations and comments below.
 
 \textbf{R1.} \textit{- Practical/concrete motivation for why/when online OT computation is needed.} Online OT estimation is useful for training generative models. In this case, the samples are renewed at each iteration of a training algorithm, and may be used to better evaluate the distance to minimize. Any applications that requires to estimate OT distances between large point clouds can benefit from online OT estimation, that accelerates training. We will better motivate our work.
 
@@ -32,22 +32,21 @@ We thank the reviewers for their insightful comments. We will address all commen
 \textbf{R2.} \textit{- How is convergence affected by [...] the distributions involved.} We have tried to give more insight on this aspect in Appendix C. As predicted in the analysis, online Sinkhorn converges more slowly for lower $\epsilon$ (or equivalently, less regular $C$, Fig. 5). For Gaussians distributions, online Sinkhorn outperforms batch Sinkhorn in all cases (Fig. 7).
 
 \textit{- Could the authors comment on actual runtime?} With proper GPU
-implementation of online Sinkhorn (using \textit{pyKeops}), the C-transform wall-clock time is indeed roughly in $O(n_t^2) $. We have compared
+implementation of online Sinkhorn (using the \textit{pyKeops} library), the C-transform wall-clock time is indeed roughly in $O(n_t^2) $. We have compared
 online Sinkhorn to batch Sinkhorn in term of wall-clock time, and found similar
-curves as reported in the paper, using batch-sizes larger than $1,000$. Batch Sinkhorn
-remains faster for small problems ($N < 10,000$), for which $C$ can be precomputed and
+curves as reported in the paper, using batch-sizes larger than $1000$. Batch Sinkhorn
+remains faster for small problems ($N < 10^4$), for which $C$ can be precomputed and
 held in GPU memory. We will add wall-clock time experiments to the appendix.
 
 \textit{- Confusion l.288-289.} $f$ and $g$ are fit until $C$ is formed, and we then run batch Sinkhorn. We will clarify.
 
 \textit{- "It behaves like exp(1/eps)." Any intuition as to whether this can be improved?}
-It is an inherent limitation of OT regularization (even in the batch setting), that cannot be improved: the sample complexity of unregularized OT is exponential in the dimension, while regularized OT enjoys fast rates. The constants before these rates must explode as the regularization disappear. This intuition is given in [18], and we will recall it.
+It is an inherent limitation of OT regularization (even in the batch setting), that cannot be improved: the sample complexity of unregularized OT is exponential in the dimension, while regularized OT enjoys fast rates. The constants before these rates must explode as the regularization disappear. This intuition is given in e.g. [18], and we will recall it.
 
 \textbf{R3.} 
 \textit{- The per-iteration cost of the classic Sinkhorn algorithm can
-be reduced [...].} This is
-absolutely true. Online Sinkhorn proves most useful in the case where the
-pairwise cost matrix must be computed on the fly. We will recall the reviewer's observation and discuss the regimes in which the online approach is favorable.
+be reduced [...].} We have been too elusive on this aspect. Online Sinkhorn proves most useful in the case where the
+pairwise cost matrix must be computed on the fly due to memory constraints (and serves as a sound warmup otherwise). We will recall and discuss this observation.
 
 \textit{- I find the Prop. 4 surprising.} In Prop. 4, we assume that $\iota > 0$,
 and therefore that the batch-size goes to infinity. This is sufficient to ensure
